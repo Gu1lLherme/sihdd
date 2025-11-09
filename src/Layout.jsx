@@ -1,7 +1,7 @@
 import React from "react";
 import { Link, useLocation } from "react-router-dom";
 import { createPageUrl } from "@/utils";
-import { Scale, FileText, Receipt, BarChart3, History, Link2, MessageCircle, Briefcase, FolderOpen, LogOut } from "lucide-react";
+import { Scale, FolderOpen, Link2, History, BarChart3, Brain, Users, Settings, MessageCircle } from "lucide-react";
 import {
   Sidebar,
   SidebarContent,
@@ -21,12 +21,17 @@ const navigationItems = [
   {
     title: "Dashboard",
     url: createPageUrl("Dashboard"),
-    icon: Briefcase,
+    icon: BarChart3,
   },
   {
     title: "Inventários",
     url: createPageUrl("Inventarios"),
     icon: FolderOpen,
+  },
+  {
+    title: "IA Jurídica RAG",
+    url: createPageUrl("ChatAssistente"),
+    icon: Brain,
   },
   {
     title: "Integrações",
@@ -52,24 +57,41 @@ export default function Layout({ children, currentPageName }) {
   return (
     <SidebarProvider>
       <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+        
+        * {
+          font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        }
+
         :root {
-          --primary: 217 91% 33%;
-          --primary-foreground: 210 100% 98%;
-          --accent: 217 91% 60%;
-          --muted: 210 20% 96%;
-          --success: 142 76% 36%;
-          --warning: 38 92% 50%;
-          --destructive: 0 84% 60%;
+          --primary-dark: #0B1A2E;
+          --primary-royal: #1E40AF;
+          --primary-light: #3B82F6;
+          --success: #10B981;
+          --warning: #F59E0B;
+          --error: #DC2626;
+          --text-primary: #111827;
+          --text-secondary: #6B7280;
+          --bg-main: #F9FAFB;
+        }
+
+        body {
+          background: var(--bg-main);
         }
 
         @keyframes float {
-          0%, 100% { transform: translateY(0px); }
-          50% { transform: translateY(-10px); }
+          0%, 100% { transform: translateY(0px) rotate(0deg); }
+          50% { transform: translateY(-8px) rotate(2deg); }
         }
 
         @keyframes pulse-glow {
-          0%, 100% { box-shadow: 0 0 20px rgba(37, 99, 235, 0.4); }
-          50% { box-shadow: 0 0 30px rgba(37, 99, 235, 0.6); }
+          0%, 100% { box-shadow: 0 0 20px rgba(30, 64, 175, 0.4); }
+          50% { box-shadow: 0 0 30px rgba(30, 64, 175, 0.6), 0 0 40px rgba(59, 130, 246, 0.3); }
+        }
+
+        @keyframes slide-in {
+          from { transform: translateX(-100%); opacity: 0; }
+          to { transform: translateX(0); opacity: 1; }
         }
 
         .animate-float {
@@ -81,28 +103,50 @@ export default function Layout({ children, currentPageName }) {
         }
 
         .nav-item-active {
-          background: linear-gradient(135deg, rgba(37, 99, 235, 0.15) 0%, rgba(96, 165, 250, 0.15) 100%);
-          border-left: 3px solid #2563EB;
+          background: linear-gradient(90deg, rgba(30, 64, 175, 0.15) 0%, rgba(59, 130, 246, 0.08) 100%);
+          border-left: 4px solid #3B82F6;
+          font-weight: 600;
+        }
+
+        .glassmorphism {
+          background: rgba(255, 255, 255, 0.85);
+          backdrop-filter: blur(10px);
+          -webkit-backdrop-filter: blur(10px);
+        }
+
+        .card-shadow {
+          box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+
+        .card-shadow-hover {
+          transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .card-shadow-hover:hover {
+          box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+          transform: translateY(-4px);
         }
       `}</style>
-      <div className="min-h-screen flex w-full bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50">
-        <Sidebar className="border-r border-slate-200/80 bg-white/95 backdrop-blur-sm">
-          <SidebarHeader className="border-b border-slate-200/80 p-6">
+      
+      <div className="min-h-screen flex w-full bg-[#F9FAFB]">
+        {/* Sidebar - Azul Petróleo Escuro */}
+        <Sidebar className="border-r-0 shadow-2xl" style={{ backgroundColor: '#0B1A2E' }}>
+          <SidebarHeader className="border-b border-white/10 p-6">
             <div className="flex items-center gap-3">
-              <div className="w-11 h-11 bg-gradient-to-br from-blue-900 via-blue-700 to-blue-600 rounded-xl flex items-center justify-center shadow-xl">
-                <Scale className="w-6 h-6 text-amber-300" />
+              <div className="w-12 h-12 bg-gradient-to-br from-[#1E40AF] to-[#3B82F6] rounded-2xl flex items-center justify-center shadow-xl animate-float">
+                <Scale className="w-7 h-7 text-white" />
               </div>
               <div>
-                <h2 className="font-bold text-lg bg-gradient-to-r from-blue-900 to-blue-600 bg-clip-text text-transparent">SIHDD</h2>
-                <p className="text-xs text-slate-500 font-medium">Sistema de Inventário</p>
+                <h2 className="font-bold text-xl text-white tracking-tight">SIHDD</h2>
+                <p className="text-xs text-blue-200 font-medium">Sistema Inteligente de Harmonização</p>
               </div>
             </div>
           </SidebarHeader>
           
           <SidebarContent className="p-3">
             <SidebarGroup>
-              <SidebarGroupLabel className="text-xs font-semibold text-slate-500 uppercase tracking-wider px-3 py-2">
-                Navegação Principal
+              <SidebarGroupLabel className="text-xs font-semibold text-blue-200 uppercase tracking-wider px-3 py-2 mb-2">
+                Módulos Principais
               </SidebarGroupLabel>
               <SidebarGroupContent>
                 <SidebarMenu>
@@ -114,25 +158,25 @@ export default function Layout({ children, currentPageName }) {
                           asChild 
                           className={`
                             group relative overflow-hidden
-                            hover:bg-gradient-to-r hover:from-blue-50 hover:to-indigo-50 
+                            hover:bg-white/10
                             transition-all duration-300 rounded-xl mb-1
-                            ${isActive ? 'nav-item-active font-semibold text-blue-900' : 'text-slate-700 hover:text-blue-900'}
+                            ${isActive ? 'nav-item-active text-white' : 'text-blue-100 hover:text-white'}
                           `}
                         >
-                          <Link to={item.url} className="flex items-center gap-3 px-3 py-2.5">
+                          <Link to={item.url} className="flex items-center gap-3 px-3 py-3">
                             <div className={`
-                              w-8 h-8 rounded-lg flex items-center justify-center
+                              w-10 h-10 rounded-xl flex items-center justify-center
                               transition-all duration-300
                               ${isActive 
-                                ? 'bg-gradient-to-br from-blue-600 to-blue-700 shadow-lg scale-110' 
-                                : 'bg-slate-100 group-hover:bg-blue-100 group-hover:scale-105'
+                                ? 'bg-gradient-to-br from-[#1E40AF] to-[#3B82F6] shadow-lg scale-110' 
+                                : 'bg-white/5 group-hover:bg-white/10 group-hover:scale-105'
                               }
                             `}>
-                              <item.icon className={`w-4 h-4 ${isActive ? 'text-white' : 'text-slate-600 group-hover:text-blue-600'}`} />
+                              <item.icon className={`w-5 h-5 ${isActive ? 'text-white' : 'text-blue-200 group-hover:text-white'}`} />
                             </div>
-                            <span className="flex-1">{item.title}</span>
+                            <span className="flex-1 font-medium">{item.title}</span>
                             {isActive && (
-                              <div className="w-2 h-2 rounded-full bg-blue-600 animate-pulse" />
+                              <div className="w-2 h-2 rounded-full bg-[#3B82F6] animate-pulse shadow-lg shadow-blue-500/50" />
                             )}
                           </Link>
                         </SidebarMenuButton>
@@ -143,43 +187,51 @@ export default function Layout({ children, currentPageName }) {
               </SidebarGroupContent>
             </SidebarGroup>
 
-            <SidebarGroup className="mt-4">
-              <SidebarGroupLabel className="text-xs font-semibold text-slate-500 uppercase tracking-wider px-3 py-2">
+            <SidebarGroup className="mt-6">
+              <SidebarGroupLabel className="text-xs font-semibold text-blue-200 uppercase tracking-wider px-3 py-2 mb-2">
                 Assistência IA
               </SidebarGroupLabel>
               <SidebarGroupContent>
                 <button
                   onClick={() => setShowChat(!showChat)}
-                  className="w-full group flex items-center gap-3 px-3 py-2.5 text-slate-700 hover:text-purple-900 hover:bg-gradient-to-r hover:from-purple-50 hover:to-pink-50 transition-all duration-300 rounded-xl relative overflow-hidden"
+                  className="w-full group flex items-center gap-3 px-3 py-3 text-blue-100 hover:text-white hover:bg-white/10 transition-all duration-300 rounded-xl relative overflow-hidden"
                 >
-                  <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-purple-100 to-pink-100 flex items-center justify-center group-hover:scale-105 transition-transform duration-300">
-                    <MessageCircle className="w-4 h-4 text-purple-600" />
+                  <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center group-hover:scale-105 transition-transform duration-300 shadow-lg">
+                    <Brain className="w-5 h-5 text-white" />
                   </div>
-                  <span className="font-medium">Assistente Virtual</span>
-                  <div className="absolute right-2 top-2 w-2 h-2 rounded-full bg-green-500 animate-pulse" />
+                  <span className="font-medium flex-1">RAG Tributário</span>
+                  <div className="w-2 h-2 rounded-full bg-[#10B981] animate-pulse shadow-lg shadow-green-500/50" />
                 </button>
               </SidebarGroupContent>
             </SidebarGroup>
           </SidebarContent>
 
-          <SidebarFooter className="border-t border-slate-200/80 p-4">
-            <div className="flex items-center gap-3 p-2 rounded-xl bg-gradient-to-r from-slate-50 to-blue-50">
-              <div className="w-10 h-10 bg-gradient-to-br from-blue-900 to-blue-700 rounded-full flex items-center justify-center shadow-md">
+          <SidebarFooter className="border-t border-white/10 p-4">
+            <div className="flex items-center gap-3 p-3 rounded-xl bg-white/5 hover:bg-white/10 transition-colors cursor-pointer">
+              <div className="w-10 h-10 bg-gradient-to-br from-[#3B82F6] to-[#1E40AF] rounded-full flex items-center justify-center shadow-lg">
                 <span className="text-white font-bold text-sm">A</span>
               </div>
               <div className="flex-1 min-w-0">
-                <p className="font-semibold text-slate-900 text-sm truncate">Advogado</p>
-                <p className="text-xs text-slate-500 truncate">Gestão de Inventários</p>
+                <p className="font-semibold text-white text-sm truncate">Advogado</p>
+                <p className="text-xs text-blue-200 truncate">Gestão Inteligente</p>
               </div>
+              <Settings className="w-4 h-4 text-blue-200 opacity-0 group-hover:opacity-100 transition-opacity" />
             </div>
           </SidebarFooter>
         </Sidebar>
 
+        {/* Main Content */}
         <main className="flex-1 flex flex-col relative">
-          <header className="bg-white/80 backdrop-blur-sm border-b border-slate-200 px-6 py-4 md:hidden sticky top-0 z-10">
+          {/* Top Bar Mobile */}
+          <header className="glassmorphism border-b border-slate-200 px-6 py-4 md:hidden sticky top-0 z-10 shadow-sm">
             <div className="flex items-center gap-4">
               <SidebarTrigger className="hover:bg-slate-100 p-2 rounded-lg transition-colors duration-200" />
-              <h1 className="text-xl font-bold bg-gradient-to-r from-blue-900 to-blue-600 bg-clip-text text-transparent">SIHDD</h1>
+              <div className="flex items-center gap-2">
+                <div className="w-8 h-8 bg-gradient-to-br from-[#1E40AF] to-[#3B82F6] rounded-lg flex items-center justify-center">
+                  <Scale className="w-5 h-5 text-white" />
+                </div>
+                <h1 className="text-lg font-bold text-[#0B1A2E]">SIHDD</h1>
+              </div>
             </div>
           </header>
 
@@ -187,28 +239,28 @@ export default function Layout({ children, currentPageName }) {
             {children}
           </div>
 
-          {/* Floating Chat Button with Animation */}
+          {/* Floating IA Button */}
           <button
             onClick={() => setShowChat(!showChat)}
-            className="fixed bottom-6 right-6 w-16 h-16 bg-gradient-to-br from-purple-600 via-blue-600 to-blue-700 rounded-full shadow-2xl flex items-center justify-center hover:scale-110 transition-all duration-300 z-50 animate-float animate-pulse-glow group"
+            className="fixed bottom-6 right-6 w-16 h-16 bg-gradient-to-br from-[#1E40AF] via-[#3B82F6] to-purple-600 rounded-full shadow-2xl flex items-center justify-center hover:scale-110 transition-all duration-300 z-50 animate-float animate-pulse-glow group"
           >
-            <MessageCircle className="w-7 h-7 text-white group-hover:scale-110 transition-transform" />
-            <div className="absolute -top-1 -right-1 w-4 h-4 bg-green-500 rounded-full border-2 border-white animate-pulse" />
+            <Brain className="w-8 h-8 text-white group-hover:scale-110 transition-transform" />
+            <div className="absolute -top-1 -right-1 w-4 h-4 bg-[#10B981] rounded-full border-2 border-white animate-pulse" />
           </button>
 
-          {/* Enhanced Chat Widget */}
+          {/* Chat Widget */}
           {showChat && (
-            <div className="fixed bottom-28 right-6 w-96 h-[600px] bg-white rounded-2xl shadow-2xl border border-slate-200 z-50 flex flex-col overflow-hidden animate-in slide-in-from-bottom-4 duration-300">
-              <div className="bg-gradient-to-r from-purple-600 via-blue-600 to-blue-700 p-4 flex items-center justify-between">
+            <div className="fixed bottom-28 right-6 w-96 h-[600px] glassmorphism rounded-2xl shadow-2xl border border-slate-200 z-50 flex flex-col overflow-hidden animate-in slide-in-from-bottom-4 duration-300">
+              <div className="bg-gradient-to-r from-[#0B1A2E] via-[#1E40AF] to-[#3B82F6] p-4 flex items-center justify-between">
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center animate-pulse">
-                    <MessageCircle className="w-5 h-5 text-white" />
+                    <Brain className="w-5 h-5 text-white" />
                   </div>
                   <div>
-                    <h3 className="font-semibold text-white">Assistente SIHDD</h3>
+                    <h3 className="font-semibold text-white">RAG Tributário</h3>
                     <div className="flex items-center gap-2">
-                      <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
-                      <p className="text-xs text-blue-100">Online • Especialista em Inventários</p>
+                      <div className="w-2 h-2 bg-[#10B981] rounded-full animate-pulse" />
+                      <p className="text-xs text-blue-100">IA Online • ITCMD/SE 2020-2025</p>
                     </div>
                   </div>
                 </div>
@@ -223,7 +275,7 @@ export default function Layout({ children, currentPageName }) {
               <iframe
                 src={createPageUrl("ChatAssistente")}
                 className="flex-1 w-full border-0"
-                title="Assistente Virtual"
+                title="RAG Tributário"
               />
             </div>
           )}

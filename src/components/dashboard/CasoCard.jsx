@@ -7,29 +7,29 @@ import { createPageUrl } from "@/utils";
 import { ArrowRight, Calendar, TrendingUp, Clock } from "lucide-react";
 
 const statusConfig = {
-  'coleta_dados': { label: 'Coleta de Dados', color: 'bg-blue-100 text-blue-700 border-blue-200' },
-  'calculo_itcmd': { label: 'Cálculo ITCMD', color: 'bg-purple-100 text-purple-700 border-purple-200' },
-  'geracao_dae': { label: 'Geração DAE', color: 'bg-amber-100 text-amber-700 border-amber-200' },
-  'aguardando_pagamento': { label: 'Aguardando Pagamento', color: 'bg-orange-100 text-orange-700 border-orange-200' },
-  'em_analise_sefaz': { label: 'Análise SEFAZ', color: 'bg-indigo-100 text-indigo-700 border-indigo-200' },
-  'certidao_emitida': { label: 'Certidão Emitida', color: 'bg-emerald-100 text-emerald-700 border-emerald-200' },
-  'finalizado': { label: 'Finalizado', color: 'bg-green-100 text-green-700 border-green-200' },
+  'coleta_dados': { label: 'Coleta de Dados', color: 'bg-blue-100 text-[#1E40AF] border-[#1E40AF]' },
+  'calculo_itcmd': { label: 'Cálculo ITCMD', color: 'bg-purple-100 text-purple-700 border-purple-700' },
+  'geracao_dae': { label: 'Geração DAE', color: 'bg-amber-100 text-[#F59E0B] border-[#F59E0B]' },
+  'aguardando_pagamento': { label: 'Aguardando Pagamento', color: 'bg-orange-100 text-orange-700 border-orange-700' },
+  'em_analise_sefaz': { label: 'Análise SEFAZ', color: 'bg-indigo-100 text-indigo-700 border-indigo-700' },
+  'certidao_emitida': { label: 'Certidão Emitida', color: 'bg-emerald-100 text-[#10B981] border-[#10B981]' },
+  'finalizado': { label: 'Finalizado', color: 'bg-green-100 text-green-700 border-green-700' },
 };
 
 export default function CasoCard({ caso }) {
   const status = statusConfig[caso.status] || statusConfig['coleta_dados'];
 
   return (
-    <Card className="border-slate-200 shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 group overflow-hidden relative">
+    <Card className="glassmorphism border border-slate-200 card-shadow-hover group overflow-hidden relative">
       <div className="absolute inset-0 bg-gradient-to-br from-blue-50/50 to-indigo-50/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
       
-      <CardHeader className="border-b border-slate-100 pb-4 relative">
+      <CardHeader className="border-b border-slate-200 pb-4 relative">
         <div className="flex justify-between items-start">
           <div className="flex-1">
-            <CardTitle className="text-xl font-bold text-blue-900 mb-2 group-hover:text-blue-600 transition-colors">
+            <CardTitle className="text-xl font-bold text-[#0B1A2E] mb-2 group-hover:text-[#1E40AF] transition-colors">
               {caso.nome_falecido}
             </CardTitle>
-            <Badge variant="outline" className={`${status.color} border font-medium`}>
+            <Badge variant="outline" className={`${status.color} border-2 font-semibold`}>
               {status.label}
             </Badge>
           </div>
@@ -38,38 +38,38 @@ export default function CasoCard({ caso }) {
 
       <CardContent className="pt-6 space-y-4 relative">
         <div className="grid grid-cols-2 gap-4">
-          <div className="p-3 bg-gradient-to-br from-emerald-50 to-green-50 rounded-xl border border-emerald-100">
+          <div className="p-4 bg-gradient-to-br from-emerald-50 to-green-50 rounded-xl border-2 border-[#10B981]/20">
             <div className="flex items-center gap-2 mb-1">
-              <TrendingUp className="w-4 h-4 text-emerald-600" />
-              <p className="text-xs font-medium text-emerald-700">Patrimônio</p>
+              <TrendingUp className="w-4 h-4 text-[#10B981]" />
+              <p className="text-xs font-bold text-[#10B981] uppercase tracking-wider">Patrimônio</p>
             </div>
-            <p className="text-lg font-bold text-emerald-900">
+            <p className="text-lg font-bold text-[#111827]">
               R$ {(caso.valor_patrimonio || 0).toLocaleString('pt-BR')}
             </p>
           </div>
 
-          <div className="p-3 bg-gradient-to-br from-purple-50 to-indigo-50 rounded-xl border border-purple-100">
+          <div className="p-4 bg-gradient-to-br from-purple-50 to-indigo-50 rounded-xl border-2 border-purple-500/20">
             <div className="flex items-center gap-2 mb-1">
               <TrendingUp className="w-4 h-4 text-purple-600" />
-              <p className="text-xs font-medium text-purple-700">ITCMD</p>
+              <p className="text-xs font-bold text-purple-600 uppercase tracking-wider">ITCMD</p>
             </div>
-            <p className="text-lg font-bold text-purple-900">
+            <p className="text-lg font-bold text-[#111827]">
               R$ {(caso.valor_itcmd || 0).toLocaleString('pt-BR')}
             </p>
           </div>
         </div>
 
         {caso.prazo_dias && (
-          <div className="flex items-center gap-2 p-3 bg-amber-50 border border-amber-200 rounded-xl">
-            <Clock className="w-4 h-4 text-amber-600" />
-            <p className="text-sm font-medium text-amber-900">
+          <div className="flex items-center gap-2 p-3 bg-gradient-to-r from-amber-50 to-orange-50 border-2 border-[#F59E0B]/20 rounded-xl">
+            <Clock className="w-4 h-4 text-[#F59E0B]" />
+            <p className="text-sm font-bold text-[#111827]">
               {caso.prazo_dias} dias restantes
             </p>
           </div>
         )}
 
         <Link to={createPageUrl(`DetalheCaso?id=${caso.id}`)}>
-          <Button className="w-full bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white shadow-md hover:shadow-xl transition-all duration-300 group-hover:scale-105">
+          <Button className="w-full bg-gradient-to-r from-[#1E40AF] to-[#3B82F6] hover:from-[#3B82F6] hover:to-[#1E40AF] text-white shadow-lg hover:shadow-xl transition-all duration-300 group-hover:scale-105 font-semibold">
             Acompanhar Processo
             <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
           </Button>
