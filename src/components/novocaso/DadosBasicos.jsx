@@ -1,9 +1,10 @@
+
 import React, { useState } from 'react';
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { AlertCircle } from "lucide-react";
-import { validarCPF, formatarCPF, validarData, validarValor, validarObrigatorio } from "@/utils/validations";
+import { validarCPF, formatarCPF, validarData, validarValor, validarObrigatorio } from "../../utils/validations";
 
 export default function DadosBasicos({ formData, setFormData }) {
   const [erros, setErros] = useState({});

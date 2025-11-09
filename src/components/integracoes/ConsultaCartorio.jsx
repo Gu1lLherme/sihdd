@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -7,7 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { Home, Search, CheckCircle2, Loader2, AlertCircle } from "lucide-react";
 import { base44 } from "@/api/base44Client";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { validarMatricula } from "@/utils/validations";
+import { validarMatricula } from "../../utils/validations";
 
 export default function ConsultaCartorio() {
   const [matricula, setMatricula] = useState("");
