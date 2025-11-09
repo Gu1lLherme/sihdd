@@ -6,11 +6,16 @@ import { PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip } from 'recha
 const COLORS = ['#1e40af', '#3b82f6', '#60a5fa', '#93c5fd', '#dbeafe'];
 
 export default function Resumo({ formData }) {
-  const chartData = formData.herdeiros.map((h, index) => ({
-    name: h.nome,
-    value: h.valor_parte,
-    percentual: h.percentual,
-  }));
+  const itcmdTotal = (formData.valor_patrimonio * formData.aliquota) / 100;
+  
+  const chartData = formData.herdeiros.map((h, index) => {
+    const valorParte = (formData.valor_patrimonio * h.percentual_partilha) / 100;
+    return {
+      name: h.nome,
+      value: valorParte,
+      percentual: h.percentual_partilha,
+    };
+  });
 
   return (
     <div className="space-y-6">
@@ -40,10 +45,14 @@ export default function Resumo({ formData }) {
               <span className="font-semibold">{formData.cpf_falecido || "-"}</span>
             </div>
             <div className="flex justify-between">
+              <span className="text-slate-600">Data Óbito:</span>
+              <span className="font-semibold">{formData.data_obito || "-"}</span>
+            </div>
+            <div className="flex justify-between">
               <span className="text-slate-600">Cônjuge:</span>
               <span className="font-semibold">{formData.conjuge_nome || "-"}</span>
             </div>
-            <div className="flex justify-between">
+            <div className="flex justify-between pt-2 border-t">
               <span className="text-slate-600">Patrimônio Total:</span>
               <span className="font-semibold text-green-600">
                 R$ {formData.valor_patrimonio.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
@@ -73,7 +82,7 @@ export default function Resumo({ formData }) {
             <div className="flex justify-between pt-2 border-t border-slate-200">
               <span className="text-slate-900 font-semibold">ITCMD Total:</span>
               <span className="font-bold text-lg text-blue-900">
-                R$ {((formData.valor_patrimonio * formData.aliquota) / 100).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                R$ {itcmdTotal.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
               </span>
             </div>
           </CardContent>
@@ -92,20 +101,23 @@ export default function Resumo({ formData }) {
             <p className="text-slate-500 text-center py-4">Nenhum herdeiro cadastrado</p>
           ) : (
             <div className="space-y-3">
-              {formData.herdeiros.map((herdeiro, index) => (
-                <div key={index} className="flex justify-between items-center p-3 bg-slate-50 rounded-lg">
-                  <div>
-                    <p className="font-semibold">{herdeiro.nome}</p>
-                    <p className="text-sm text-slate-600">{herdeiro.tipo.replace('_', ' ')}</p>
+              {formData.herdeiros.map((herdeiro, index) => {
+                const valorParte = (formData.valor_patrimonio * herdeiro.percentual_partilha) / 100;
+                return (
+                  <div key={index} className="flex justify-between items-center p-3 bg-slate-50 rounded-lg">
+                    <div>
+                      <p className="font-semibold">{herdeiro.nome}</p>
+                      <p className="text-sm text-slate-600 capitalize">{herdeiro.parentesco}</p>
+                    </div>
+                    <div className="text-right">
+                      <p className="font-semibold text-blue-900">{herdeiro.percentual_partilha}%</p>
+                      <p className="text-sm text-slate-600">
+                        R$ {valorParte.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                      </p>
+                    </div>
                   </div>
-                  <div className="text-right">
-                    <p className="font-semibold text-blue-900">{herdeiro.percentual}%</p>
-                    <p className="text-sm text-slate-600">
-                      R$ {herdeiro.valor_parte.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
-                    </p>
-                  </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           )}
         </CardContent>
@@ -159,7 +171,7 @@ export default function Resumo({ formData }) {
                 <div key={index} className="flex justify-between items-center p-3 bg-slate-50 rounded-lg">
                   <div>
                     <p className="font-semibold">{bem.descricao}</p>
-                    <p className="text-sm text-slate-600">{bem.tipo.replace('_', ' ')}</p>
+                    <p className="text-sm text-slate-600 capitalize">{bem.tipo.replace('_', ' ')}</p>
                   </div>
                   <p className="font-semibold text-green-600">
                     R$ {bem.valor.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
