@@ -7,7 +7,7 @@ import { Card } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Plus, Trash2, Home, Car, Building2, AlertCircle } from "lucide-react";
-import { validarValor, validarObrigatorio } from "@/utils/validations";
+import { validarValor, validarObrigatorio } from "@/utils/validations.js";
 
 const tipoIcons = {
   imovel: Home,
@@ -30,7 +30,7 @@ export default function Bens({ formData, setFormData }) {
       identificacao: '',
       observacoes: ''
     }];
-    setFormData(prev => ({ ...prev, bens: novosBBens }));
+    setFormData(prev => ({ ...prev, bens: novosBens }));
   };
 
   const removerBem = (index) => {
@@ -39,7 +39,12 @@ export default function Bens({ formData, setFormData }) {
     
     // Limpar erros do bem removido
     const novosErros = { ...erros };
-    delete novosErros[`bem_${index}`];
+    // Remove all errors related to the removed item's index
+    Object.keys(novosErros).forEach(key => {
+      if (key.startsWith(`bem_${index}_`)) {
+        delete novosErros[key];
+      }
+    });
     setErros(novosErros);
   };
 
@@ -70,6 +75,12 @@ export default function Bens({ formData, setFormData }) {
     
     if (!validacao.valido) {
       setErros(prev => ({ ...prev, [`bem_${index}_${campo}`]: validacao.erro }));
+    } else {
+      setErros(prev => {
+        const novosErros = { ...prev };
+        delete novosErros[`bem_${index}_${campo}`];
+        return novosErros;
+      });
     }
     
     return validacao.valido;
