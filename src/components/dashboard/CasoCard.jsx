@@ -1,82 +1,81 @@
 import React from 'react';
-import { Card, CardContent } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, User, Calendar, DollarSign, Clock } from "lucide-react";
-import { Link } from "react-router-dom";
-import { createPageUrl } from "@/utils";
+import { Badge } from "@/components/ui/badge";
+import { ArrowRight, Clock, DollarSign } from "lucide-react";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
+import { Link } from "react-router-dom";
+import { createPageUrl } from "@/utils";
 
 const statusConfig = {
-  rascunho: { label: "Rascunho", color: "bg-slate-100 text-slate-700 border-slate-300" },
-  em_analise: { label: "Em Análise na SEFAZ", color: "bg-amber-100 text-amber-700 border-amber-300" },
-  aguardando_pagamento: { label: "Aguardando Pagamento", color: "bg-orange-100 text-orange-700 border-orange-300" },
-  pago: { label: "Pago", color: "bg-blue-100 text-blue-700 border-blue-300" },
-  certidao_emitida: { label: "Certidão Emitida", color: "bg-green-100 text-green-700 border-green-300" },
-  concluido: { label: "Concluído", color: "bg-emerald-100 text-emerald-700 border-emerald-300" },
+  coleta_dados: { label: "Coleta de Dados", color: "bg-slate-500", emoji: "📝" },
+  calculo_itcmd: { label: "Cálculo ITCMD", color: "bg-blue-500", emoji: "🧮" },
+  geracao_dae: { label: "Geração DAE", color: "bg-indigo-500", emoji: "📄" },
+  aguardando_pagamento: { label: "Aguardando Pagamento", color: "bg-amber-500", emoji: "⏳" },
+  em_analise_sefaz: { label: "Em Análise SEFAZ", color: "bg-yellow-500", emoji: "🔍" },
+  certidao_emitida: { label: "Certidão Emitida", color: "bg-green-500", emoji: "✅" },
+  finalizado: { label: "Finalizado", color: "bg-emerald-500", emoji: "🎉" },
 };
 
 export default function CasoCard({ caso }) {
-  const status = statusConfig[caso.status] || statusConfig.rascunho;
+  const status = statusConfig[caso.status] || statusConfig.coleta_dados;
 
   return (
-    <Card className="border-slate-200 hover:shadow-lg transition-all duration-200 bg-gradient-to-br from-white to-slate-50">
-      <CardContent className="p-6">
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+    <Card className="bg-white border-none shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1 overflow-hidden">
+      <div className={`h-2 bg-gradient-to-r ${status.color === 'bg-slate-500' ? 'from-slate-400 to-slate-600' : status.color === 'bg-blue-500' ? 'from-blue-400 to-blue-600' : status.color === 'bg-amber-500' ? 'from-amber-400 to-amber-600' : status.color === 'bg-green-500' ? 'from-green-400 to-green-600' : 'from-emerald-400 to-emerald-600'}`} />
+      
+      <CardHeader className="pb-3">
+        <div className="flex items-start justify-between">
           <div className="flex-1">
-            <div className="flex items-start gap-3 mb-3">
-              <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-blue-900 to-blue-700 flex items-center justify-center shadow-md">
-                <User className="w-6 h-6 text-amber-400" />
-              </div>
-              <div className="flex-1">
-                <h3 className="text-lg font-bold text-slate-900 mb-1">
-                  Inventário — {caso.falecido_nome}
-                </h3>
-                <Badge variant="outline" className={`${status.color} border font-medium`}>
-                  {status.label}
-                </Badge>
-              </div>
+            <div className="flex items-center gap-2 mb-2">
+              <span className="text-2xl">{status.emoji}</span>
+              <h3 className="text-xl font-bold text-[#1e3a5f]">
+                Inventário — {caso.nome_falecido}
+              </h3>
             </div>
+            <Badge className={`${status.color} text-white border-none`}>
+              {status.label}
+            </Badge>
+          </div>
+        </div>
+      </CardHeader>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mt-4">
-              <div className="flex items-center gap-2 text-sm">
-                <DollarSign className="w-4 h-4 text-slate-500" />
-                <div>
-                  <p className="text-xs text-slate-500">Patrimônio</p>
-                  <p className="font-semibold text-slate-900">
-                    R$ {(caso.patrimonio_total || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
-                  </p>
-                </div>
-              </div>
-
-              <div className="flex items-center gap-2 text-sm">
-                <DollarSign className="w-4 h-4 text-slate-500" />
-                <div>
-                  <p className="text-xs text-slate-500">ITCMD Estimado</p>
-                  <p className="font-semibold text-slate-900">
-                    R$ {(caso.itcmd_total || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
-                  </p>
-                </div>
-              </div>
-
-              <div className="flex items-center gap-2 text-sm">
-                <Clock className="w-4 h-4 text-slate-500" />
-                <div>
-                  <p className="text-xs text-slate-500">Prazo</p>
-                  <p className="font-semibold text-slate-900">{caso.prazo_dias || 30} dias</p>
-                </div>
-              </div>
-            </div>
+      <CardContent className="space-y-4">
+        <div className="grid grid-cols-2 gap-4">
+          <div className="space-y-1">
+            <p className="text-xs text-slate-500 uppercase tracking-wider font-medium">
+              Valor Patrimonial
+            </p>
+            <p className="text-lg font-bold text-[#1e3a5f] flex items-center gap-1">
+              <DollarSign className="w-4 h-4" />
+              {caso.valor_patrimonio?.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
+            </p>
           </div>
 
-          <Link to={createPageUrl(`DetalhesCaso?id=${caso.id}`)}>
-            <Button className="bg-blue-900 hover:bg-blue-800 text-white shadow-md">
-              Acompanhar Processo
-              <ArrowRight className="w-4 h-4 ml-2" />
-            </Button>
-          </Link>
+          <div className="space-y-1">
+            <p className="text-xs text-slate-500 uppercase tracking-wider font-medium">
+              ITCMD Estimado
+            </p>
+            <p className="text-lg font-bold text-amber-600">
+              {caso.valor_itcmd?.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }) || 'A calcular'}
+            </p>
+          </div>
         </div>
+
+        {caso.prazo_dias && (
+          <div className="flex items-center gap-2 text-sm text-slate-600 bg-slate-50 p-3 rounded-lg">
+            <Clock className="w-4 h-4" />
+            <span>Prazo: <span className="font-semibold">{caso.prazo_dias} dias</span></span>
+          </div>
+        )}
+
+        <Link to={createPageUrl(`DetalheCaso?id=${caso.id}`)}>
+          <Button className="w-full bg-gradient-to-r from-[#1e3a5f] to-[#2d5a8f] hover:from-[#2d5a8f] hover:to-[#1e3a5f] text-white shadow-md hover:shadow-lg transition-all duration-300">
+            Acompanhar Processo
+            <ArrowRight className="w-4 h-4 ml-2" />
+          </Button>
+        </Link>
       </CardContent>
     </Card>
   );

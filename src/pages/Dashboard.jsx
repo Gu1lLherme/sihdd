@@ -4,80 +4,135 @@ import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
-import { Plus, FileText, AlertCircle, Clock, CheckCircle2, Briefcase } from "lucide-react";
+import { Plus, TrendingUp, Clock, CheckCircle2, AlertCircle } from "lucide-react";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 
 import CasoCard from "../components/dashboard/CasoCard";
-import StatsOverview from "../components/dashboard/StatsOverview";
+import StatsCards from "../components/dashboard/StatsCards";
+import CasosTable from "../components/dashboard/CasosTable";
 
 export default function Dashboard() {
   const { data: casos, isLoading } = useQuery({
     queryKey: ['casos'],
-    queryFn: () => base44.entities.Caso.list('-created_date'),
+    queryFn: () => base44.entities.Caso.list("-created_date"),
     initialData: [],
   });
 
-  const stats = {
-    total: casos.length,
-    emAnalise: casos.filter(c => c.status === 'em_analise').length,
-    aguardandoPagamento: casos.filter(c => c.status === 'aguardando_pagamento').length,
-    concluidos: casos.filter(c => c.status === 'concluido').length,
-    valorTotal: casos.reduce((sum, c) => sum + (c.patrimonio_total || 0), 0),
-    itcmdTotal: casos.reduce((sum, c) => sum + (c.itcmd_total || 0), 0),
-  };
+  const { data: herdeiros } = useQuery({
+    queryKey: ['herdeiros'],
+    queryFn: () => base44.entities.Herdeiro.list(),
+    initialData: [],
+  });
+
+  const { data: guias } = useQuery({
+    queryKey: ['guias'],
+    queryFn: () => base44.entities.GuiaDAE.list(),
+    initialData: [],
+  });
+
+  const totalCasos = casos.length;
+  const casosAtivos = casos.filter(c => c.status !== 'finalizado').length;
+  const totalPatrimonio = casos.reduce((sum, c) => sum + (c.valor_patrimonio || 0), 0);
+  const totalITCMD = casos.reduce((sum, c) => sum + (c.valor_itcmd || 0), 0);
+
+  const casosRecentes = casos.slice(0, 4);
 
   return (
-    <div className="p-4 md:p-8 min-h-screen">
+    <div className="p-4 md:p-8 bg-gradient-to-br from-slate-50 to-blue-50 min-h-screen">
       <div className="max-w-7xl mx-auto">
-        {/* Header */}
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
           <div>
-            <h1 className="text-3xl font-bold text-blue-900 mb-2">Painel de Casos</h1>
-            <p className="text-slate-600">Gerencie todos os inventários em um só lugar</p>
+            <h1 className="text-3xl md:text-4xl font-bold text-[#1e3a5f] mb-2">
+              Gerencie todos os inventários
+            </h1>
+            <p className="text-slate-600 text-lg">em um só lugar</p>
           </div>
-          <Link to={createPageUrl("NovoCaso")}>
-            <Button className="bg-blue-900 hover:bg-blue-800 text-white shadow-lg">
-              <Plus className="w-4 h-4 mr-2" />
+          <Link to={createPageUrl("NovoCaso")} className="w-full md:w-auto">
+            <Button className="w-full bg-gradient-to-r from-[#1e3a5f] to-[#2d5a8f] hover:from-[#2d5a8f] hover:to-[#1e3a5f] text-white shadow-lg hover:shadow-xl transition-all duration-300">
+              <Plus className="w-5 h-5 mr-2" />
               Novo Caso
             </Button>
           </Link>
         </div>
 
-        {/* Stats Overview */}
-        <StatsOverview stats={stats} />
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
+          <StatsCards 
+            title="Total de Casos" 
+            value={totalCasos}
+            icon={CheckCircle2}
+            gradient="from-blue-500 to-blue-600"
+            iconBg="bg-blue-100"
+            iconColor="text-blue-600"
+          />
+          <StatsCards 
+            title="Casos Ativos" 
+            value={casosAtivos}
+            icon={Clock}
+            gradient="from-amber-500 to-amber-600"
+            iconBg="bg-amber-100"
+            iconColor="text-amber-600"
+          />
+          <StatsCards 
+            title="Patrimônio Total" 
+            value={`R$ ${totalPatrimonio.toLocaleString('pt-BR')}`}
+            icon={TrendingUp}
+            gradient="from-emerald-500 to-emerald-600"
+            iconBg="bg-emerald-100"
+            iconColor="text-emerald-600"
+          />
+          <StatsCards 
+            title="ITCMD Total" 
+            value={`R$ ${totalITCMD.toLocaleString('pt-BR')}`}
+            icon={AlertCircle}
+            gradient="from-purple-500 to-purple-600"
+            iconBg="bg-purple-100"
+            iconColor="text-purple-600"
+          />
+        </div>
 
-        {/* Lista de Casos */}
-        <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-6 mt-6">
-          <div className="flex items-center gap-2 mb-6">
-            <Briefcase className="w-5 h-5 text-blue-900" />
-            <h2 className="text-xl font-bold text-slate-900">Casos Ativos</h2>
-          </div>
-
+        <div className="mb-8">
+          <h2 className="text-2xl font-bold text-[#1e3a5f] mb-6">Casos Recentes</h2>
+          
           {isLoading ? (
-            <div className="text-center py-12">
-              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-900 mx-auto"></div>
-              <p className="text-slate-500 mt-4">Carregando casos...</p>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {[1, 2, 3, 4].map((i) => (
+                <div key={i} className="h-64 bg-white rounded-2xl animate-pulse" />
+              ))}
             </div>
           ) : casos.length === 0 ? (
-            <div className="text-center py-12">
-              <FileText className="w-16 h-16 text-slate-300 mx-auto mb-4" />
-              <p className="text-slate-500 mb-4">Nenhum caso cadastrado ainda</p>
+            <div className="bg-white rounded-2xl shadow-lg p-12 text-center">
+              <div className="w-20 h-20 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <CheckCircle2 className="w-10 h-10 text-slate-400" />
+              </div>
+              <h3 className="text-xl font-semibold text-slate-700 mb-2">
+                Nenhum caso cadastrado
+              </h3>
+              <p className="text-slate-500 mb-6">
+                Comece criando seu primeiro caso de inventário
+              </p>
               <Link to={createPageUrl("NovoCaso")}>
-                <Button variant="outline">
+                <Button className="bg-gradient-to-r from-[#1e3a5f] to-[#2d5a8f] hover:from-[#2d5a8f] hover:to-[#1e3a5f]">
                   <Plus className="w-4 h-4 mr-2" />
                   Criar Primeiro Caso
                 </Button>
               </Link>
             </div>
           ) : (
-            <div className="grid gap-4">
-              {casos.map((caso) => (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {casosRecentes.map((caso) => (
                 <CasoCard key={caso.id} caso={caso} />
               ))}
             </div>
           )}
         </div>
+
+        {casos.length > 0 && (
+          <div>
+            <h2 className="text-2xl font-bold text-[#1e3a5f] mb-6">Todos os Casos</h2>
+            <CasosTable casos={casos} />
+          </div>
+        )}
       </div>
     </div>
   );
