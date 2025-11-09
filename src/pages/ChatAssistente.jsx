@@ -1,25 +1,23 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { base44 } from "@/api/base44Client";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
-import { Send, Loader2, ThumbsUp, ThumbsDown, BookOpen, Calculator, Clock, Scale } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
+import { Brain, Send, Sparkles, FileText, Calculator, BookOpen, Loader2 } from "lucide-react";
 
 const SUGGESTED_QUESTIONS = [
-  { text: "Como calcular o ITCMD em Sergipe?", icon: Calculator, category: "calculo" },
-  { text: "Qual o prazo para pagamento do ITCMD?", icon: Clock, category: "prazo" },
-  { text: "Quais documentos necessários para inventário?", icon: BookOpen, category: "procedimentos" },
-  { text: "Como funciona a partilha com viúva meeira?", icon: Scale, category: "legislacao" },
+  { text: "Qual a alíquota do ITCMD em Sergipe?", icon: Calculator, category: "itcmd" },
+  { text: "Como calcular o ITCMD de um inventário?", icon: Calculator, category: "calculo" },
+  { text: "Quais documentos são necessários para inventário?", icon: FileText, category: "procedimentos" },
+  { text: "Qual o prazo para pagamento do ITCMD?", icon: BookOpen, category: "prazo" },
 ];
 
 export default function ChatAssistente() {
   const [messages, setMessages] = useState([
     {
       role: "assistant",
-      content: "Olá! Sou o Assistente Virtual do SIHDD, especialista em direito sucessório e ITCMD. Como posso ajudá-lo hoje?",
-      timestamp: new Date(),
+      content: "👋 Olá! Sou o **RAG Tributário SIHDD**, especializado em legislação de ITCMD de Sergipe (2020-2025).\n\nPosso ajudá-lo com:\n- 📊 Cálculos de ITCMD\n- 📋 Procedimentos de inventário\n- ⚖️ Legislação tributária\n- 📝 Geração de documentos\n\nComo posso ajudar?"
     }
   ]);
   const [input, setInput] = useState("");
@@ -38,73 +36,57 @@ export default function ChatAssistente() {
 
   useEffect(() => {
     scrollToBottom();
-  }, [messages]);
+  }, [messages, isTyping]);
 
-  const sendMessageMutation = useMutation({
-    mutationFn: async (question) => {
-      const prompt = `Você é um assistente virtual especializado em direito sucessório brasileiro, especialmente em inventários e ITCMD (Imposto de Transmissão Causa Mortis e Doação) no estado de Sergipe.
+  const chatMutation = useMutation({
+    mutationFn: async (userMessage) => {
+      const prompt = `Você é um assistente jurídico especializado em ITCMD (Imposto sobre Transmissão Causa Mortis e Doação) do estado de Sergipe, Brasil, com conhecimento atualizado da legislação de 2020 a 2025.
 
-Seu papel é:
-- Orientar advogados sobre procedimentos de inventário
-- Explicar cálculos de ITCMD (alíquota de 4% em Sergipe)
-- Esclarecer sobre prazos e legislação
-- Ajudar com questões sobre partilha de bens
-- Orientar sobre documentação necessária
+Pergunta do usuário: ${userMessage}
 
-Responda de forma clara, profissional e objetiva. Se a pergunta for sobre legislação específica, cite os artigos quando aplicável.
+Forneça uma resposta clara, profissional e precisa, focando em:
+- Legislação aplicável de Sergipe
+- Cálculos quando necessário
+- Procedimentos práticos
+- Citação de artigos e leis quando relevante
 
-Pergunta do usuário: ${question}
-
-Forneça uma resposta completa e útil:`;
+Use markdown para formatar a resposta de forma clara e profissional.`;
 
       const response = await base44.integrations.Core.InvokeLLM({
         prompt: prompt,
         add_context_from_internet: false,
       });
 
+      await base44.entities.ChatMessage.create({
+        user_email: user?.email || "unknown",
+        message: userMessage,
+        response: response,
+        category: "itcmd"
+      });
+
       return response;
     },
-    onSuccess: (response, question) => {
-      setMessages(prev => [...prev, {
-        role: "assistant",
-        content: response,
-        timestamp: new Date(),
-      }]);
+    onSuccess: (response) => {
+      setMessages(prev => [...prev, { role: "assistant", content: response }]);
       setIsTyping(false);
-
-      // Salvar no histórico
-      base44.entities.ChatMessage.create({
-        user_email: user?.email || "unknown",
-        message: question,
-        response: response,
-        category: "geral",
-      });
     },
     onError: () => {
-      setMessages(prev => [...prev, {
-        role: "assistant",
-        content: "Desculpe, ocorreu um erro ao processar sua pergunta. Por favor, tente novamente.",
-        timestamp: new Date(),
-        error: true,
+      setMessages(prev => [...prev, { 
+        role: "assistant", 
+        content: "❌ Desculpe, ocorreu um erro ao processar sua solicitação. Tente novamente." 
       }]);
       setIsTyping(false);
-    },
+    }
   });
 
-  const handleSend = async () => {
+  const handleSend = () => {
     if (!input.trim()) return;
-
-    const userMessage = {
-      role: "user",
-      content: input,
-      timestamp: new Date(),
-    };
-
-    setMessages(prev => [...prev, userMessage]);
+    
+    const userMessage = input.trim();
+    setMessages(prev => [...prev, { role: "user", content: userMessage }]);
     setInput("");
     setIsTyping(true);
-
-    sendMessageMutation.mutate(input);
+    chatMutation.mutate(userMessage);
   };
 
   const handleSuggestedQuestion = (question) => {
@@ -119,93 +101,152 @@ Forneça uma resposta completa e útil:`;
   };
 
   return (
-    <div className="flex flex-col h-full bg-gradient-to-br from-slate-50 to-blue-50">
-      {/* Messages Area */}
-      <div className="flex-1 overflow-y-auto p-4 space-y-4">
-        {messages.length === 1 && (
-          <div className="space-y-3 mb-6">
-            <p className="text-sm text-slate-600 font-medium">Perguntas frequentes:</p>
-            <div className="grid grid-cols-1 gap-2">
-              {SUGGESTED_QUESTIONS.map((q, index) => (
-                <button
-                  key={index}
-                  onClick={() => handleSuggestedQuestion(q.text)}
-                  className="flex items-center gap-3 p-3 bg-white border border-slate-200 rounded-lg hover:border-blue-300 hover:bg-blue-50 transition-all text-left text-sm"
-                >
-                  <q.icon className="w-4 h-4 text-blue-600 flex-shrink-0" />
-                  <span className="text-slate-700">{q.text}</span>
-                </button>
-              ))}
+    <div className="flex flex-col h-screen bg-[#F9FAFB]">
+      {/* Header */}
+      <div className="bg-gradient-to-r from-[#0B1A2E] via-[#1E40AF] to-[#3B82F6] p-6 shadow-xl">
+        <div className="max-w-4xl mx-auto">
+          <div className="flex items-center gap-4">
+            <div className="w-14 h-14 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center animate-pulse">
+              <Brain className="w-8 h-8 text-white" />
             </div>
-          </div>
-        )}
-
-        {messages.map((message, index) => (
-          <div
-            key={index}
-            className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
-          >
-            <div
-              className={`max-w-[85%] rounded-2xl px-4 py-3 ${
-                message.role === 'user'
-                  ? 'bg-gradient-to-r from-blue-900 to-blue-700 text-white'
-                  : message.error
-                  ? 'bg-red-50 border border-red-200 text-red-900'
-                  : 'bg-white border border-slate-200 text-slate-900'
-              }`}
-            >
-              {message.role === 'assistant' && (
-                <div className="flex items-center gap-2 mb-2">
-                  <div className="w-6 h-6 bg-blue-100 rounded-full flex items-center justify-center">
-                    <Scale className="w-3 h-3 text-blue-600" />
-                  </div>
-                  <span className="text-xs font-semibold text-blue-900">Assistente SIHDD</span>
-                </div>
-              )}
-              <p className="text-sm whitespace-pre-wrap leading-relaxed">{message.content}</p>
-              <p className={`text-xs mt-2 ${message.role === 'user' ? 'text-blue-100' : 'text-slate-500'}`}>
-                {message.timestamp.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}
+            <div>
+              <h1 className="text-2xl font-bold text-white flex items-center gap-2">
+                <Sparkles className="w-5 h-5" />
+                RAG Tributário SIHDD
+              </h1>
+              <p className="text-blue-100 text-sm mt-1">
+                Inteligência Jurídica Conectada • Legislação ITCMD/SE 2020-2025
               </p>
             </div>
           </div>
-        ))}
-
-        {isTyping && (
-          <div className="flex justify-start">
-            <div className="max-w-[85%] bg-white border border-slate-200 rounded-2xl px-4 py-3">
-              <div className="flex items-center gap-2">
-                <Loader2 className="w-4 h-4 animate-spin text-blue-600" />
-                <span className="text-sm text-slate-600">Digitando...</span>
-              </div>
-            </div>
-          </div>
-        )}
-
-        <div ref={messagesEndRef} />
+        </div>
       </div>
 
-      {/* Input Area */}
-      <div className="border-t border-slate-200 bg-white p-4">
-        <div className="flex gap-2">
-          <Input
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            onKeyPress={handleKeyPress}
-            placeholder="Digite sua pergunta sobre inventários..."
-            className="flex-1"
-            disabled={isTyping}
-          />
-          <Button
-            onClick={handleSend}
-            disabled={!input.trim() || isTyping}
-            className="bg-blue-900 hover:bg-blue-800"
-          >
-            <Send className="w-4 h-4" />
-          </Button>
+      {/* Suggested Questions */}
+      {messages.length === 1 && (
+        <div className="bg-white border-b border-slate-200 p-4">
+          <div className="max-w-4xl mx-auto">
+            <p className="text-sm font-semibold text-[#6B7280] mb-3 uppercase tracking-wider">
+              Perguntas Sugeridas:
+            </p>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+              {SUGGESTED_QUESTIONS.map((q, i) => {
+                const Icon = q.icon;
+                return (
+                  <button
+                    key={i}
+                    onClick={() => handleSuggestedQuestion(q.text)}
+                    className="flex items-center gap-3 p-3 bg-gradient-to-r from-blue-50 to-indigo-50 hover:from-blue-100 hover:to-indigo-100 rounded-xl border-2 border-[#3B82F6]/20 hover:border-[#1E40AF] transition-all duration-300 text-left group"
+                  >
+                    <div className="w-10 h-10 bg-gradient-to-br from-[#1E40AF] to-[#3B82F6] rounded-xl flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform">
+                      <Icon className="w-5 h-5 text-white" />
+                    </div>
+                    <span className="text-sm font-medium text-[#111827]">{q.text}</span>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
         </div>
-        <p className="text-xs text-slate-500 mt-2">
-          💡 Dica: Seja específico em suas perguntas para respostas mais precisas
-        </p>
+      )}
+
+      {/* Messages */}
+      <div className="flex-1 overflow-y-auto p-4">
+        <div className="max-w-4xl mx-auto space-y-4">
+          {messages.map((message, index) => (
+            <div
+              key={index}
+              className={`flex ${message.role === "user" ? "justify-end" : "justify-start"}`}
+            >
+              <div className={`
+                max-w-[85%] rounded-2xl p-4 shadow-lg
+                ${message.role === "user" 
+                  ? "bg-gradient-to-r from-[#1E40AF] to-[#3B82F6] text-white" 
+                  : "glassmorphism border border-slate-200 text-[#111827]"
+                }
+              `}>
+                {message.role === "assistant" && (
+                  <div className="flex items-center gap-2 mb-2 pb-2 border-b border-slate-200">
+                    <Brain className="w-4 h-4 text-[#1E40AF]" />
+                    <span className="text-xs font-bold text-[#1E40AF] uppercase tracking-wider">
+                      RAG Tributário
+                    </span>
+                  </div>
+                )}
+                <div className="prose prose-sm max-w-none">
+                  {message.content.split('\n').map((line, i) => {
+                    if (line.startsWith('- ')) {
+                      return (
+                        <div key={i} className="flex items-start gap-2 my-1">
+                          <span className="text-[#3B82F6] mt-1">•</span>
+                          <span>{line.substring(2)}</span>
+                        </div>
+                      );
+                    }
+                    if (line.match(/^\d+\./)) {
+                      return (
+                        <div key={i} className="ml-4 my-1">{line}</div>
+                      );
+                    }
+                    if (line.includes('**')) {
+                      const parts = line.split('**');
+                      return (
+                        <p key={i} className="my-2">
+                          {parts.map((part, j) => 
+                            j % 2 === 1 ? <strong key={j}>{part}</strong> : part
+                          )}
+                        </p>
+                      );
+                    }
+                    return line ? <p key={i} className="my-2">{line}</p> : <br key={i} />;
+                  })}
+                </div>
+              </div>
+            </div>
+          ))}
+          
+          {isTyping && (
+            <div className="flex justify-start">
+              <div className="glassmorphism border border-slate-200 rounded-2xl p-4 shadow-lg">
+                <div className="flex items-center gap-3">
+                  <Loader2 className="w-5 h-5 text-[#1E40AF] animate-spin" />
+                  <span className="text-sm text-[#6B7280] font-medium">
+                    Analisando legislação tributária...
+                  </span>
+                </div>
+              </div>
+            </div>
+          )}
+          
+          <div ref={messagesEndRef} />
+        </div>
+      </div>
+
+      {/* Input */}
+      <div className="bg-white border-t border-slate-200 p-4 shadow-xl">
+        <div className="max-w-4xl mx-auto">
+          <div className="flex gap-3">
+            <Input
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              onKeyPress={handleKeyPress}
+              placeholder="Digite sua pergunta sobre ITCMD, inventário ou legislação tributária..."
+              className="flex-1 border-2 border-slate-300 focus:border-[#1E40AF] focus:ring-[#1E40AF] rounded-xl px-4 py-3 text-[#111827]"
+              disabled={chatMutation.isPending}
+            />
+            <Button
+              onClick={handleSend}
+              disabled={!input.trim() || chatMutation.isPending}
+              className="bg-gradient-to-r from-[#1E40AF] to-[#3B82F6] hover:from-[#3B82F6] hover:to-[#1E40AF] text-white px-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {chatMutation.isPending ? (
+                <Loader2 className="w-5 h-5 animate-spin" />
+              ) : (
+                <Send className="w-5 h-5" />
+              )}
+            </Button>
+          </div>
+        </div>
       </div>
     </div>
   );

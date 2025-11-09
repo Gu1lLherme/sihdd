@@ -7,6 +7,8 @@ import Auditoria from './pages/Auditoria';
 import Integracoes from './pages/Integracoes';
 import DetalhesCaso from './pages/DetalhesCaso';
 import Inventarios from './pages/Inventarios';
+import Modulos from './pages/Modulos';
+import Administracao from './pages/Administracao';
 import Layout from './Layout.jsx';
 
 
@@ -20,6 +22,8 @@ export const PAGES = {
     "Integracoes": Integracoes,
     "DetalhesCaso": DetalhesCaso,
     "Inventarios": Inventarios,
+    "Modulos": Modulos,
+    "Administracao": Administracao,
 }
 
 export const pagesConfig = {
