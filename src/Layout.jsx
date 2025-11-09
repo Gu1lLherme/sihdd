@@ -1,7 +1,7 @@
 import React from "react";
 import { Link, useLocation } from "react-router-dom";
 import { createPageUrl } from "@/utils";
-import { Scale, FileText, Receipt, BarChart3, History, Link2, MessageCircle, Briefcase } from "lucide-react";
+import { Scale, FileText, Receipt, BarChart3, History, Link2, MessageCircle, Briefcase, FolderOpen } from "lucide-react";
 import {
   Sidebar,
   SidebarContent,
@@ -19,9 +19,14 @@ import {
 
 const navigationItems = [
   {
-    title: "Casos",
+    title: "Dashboard",
     url: createPageUrl("Dashboard"),
     icon: Briefcase,
+  },
+  {
+    title: "Inventários",
+    url: createPageUrl("Inventarios"),
+    icon: FolderOpen,
   },
   {
     title: "Integrações",
