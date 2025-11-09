@@ -1,6 +1,7 @@
+
 import React, { useState } from "react";
 import { base44 } from "@/api/base44Client";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient, useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -28,64 +29,103 @@ const steps = [
 export default function NovoCaso() {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
-  const [currentStep, setCurrentStep] = useState(1);
-  
-  const [dadosCaso, setDadosCaso] = useState({
-    nome_falecido: "",
-    cpf_falecido: "",
+  const [etapaAtual, setEtapaAtual] = useState(1);
+  const [formData, setFormData] = useState({
+    falecido_nome: "",
+    falecido_cpf: "",
     data_obito: "",
     conjuge_nome: "",
     conjuge_cpf: "",
-    regime_bens: "",
-    observacoes: "",
+    patrimonio_total: 0,
+    itcmd_total: 0, // Added based on mutationFn
+    aliquota: 4,
+    status: "rascunho",
+    herdeiros: [],
+    bens: [],
   });
 
-  const [herdeiros, setHerdeiros] = useState([]);
-  const [bens, setBens] = useState([]);
   const [calculoFeito, setCalculoFeito] = useState(false);
 
-  const createCasoMutation = useMutation({
+  const { data: user } = useQuery({
+    queryKey: ['user'],
+    queryFn: () => base44.auth.me(),
+    retry: false,
+  });
+
+  const criarCasoMutation = useMutation({
     mutationFn: async (data) => {
-      const caso = await base44.entities.Caso.create(data.caso);
-      
-      const herdeirosComCasoId = data.herdeiros.map(h => ({ ...h, caso_id: caso.id }));
-      await base44.entities.Herdeiro.bulkCreate(herdeirosComCasoId);
-      
-      const bensComCasoId = data.bens.map(b => ({ ...b, caso_id: caso.id }));
-      await base44.entities.Bem.bulkCreate(bensComCasoId);
-      
+      const caso = await base44.entities.Caso.create({
+        numero_processo: `PROC-${Date.now()}`,
+        falecido_nome: data.falecido_nome,
+        falecido_cpf: data.falecido_cpf,
+        data_obito: data.data_obito,
+        conjuge_nome: data.conjuge_nome,
+        conjuge_cpf: data.conjuge_cpf,
+        patrimonio_total: data.patrimonio_total,
+        itcmd_total: data.patrimonio_total * (data.aliquota / 100),
+        aliquota: data.aliquota,
+        status: "em_analise",
+      });
+
+      if (data.herdeiros.length > 0) {
+        await base44.entities.Herdeiro.bulkCreate(
+          data.herdeiros.map(h => ({ ...h, caso_id: caso.id }))
+        );
+      }
+
+      if (data.bens.length > 0) {
+        await base44.entities.Bem.bulkCreate(
+          data.bens.map(b => ({ ...b, caso_id: caso.id }))
+        );
+      }
+
+      // Registrar na auditoria
+      await base44.entities.AuditLog.create({
+        caso_id: caso.id,
+        action_type: "create",
+        entity_type: "Caso",
+        entity_id: caso.id,
+        action_description: `Novo caso criado: Inventário de ${data.falecido_nome}`,
+        user_email: user?.email || "unknown",
+        user_name: user?.full_name || "Unknown",
+        new_data: {
+          falecido: data.falecido_nome,
+          patrimonio: data.patrimonio_total,
+          herdeiros_count: data.herdeiros.length,
+          bens_count: data.bens.length,
+        }
+      });
+
       return caso;
     },
     onSuccess: (caso) => {
       queryClient.invalidateQueries({ queryKey: ['casos'] });
-      navigate(createPageUrl(`DetalheCaso?id=${caso.id}`));
+      navigate(createPageUrl(`DetalhesCaso?id=${caso.id}`));
     },
   });
 
   const handleNext = () => {
-    if (currentStep < steps.length) {
-      setCurrentStep(currentStep + 1);
+    if (etapaAtual < steps.length) {
+      setEtapaAtual(etapaAtual + 1);
     }
   };
 
   const handlePrevious = () => {
-    if (currentStep > 1) {
-      setCurrentStep(currentStep - 1);
+    if (etapaAtual > 1) {
+      setEtapaAtual(etapaAtual - 1);
     }
   };
 
   const calcularPatrimonioTotal = () => {
-    return bens.reduce((sum, bem) => sum + (parseFloat(bem.valor) || 0), 0);
+    return formData.bens.reduce((sum, bem) => sum + (parseFloat(bem.valor) || 0), 0);
   };
 
   const calcularITCMD = () => {
     const patrimonioTotal = calcularPatrimonioTotal();
-    const aliquota = 4; // 4% para Sergipe
+    const aliquota = formData.aliquota; // Use aliquota from formData
     const valorITCMD = (patrimonioTotal * aliquota) / 100;
     
-    const totalPercentual = herdeiros.reduce((sum, h) => sum + (parseFloat(h.percentual_partilha) || 0), 0);
-    
-    const herdeirosCalculados = herdeiros.map(h => {
+    const herdeirosCalculados = formData.herdeiros.map(h => {
       const percentual = parseFloat(h.percentual_partilha) || 0;
       const valorParte = (patrimonioTotal * percentual) / 100;
       const valorITCMDHerdeiro = (valorParte * aliquota) / 100;
@@ -97,29 +137,17 @@ export default function NovoCaso() {
       };
     });
     
-    setHerdeiros(herdeirosCalculados);
-    setCalculoFeito(true);
-    
-    setDadosCaso(prev => ({
+    setFormData(prev => ({
       ...prev,
-      valor_patrimonio: patrimonioTotal,
-      valor_itcmd: valorITCMD,
-      aliquota: aliquota,
+      patrimonio_total: patrimonioTotal,
+      itcmd_total: valorITCMD,
+      herdeiros: herdeirosCalculados,
     }));
+    setCalculoFeito(true);
   };
 
   const handleSalvar = () => {
-    const casoData = {
-      ...dadosCaso,
-      status: "geracao_dae",
-      prazo_dias: 30,
-    };
-
-    createCasoMutation.mutate({
-      caso: casoData,
-      herdeiros: herdeiros,
-      bens: bens,
-    });
+    criarCasoMutation.mutate(formData);
   };
 
   return (
@@ -147,21 +175,21 @@ export default function NovoCaso() {
               <div key={step.id} className="flex items-center flex-1">
                 <div className="flex flex-col items-center flex-1">
                   <div className={`w-12 h-12 rounded-full flex items-center justify-center text-2xl transition-all duration-300 ${
-                    currentStep >= step.id 
+                    etapaAtual >= step.id 
                       ? 'bg-gradient-to-br from-[#1e3a5f] to-[#2d5a8f] text-white shadow-lg scale-110' 
                       : 'bg-white text-slate-400 border-2 border-slate-200'
                   }`}>
                     {step.icon}
                   </div>
                   <p className={`text-xs mt-2 font-medium text-center ${
-                    currentStep >= step.id ? 'text-[#1e3a5f]' : 'text-slate-400'
+                    etapaAtual >= step.id ? 'text-[#1e3a5f]' : 'text-slate-400'
                   }`}>
                     {step.title}
                   </p>
                 </div>
                 {index < steps.length - 1 && (
                   <div className={`h-1 flex-1 mx-2 rounded transition-all duration-300 ${
-                    currentStep > step.id ? 'bg-gradient-to-r from-[#1e3a5f] to-[#2d5a8f]' : 'bg-slate-200'
+                    etapaAtual > step.id ? 'bg-gradient-to-r from-[#1e3a5f] to-[#2d5a8f]' : 'bg-slate-200'
                   }`} />
                 )}
               </div>
@@ -172,32 +200,30 @@ export default function NovoCaso() {
         {/* Step Content */}
         <Card className="bg-white border-none shadow-xl">
           <CardContent className="p-6 md:p-8">
-            {currentStep === 1 && (
-              <DadosFalecidoForm dadosCaso={dadosCaso} setDadosCaso={setDadosCaso} />
+            {etapaAtual === 1 && (
+              <DadosFalecidoForm formData={formData} setFormData={setFormData} />
             )}
             
-            {currentStep === 2 && (
-              <HerdeirosForm herdeiros={herdeiros} setHerdeiros={setHerdeiros} />
+            {etapaAtual === 2 && (
+              <HerdeirosForm herdeiros={formData.herdeiros} setHerdeiros={(newHerdeiros) => setFormData(prev => ({ ...prev, herdeiros: newHerdeiros }))} />
             )}
             
-            {currentStep === 3 && (
-              <BensForm bens={bens} setBens={setBens} />
+            {etapaAtual === 3 && (
+              <BensForm bens={formData.bens} setBens={(newBens) => setFormData(prev => ({ ...prev, bens: newBens }))} />
             )}
             
-            {currentStep === 4 && (
+            {etapaAtual === 4 && (
               <CalculoITCMD 
-                bens={bens} 
-                herdeiros={herdeiros}
+                bens={formData.bens} 
+                herdeiros={formData.herdeiros}
                 calculoFeito={calculoFeito}
                 onCalcular={calcularITCMD}
               />
             )}
             
-            {currentStep === 5 && (
+            {etapaAtual === 5 && (
               <ResumoFinal 
-                dadosCaso={dadosCaso}
-                herdeiros={herdeiros}
-                bens={bens}
+                formData={formData}
               />
             )}
           </CardContent>
@@ -208,19 +234,19 @@ export default function NovoCaso() {
           <Button
             variant="outline"
             onClick={handlePrevious}
-            disabled={currentStep === 1}
+            disabled={etapaAtual === 1}
             className="hover:bg-slate-100"
           >
             <ArrowLeft className="w-4 h-4 mr-2" />
             Anterior
           </Button>
 
-          {currentStep < steps.length ? (
+          {etapaAtual < steps.length ? (
             <Button
-              onClick={currentStep === 4 && !calculoFeito ? calcularITCMD : handleNext}
+              onClick={etapaAtual === 4 && !calculoFeito ? calcularITCMD : handleNext}
               className="bg-gradient-to-r from-[#1e3a5f] to-[#2d5a8f] hover:from-[#2d5a8f] hover:to-[#1e3a5f]"
             >
-              {currentStep === 4 && !calculoFeito ? (
+              {etapaAtual === 4 && !calculoFeito ? (
                 <>
                   <Calculator className="w-4 h-4 mr-2" />
                   Calcular ITCMD
@@ -235,11 +261,11 @@ export default function NovoCaso() {
           ) : (
             <Button
               onClick={handleSalvar}
-              disabled={createCasoMutation.isPending}
+              disabled={criarCasoMutation.isPending}
               className="bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700"
             >
               <Save className="w-4 h-4 mr-2" />
-              {createCasoMutation.isPending ? 'Salvando...' : 'Finalizar e Salvar'}
+              {criarCasoMutation.isPending ? 'Salvando...' : 'Finalizar e Salvar'}
             </Button>
           )}
         </div>
