@@ -7,7 +7,7 @@ import { Card } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Plus, Trash2, AlertCircle, Users, CheckCircle2 } from "lucide-react";
-import { validarCPF, formatarCPF, validarEmail, validarTelefone, formatarTelefone, validarPercentual, validarSomaPercentuais, validarObrigatorio } from "../../utils/validations";
+import { validarCPF, formatarCPF, validarEmail, validarTelefone, formatarTelefone, validarPercentual, validarSomaPercentuais, validarObrigatorio } from "@/utils/validations";
 
 export default function Herdeiros({ formData, setFormData }) {
   const [erros, setErros] = useState({});

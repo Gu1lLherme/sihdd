@@ -8,7 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { Car, Search, CheckCircle2, Loader2, AlertCircle } from "lucide-react";
 import { base44 } from "@/api/base44Client";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { validarPlaca, formatarPlaca } from "../../utils/validations";
+import { validarPlaca, formatarPlaca } from "@/utils/validations";
 
 export default function ConsultaDetran() {
   const [placa, setPlaca] = useState("");
