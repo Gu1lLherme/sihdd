@@ -9,6 +9,7 @@ import DetalhesCaso from './pages/DetalhesCaso';
 import Inventarios from './pages/Inventarios';
 import Modulos from './pages/Modulos';
 import Administracao from './pages/Administracao';
+import PortalCliente from './pages/PortalCliente';
 import Layout from './Layout.jsx';
 
 
@@ -24,6 +25,7 @@ export const PAGES = {
     "Inventarios": Inventarios,
     "Modulos": Modulos,
     "Administracao": Administracao,
+    "PortalCliente": PortalCliente,
 }
 
 export const pagesConfig = {

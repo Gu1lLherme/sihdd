@@ -1,7 +1,7 @@
 import React from "react";
 import { Link, useLocation } from "react-router-dom";
 import { createPageUrl } from "@/utils";
-import { Scale, FolderOpen, Link2, History, BarChart3, Brain, Users, Settings, Grid3x3 } from "lucide-react";
+import { Scale, FolderOpen, Link2, History, BarChart3, Brain, Users, Settings, Grid3x3, Shield } from "lucide-react";
 import {
   Sidebar,
   SidebarContent,
@@ -32,6 +32,11 @@ const navigationItems = [
     title: "IA Jurídica RAG",
     url: createPageUrl("ChatAssistente"),
     icon: Brain,
+  },
+  {
+    title: "Portal do Cliente",
+    url: createPageUrl("PortalCliente"),
+    icon: Shield,
   },
   {
     title: "Módulos",
