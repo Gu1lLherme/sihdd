@@ -1,6 +1,8 @@
 import React from "react";
 import { Link, useLocation } from "react-router-dom";
 import { createPageUrl } from "@/utils";
+import { base44 } from "@/api/base44Client";
+import { useQuery } from "@tanstack/react-query";
 import { Scale, FolderOpen, Link2, History, BarChart3, Brain, Users, Settings, Grid3x3, Shield, Menu } from "lucide-react";
 import {
   Sidebar,
@@ -17,48 +19,57 @@ import {
   SidebarTrigger,
 } from "@/components/ui/sidebar";
 
-const navigationItems = [
+const ALL_NAVIGATION_ITEMS = [
   {
+    key: "dashboard",
     title: "Dashboard",
     url: createPageUrl("Dashboard"),
     icon: BarChart3,
   },
   {
+    key: "inventarios",
     title: "Inventários",
     url: createPageUrl("Inventarios"),
     icon: FolderOpen,
   },
   {
+    key: "chat",
     title: "IA Jurídica RAG",
     url: createPageUrl("ChatAssistente"),
     icon: Brain,
   },
   {
+    key: "portal",
     title: "Portal do Cliente",
     url: createPageUrl("PortalCliente"),
     icon: Shield,
   },
   {
+    key: "modulos",
     title: "Módulos",
     url: createPageUrl("Modulos"),
     icon: Grid3x3,
   },
   {
+    key: "integracoes",
     title: "Integrações",
     url: createPageUrl("Integracoes"),
     icon: Link2,
   },
   {
+    key: "administracao",
     title: "Administração",
     url: createPageUrl("Administracao"),
     icon: Users,
   },
   {
+    key: "auditoria",
     title: "Auditoria",
     url: createPageUrl("Auditoria"),
     icon: History,
   },
   {
+    key: "relatorios",
     title: "Relatórios",
     url: createPageUrl("Relatorios"),
     icon: BarChart3,
@@ -68,6 +79,56 @@ const navigationItems = [
 export default function Layout({ children, currentPageName }) {
   const location = useLocation();
   const [showChat, setShowChat] = React.useState(false);
+
+  const { data: user } = useQuery({
+    queryKey: ['user'],
+    queryFn: () => base44.auth.me(),
+    retry: false,
+  });
+
+  const { data: settings } = useQuery({
+    queryKey: ['user-settings', user?.email],
+    queryFn: async () => {
+      const allSettings = await base44.entities.UserSettings.list();
+      const userSettings = allSettings.find(s => s.user_email === user?.email);
+      
+      if (!userSettings) {
+        return {
+          sidebar_modules: {
+            dashboard: true,
+            inventarios: true,
+            chat: true,
+            portal: true,
+            modulos: true,
+            integracoes: true,
+            administracao: true,
+            auditoria: true,
+            relatorios: true,
+          }
+        };
+      }
+      
+      return userSettings;
+    },
+    enabled: !!user?.email,
+    initialData: {
+      sidebar_modules: {
+        dashboard: true,
+        inventarios: true,
+        chat: true,
+        portal: true,
+        modulos: true,
+        integracoes: true,
+        administracao: true,
+        auditoria: true,
+        relatorios: true,
+      }
+    }
+  });
+
+  const navigationItems = ALL_NAVIGATION_ITEMS.filter(item => 
+    settings?.sidebar_modules?.[item.key] !== false
+  );
 
   return (
     <SidebarProvider>
@@ -143,7 +204,7 @@ export default function Layout({ children, currentPageName }) {
           transform: translateY(-4px);
         }
 
-        /* Mobile First Responsive */
+        /* Mobile First - Ícones padronizados */
         @media (max-width: 768px) {
           .animate-float {
             animation: none;
@@ -151,6 +212,18 @@ export default function Layout({ children, currentPageName }) {
           
           .card-shadow-hover:hover {
             transform: translateY(0);
+          }
+
+          /* Força tamanho padrão de ícones em mobile */
+          svg {
+            width: 1rem !important;
+            height: 1rem !important;
+          }
+
+          /* Exceção para ícones em cards específicos */
+          .stat-icon svg {
+            width: 1.25rem !important;
+            height: 1.25rem !important;
           }
         }
 
@@ -164,7 +237,7 @@ export default function Layout({ children, currentPageName }) {
           }
         }
 
-        /* Hide chat widget on small screens */
+        /* Chat widget responsive */
         @media (max-width: 640px) {
           .chat-widget {
             width: calc(100vw - 32px) !important;
@@ -180,8 +253,8 @@ export default function Layout({ children, currentPageName }) {
         <Sidebar className="border-r-0 shadow-2xl hidden md:flex" style={{ backgroundColor: '#0B1A2E' }}>
           <SidebarHeader className="border-b border-white/10 p-4 lg:p-6">
             <div className="flex items-center gap-2 lg:gap-3">
-              <div className="w-10 h-10 lg:w-12 lg:h-12 bg-gradient-to-br from-[#1E40AF] to-[#3B82F6] rounded-xl lg:rounded-2xl flex items-center justify-center shadow-xl animate-float">
-                <Scale className="w-6 h-6 lg:w-7 lg:h-7 text-white" />
+              <div className="w-10 h-10 lg:w-12 lg:h-12 bg-gradient-to-br from-[#1E40AF] to-[#3B82F6] rounded-xl lg:rounded-2xl flex items-center justify-center shadow-xl">
+                <Scale className="w-5 h-5 lg:w-6 lg:h-6 text-white" />
               </div>
               <div>
                 <h2 className="font-bold text-lg lg:text-xl text-white tracking-tight">SIHDD</h2>
@@ -200,7 +273,7 @@ export default function Layout({ children, currentPageName }) {
                   {navigationItems.map((item) => {
                     const isActive = location.pathname === item.url;
                     return (
-                      <SidebarMenuItem key={item.title}>
+                      <SidebarMenuItem key={item.key}>
                         <SidebarMenuButton 
                           asChild 
                           className={`
@@ -219,7 +292,7 @@ export default function Layout({ children, currentPageName }) {
                                 : 'bg-white/5 group-hover:bg-white/10 group-hover:scale-105'
                               }
                             `}>
-                              <item.icon className={`w-4 h-4 lg:w-5 lg:h-5 ${isActive ? 'text-white' : 'text-blue-200 group-hover:text-white'}`} />
+                              <item.icon className="w-4 h-4 lg:w-5 lg:h-5" style={{ width: '1rem', height: '1rem' }} />
                             </div>
                             <span className="flex-1 font-medium text-sm lg:text-base">{item.title}</span>
                             {isActive && (
@@ -236,16 +309,22 @@ export default function Layout({ children, currentPageName }) {
           </SidebarContent>
 
           <SidebarFooter className="border-t border-white/10 p-3 lg:p-4">
-            <div className="flex items-center gap-2 lg:gap-3 p-2 lg:p-3 rounded-lg lg:rounded-xl bg-white/5 hover:bg-white/10 transition-colors cursor-pointer">
-              <div className="w-8 h-8 lg:w-10 lg:h-10 bg-gradient-to-br from-[#3B82F6] to-[#1E40AF] rounded-full flex items-center justify-center shadow-lg">
-                <span className="text-white font-bold text-xs lg:text-sm">A</span>
+            <Link to={createPageUrl("Configuracoes")} className="block">
+              <div className="flex items-center gap-2 lg:gap-3 p-2 lg:p-3 rounded-lg lg:rounded-xl bg-white/5 hover:bg-white/10 transition-colors cursor-pointer group">
+                <div className="w-8 h-8 lg:w-10 lg:h-10 bg-gradient-to-br from-[#3B82F6] to-[#1E40AF] rounded-full flex items-center justify-center shadow-lg">
+                  <span className="text-white font-bold text-xs lg:text-sm">
+                    {user?.full_name?.charAt(0)?.toUpperCase() || 'U'}
+                  </span>
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="font-semibold text-white text-xs lg:text-sm truncate">
+                    {user?.full_name?.split(' ')[0] || 'Usuário'}
+                  </p>
+                  <p className="text-[10px] lg:text-xs text-blue-200 truncate">Configurações</p>
+                </div>
+                <Settings className="w-3 h-3 lg:w-4 lg:h-4 text-blue-200 opacity-0 group-hover:opacity-100 transition-opacity" />
               </div>
-              <div className="flex-1 min-w-0">
-                <p className="font-semibold text-white text-xs lg:text-sm truncate">Advogado</p>
-                <p className="text-[10px] lg:text-xs text-blue-200 truncate">Gestão Inteligente</p>
-              </div>
-              <Settings className="w-3 h-3 lg:w-4 lg:h-4 text-blue-200 opacity-0 group-hover:opacity-100 transition-opacity" />
-            </div>
+            </Link>
           </SidebarFooter>
         </Sidebar>
 
@@ -256,7 +335,7 @@ export default function Layout({ children, currentPageName }) {
             <div className="flex items-center justify-between gap-3 sm:gap-4">
               <div className="flex items-center gap-3 sm:gap-4">
                 <SidebarTrigger className="md:hidden hover:bg-slate-100 p-2 rounded-lg transition-colors duration-200">
-                  <Menu className="w-5 h-5" />
+                  <Menu className="w-4 h-4" style={{ width: '1rem', height: '1rem' }} />
                 </SidebarTrigger>
                 <div className="flex items-center gap-2">
                   <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-br from-[#1E40AF] to-[#3B82F6] rounded-lg flex items-center justify-center">
@@ -275,8 +354,13 @@ export default function Layout({ children, currentPageName }) {
                   onClick={() => setShowChat(!showChat)}
                   className="md:hidden w-10 h-10 bg-gradient-to-br from-[#1E40AF] to-[#3B82F6] rounded-full flex items-center justify-center shadow-lg"
                 >
-                  <Brain className="w-5 h-5 text-white" />
+                  <Brain className="w-4 h-4 text-white" style={{ width: '1rem', height: '1rem' }} />
                 </button>
+                <Link to={createPageUrl("Configuracoes")} className="md:hidden">
+                  <button className="w-10 h-10 bg-slate-200 rounded-full flex items-center justify-center shadow-lg">
+                    <Settings className="w-4 h-4 text-slate-700" style={{ width: '1rem', height: '1rem' }} />
+                  </button>
+                </Link>
               </div>
             </div>
           </header>
@@ -285,7 +369,7 @@ export default function Layout({ children, currentPageName }) {
             {children}
           </div>
 
-          {/* Floating IA Button - Hidden on Mobile (replaced by header button) */}
+          {/* Floating IA Button - Hidden on Mobile */}
           <button
             onClick={() => setShowChat(!showChat)}
             className="floating-ai-button hidden md:flex fixed bottom-6 right-6 w-16 h-16 bg-gradient-to-br from-[#1E40AF] via-[#3B82F6] to-purple-600 rounded-full shadow-2xl items-center justify-center hover:scale-110 transition-all duration-300 z-50 animate-float animate-pulse-glow group"

@@ -10,6 +10,7 @@ import Inventarios from './pages/Inventarios';
 import Modulos from './pages/Modulos';
 import Administracao from './pages/Administracao';
 import PortalCliente from './pages/PortalCliente';
+import Configuracoes from './pages/Configuracoes';
 import Layout from './Layout.jsx';
 
 
@@ -26,6 +27,7 @@ export const PAGES = {
     "Modulos": Modulos,
     "Administracao": Administracao,
     "PortalCliente": PortalCliente,
+    "Configuracoes": Configuracoes,
 }
 
 export const pagesConfig = {
