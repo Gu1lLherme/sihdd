@@ -20,7 +20,9 @@ import {
   Calendar,
   User,
   Eye,
-  TrendingUp
+  TrendingUp,
+  Calculator,
+  FileText
 } from "lucide-react";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
