@@ -4,22 +4,28 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Eye } from "lucide-react";
-import { format } from "date-fns";
-import { ptBR } from "date-fns/locale";
 import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 
 const statusConfig = {
-  coleta_dados: { label: "Coleta de Dados", color: "bg-slate-500" },
-  calculo_itcmd: { label: "Cálculo ITCMD", color: "bg-blue-500" },
-  geracao_dae: { label: "Geração DAE", color: "bg-indigo-500" },
-  aguardando_pagamento: { label: "Aguardando Pagamento", color: "bg-amber-500" },
-  em_analise_sefaz: { label: "Em Análise SEFAZ", color: "bg-yellow-500" },
-  certidao_emitida: { label: "Certidão Emitida", color: "bg-green-500" },
-  finalizado: { label: "Finalizado", color: "bg-emerald-500" },
+  rascunho: { label: "Rascunho", color: "bg-slate-100 text-slate-700" },
+  coleta_dados: { label: "Coleta de Dados", color: "bg-slate-500 text-white" },
+  calculo_itcmd: { label: "Cálculo ITCMD", color: "bg-blue-500 text-white" },
+  geracao_dae: { label: "Geração DAE", color: "bg-indigo-500 text-white" },
+  aguardando_pagamento: { label: "Aguardando Pagamento", color: "bg-amber-500 text-white" },
+  em_analise_sefaz: { label: "Em Análise SEFAZ", color: "bg-yellow-500 text-white" },
+  certidao_emitida: { label: "Certidão Emitida", color: "bg-green-500 text-white" },
+  finalizado: { label: "Finalizado", color: "bg-emerald-500 text-white" },
+  em_analise: { label: "Em Análise", color: "bg-amber-500 text-white" },
+  pago: { label: "Pago", color: "bg-blue-500 text-white" },
+  concluido: { label: "Concluído", color: "bg-emerald-500 text-white" },
 };
 
 export default function CasosTable({ casos }) {
+  if (!casos || casos.length === 0) {
+    return null;
+  }
+
   return (
     <Card className="bg-white border-none shadow-lg overflow-hidden">
       <div className="overflow-x-auto">
@@ -43,21 +49,21 @@ export default function CasosTable({ casos }) {
                   className="hover:bg-blue-50/50 transition-colors cursor-pointer"
                 >
                   <TableCell className="font-medium text-[#1e3a5f]">
-                    {caso.nome_falecido}
+                    {caso.nome_falecido || caso.falecido_nome || 'N/A'}
                   </TableCell>
                   <TableCell className="font-semibold">
-                    {caso.valor_patrimonio?.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
+                    {((caso.valor_patrimonio || caso.patrimonio_total) || 0).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
                   </TableCell>
                   <TableCell className="font-semibold text-amber-600">
-                    {caso.valor_itcmd?.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }) || '—'}
+                    {((caso.valor_itcmd || caso.itcmd_total) || 0).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
                   </TableCell>
                   <TableCell>
-                    <Badge className={`${status.color} text-white border-none`}>
+                    <Badge className={`${status.color} border-none`}>
                       {status.label}
                     </Badge>
                   </TableCell>
                   <TableCell>
-                    {caso.prazo_dias ? `${caso.prazo_dias} dias` : '—'}
+                    {caso.prazo_dias ? `${caso.prazo_dias} dias` : '30 dias'}
                   </TableCell>
                   <TableCell>
                     <Link to={createPageUrl(`DetalheCaso?id=${caso.id}`)}>

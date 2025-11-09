@@ -16,21 +16,21 @@ export default function DadosBasicos({ formData, setFormData }) {
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div className="space-y-2">
-          <Label htmlFor="falecido_nome">Nome Completo *</Label>
+          <Label htmlFor="nome_falecido">Nome Completo *</Label>
           <Input
-            id="falecido_nome"
-            value={formData.falecido_nome}
-            onChange={(e) => handleChange('falecido_nome', e.target.value)}
+            id="nome_falecido"
+            value={formData.nome_falecido}
+            onChange={(e) => handleChange('nome_falecido', e.target.value)}
             placeholder="João da Silva"
           />
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="falecido_cpf">CPF</Label>
+          <Label htmlFor="cpf_falecido">CPF</Label>
           <Input
-            id="falecido_cpf"
-            value={formData.falecido_cpf}
-            onChange={(e) => handleChange('falecido_cpf', e.target.value)}
+            id="cpf_falecido"
+            value={formData.cpf_falecido}
+            onChange={(e) => handleChange('cpf_falecido', e.target.value)}
             placeholder="000.000.000-00"
           />
         </div>
@@ -80,13 +80,13 @@ export default function DadosBasicos({ formData, setFormData }) {
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div className="space-y-2">
-          <Label htmlFor="patrimonio_total">Patrimônio Total (R$) *</Label>
+          <Label htmlFor="valor_patrimonio">Patrimônio Total (R$) *</Label>
           <Input
-            id="patrimonio_total"
+            id="valor_patrimonio"
             type="number"
             step="0.01"
-            value={formData.patrimonio_total}
-            onChange={(e) => handleChange('patrimonio_total', parseFloat(e.target.value) || 0)}
+            value={formData.valor_patrimonio}
+            onChange={(e) => handleChange('valor_patrimonio', parseFloat(e.target.value) || 0)}
             placeholder="1000000.00"
           />
         </div>
@@ -106,7 +106,7 @@ export default function DadosBasicos({ formData, setFormData }) {
 
       <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mt-6">
         <p className="text-sm text-blue-900">
-          <strong>ITCMD Estimado:</strong> R$ {((formData.patrimonio_total * formData.aliquota) / 100).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+          <strong>ITCMD Estimado:</strong> R$ {((formData.valor_patrimonio * formData.aliquota) / 100).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
         </p>
       </div>
     </div>

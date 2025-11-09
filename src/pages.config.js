@@ -5,6 +5,7 @@ import Relatorios from './pages/Relatorios';
 import ChatAssistente from './pages/ChatAssistente';
 import Auditoria from './pages/Auditoria';
 import Integracoes from './pages/Integracoes';
+import DetalhesCaso from './pages/DetalhesCaso';
 import Layout from './Layout.jsx';
 
 
@@ -16,6 +17,7 @@ export const PAGES = {
     "ChatAssistente": ChatAssistente,
     "Auditoria": Auditoria,
     "Integracoes": Integracoes,
+    "DetalhesCaso": DetalhesCaso,
 }
 
 export const pagesConfig = {

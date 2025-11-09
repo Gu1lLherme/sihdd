@@ -6,6 +6,7 @@ import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 
 const statusConfig = {
+  rascunho: { label: "Rascunho", color: "bg-slate-500" },
   coleta_dados: { label: "Coleta de Dados", color: "bg-slate-500" },
   calculo_itcmd: { label: "Cálculo ITCMD", color: "bg-blue-500" },
   geracao_dae: { label: "Geração DAE", color: "bg-indigo-500" },
@@ -13,9 +14,14 @@ const statusConfig = {
   em_analise_sefaz: { label: "Em Análise SEFAZ", color: "bg-yellow-500" },
   certidao_emitida: { label: "Certidão Emitida", color: "bg-green-500" },
   finalizado: { label: "Finalizado", color: "bg-emerald-500" },
+  em_analise: { label: "Em Análise", color: "bg-amber-500" },
+  pago: { label: "Pago", color: "bg-blue-500" },
+  concluido: { label: "Concluído", color: "bg-emerald-500" },
 };
 
 export default function CasoHeader({ caso }) {
+  if (!caso) return null;
+  
   const status = statusConfig[caso.status] || statusConfig.coleta_dados;
 
   return (
@@ -26,7 +32,7 @@ export default function CasoHeader({ caso }) {
             {status.label}
           </Badge>
           <h2 className="text-2xl font-bold text-[#1e3a5f]">
-            Caso #{caso.numero_caso || caso.id?.slice(0, 8)}
+            Caso #{caso.numero_caso || caso.numero_processo || caso.id?.slice(0, 8)}
           </h2>
         </div>
         {caso.prazo_dias && (
@@ -46,7 +52,7 @@ export default function CasoHeader({ caso }) {
             <span>Data do Óbito</span>
           </div>
           <p className="text-lg font-semibold text-[#1e3a5f]">
-            {caso.data_obito && format(new Date(caso.data_obito), "dd/MM/yyyy", { locale: ptBR })}
+            {caso.data_obito ? format(new Date(caso.data_obito), "dd/MM/yyyy", { locale: ptBR }) : 'N/A'}
           </p>
         </div>
 
@@ -56,7 +62,7 @@ export default function CasoHeader({ caso }) {
             <span>Patrimônio Total</span>
           </div>
           <p className="text-lg font-semibold text-[#1e3a5f]">
-            {caso.valor_patrimonio?.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
+            {((caso.valor_patrimonio || caso.patrimonio_total) || 0).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
           </p>
         </div>
 
@@ -76,7 +82,7 @@ export default function CasoHeader({ caso }) {
             <span>ITCMD Total</span>
           </div>
           <p className="text-lg font-semibold text-amber-600">
-            {caso.valor_itcmd?.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
+            {((caso.valor_itcmd || caso.itcmd_total) || 0).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
           </p>
         </div>
       </div>

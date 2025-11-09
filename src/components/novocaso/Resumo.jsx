@@ -23,7 +23,6 @@ export default function Resumo({ formData }) {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {/* Dados Básicos */}
         <Card className="border-slate-200">
           <CardHeader className="bg-slate-50 border-b border-slate-200">
             <CardTitle className="text-lg flex items-center gap-2">
@@ -34,11 +33,11 @@ export default function Resumo({ formData }) {
           <CardContent className="p-4 space-y-2 text-sm">
             <div className="flex justify-between">
               <span className="text-slate-600">Falecido:</span>
-              <span className="font-semibold">{formData.falecido_nome || "-"}</span>
+              <span className="font-semibold">{formData.nome_falecido || "-"}</span>
             </div>
             <div className="flex justify-between">
               <span className="text-slate-600">CPF:</span>
-              <span className="font-semibold">{formData.falecido_cpf || "-"}</span>
+              <span className="font-semibold">{formData.cpf_falecido || "-"}</span>
             </div>
             <div className="flex justify-between">
               <span className="text-slate-600">Cônjuge:</span>
@@ -47,13 +46,12 @@ export default function Resumo({ formData }) {
             <div className="flex justify-between">
               <span className="text-slate-600">Patrimônio Total:</span>
               <span className="font-semibold text-green-600">
-                R$ {formData.patrimonio_total.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                R$ {formData.valor_patrimonio.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
               </span>
             </div>
           </CardContent>
         </Card>
 
-        {/* Cálculo ITCMD */}
         <Card className="border-slate-200">
           <CardHeader className="bg-slate-50 border-b border-slate-200">
             <CardTitle className="text-lg flex items-center gap-2">
@@ -69,20 +67,19 @@ export default function Resumo({ formData }) {
             <div className="flex justify-between">
               <span className="text-slate-600">Base de Cálculo:</span>
               <span className="font-semibold">
-                R$ {formData.patrimonio_total.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                R$ {formData.valor_patrimonio.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
               </span>
             </div>
             <div className="flex justify-between pt-2 border-t border-slate-200">
               <span className="text-slate-900 font-semibold">ITCMD Total:</span>
               <span className="font-bold text-lg text-blue-900">
-                R$ {((formData.patrimonio_total * formData.aliquota) / 100).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                R$ {((formData.valor_patrimonio * formData.aliquota) / 100).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
               </span>
             </div>
           </CardContent>
         </Card>
       </div>
 
-      {/* Herdeiros */}
       <Card className="border-slate-200">
         <CardHeader className="bg-slate-50 border-b border-slate-200">
           <CardTitle className="text-lg flex items-center gap-2">
@@ -114,7 +111,6 @@ export default function Resumo({ formData }) {
         </CardContent>
       </Card>
 
-      {/* Visualização Partilha */}
       {formData.herdeiros.length > 0 && (
         <Card className="border-slate-200">
           <CardHeader className="bg-slate-50 border-b border-slate-200">
@@ -147,7 +143,6 @@ export default function Resumo({ formData }) {
         </Card>
       )}
 
-      {/* Bens */}
       <Card className="border-slate-200">
         <CardHeader className="bg-slate-50 border-b border-slate-200">
           <CardTitle className="text-lg flex items-center gap-2">
