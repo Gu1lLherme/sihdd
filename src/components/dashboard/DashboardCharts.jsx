@@ -4,7 +4,6 @@ import { BarChart, Bar, LineChart, Line, PieChart, Pie, Cell, XAxis, YAxis, Cart
 import { TrendingUp, PieChart as PieChartIcon, Activity } from "lucide-react";
 
 export default function DashboardCharts({ casos }) {
-  // Casos por mês
   const last6Months = Array.from({ length: 6 }, (_, i) => {
     const date = new Date();
     date.setMonth(date.getMonth() - i);
@@ -23,7 +22,6 @@ export default function DashboardCharts({ casos }) {
     return { name: month, casos: count };
   });
 
-  // ITCMD coletado por mês
   const itcmdData = last6Months.map(({ month, monthIndex, year }) => {
     const total = casos
       .filter(c => {
@@ -34,7 +32,6 @@ export default function DashboardCharts({ casos }) {
     return { name: month, itcmd: Math.round(total) };
   });
 
-  // Status distribution
   const statusLabels = {
     'coleta_dados': 'Coleta de Dados',
     'calculo_itcmd': 'Cálculo ITCMD',
@@ -55,15 +52,14 @@ export default function DashboardCharts({ casos }) {
     value: count
   }));
 
-  // Cores Azul Royal e Dourado
-  const COLORS = ['#4169E1', '#5a7bea', '#FFD700', '#FFC107', '#10B981', '#F59E0B', '#06B6D4'];
+  const COLORS = ['#4169E1', '#5a7bea', '#28A745', '#FFC107', '#10B981', '#F59E0B', '#06B6D4'];
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
       {/* Evolução de Casos - Azul Royal */}
-      <Card className="glassmorphism border-2 border-[#4169E1]/20 card-shadow-hover">
-        <CardHeader className="border-b border-slate-200 bg-gradient-to-r from-blue-50 to-indigo-50">
-          <CardTitle className="text-lg flex items-center gap-2 text-[#1A237E]">
+      <Card className="bg-white border-2 border-slate-200 card-shadow-hover">
+        <CardHeader className="border-b-2 border-slate-200 bg-blue-50">
+          <CardTitle className="text-lg flex items-center gap-2 text-[#333333]">
             <Activity className="w-5 h-5 text-[#4169E1]" />
             Evolução de Casos
           </CardTitle>
@@ -72,32 +68,26 @@ export default function DashboardCharts({ casos }) {
           <ResponsiveContainer width="100%" height={250}>
             <BarChart data={casosData}>
               <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
-              <XAxis dataKey="name" stroke="#1A237E" style={{ fontSize: '12px', fontWeight: 600 }} />
-              <YAxis stroke="#1A237E" style={{ fontSize: '12px', fontWeight: 600 }} />
+              <XAxis dataKey="name" stroke="#333333" style={{ fontSize: '12px', fontWeight: 600 }} />
+              <YAxis stroke="#333333" style={{ fontSize: '12px', fontWeight: 600 }} />
               <Tooltip 
                 contentStyle={{ 
-                  backgroundColor: 'rgba(255,255,255,0.98)', 
+                  backgroundColor: '#FFFFFF', 
                   border: '2px solid #4169E1',
                   borderRadius: '12px',
                   fontWeight: 600
                 }}
               />
-              <Bar dataKey="casos" fill="url(#blueGradient)" radius={[8, 8, 0, 0]} />
-              <defs>
-                <linearGradient id="blueGradient" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stopColor="#4169E1" />
-                  <stop offset="100%" stopColor="#5a7bea" />
-                </linearGradient>
-              </defs>
+              <Bar dataKey="casos" fill="#4169E1" radius={[8, 8, 0, 0]} />
             </BarChart>
           </ResponsiveContainer>
         </CardContent>
       </Card>
 
       {/* Distribuição por Status */}
-      <Card className="glassmorphism border-2 border-[#4169E1]/20 card-shadow-hover">
-        <CardHeader className="border-b border-slate-200 bg-gradient-to-r from-blue-50 to-indigo-50">
-          <CardTitle className="text-lg flex items-center gap-2 text-[#1A237E]">
+      <Card className="bg-white border-2 border-slate-200 card-shadow-hover">
+        <CardHeader className="border-b-2 border-slate-200 bg-blue-50">
+          <CardTitle className="text-lg flex items-center gap-2 text-[#333333]">
             <PieChartIcon className="w-5 h-5 text-[#4169E1]" />
             Distribuição por Status
           </CardTitle>
@@ -121,7 +111,7 @@ export default function DashboardCharts({ casos }) {
               </Pie>
               <Tooltip 
                 contentStyle={{ 
-                  backgroundColor: 'rgba(255,255,255,0.98)', 
+                  backgroundColor: '#FFFFFF', 
                   border: '2px solid #4169E1',
                   borderRadius: '12px',
                   fontWeight: 600
@@ -134,10 +124,10 @@ export default function DashboardCharts({ casos }) {
       </Card>
 
       {/* ITCMD Coletado - Dourado */}
-      <Card className="glassmorphism border-2 border-[#FFD700]/30 bg-gradient-to-br from-amber-50/30 to-yellow-50/30 card-shadow-hover">
-        <CardHeader className="border-b border-[#FFD700]/30 bg-gradient-to-r from-amber-50 to-yellow-50">
-          <CardTitle className="text-lg flex items-center gap-2 text-[#1A237E]">
-            <TrendingUp className="w-5 h-5 text-[#FFD700]" />
+      <Card className="bg-white border-2 border-[#FFC107] card-shadow-hover">
+        <CardHeader className="border-b-2 border-[#FFC107] bg-amber-50">
+          <CardTitle className="text-lg flex items-center gap-2 text-[#333333]">
+            <TrendingUp className="w-5 h-5 text-[#FFC107]" />
             ITCMD Coletado (Premium)
           </CardTitle>
         </CardHeader>
@@ -145,12 +135,12 @@ export default function DashboardCharts({ casos }) {
           <ResponsiveContainer width="100%" height={250}>
             <LineChart data={itcmdData}>
               <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
-              <XAxis dataKey="name" stroke="#1A237E" style={{ fontSize: '12px', fontWeight: 600 }} />
-              <YAxis stroke="#1A237E" style={{ fontSize: '12px', fontWeight: 600 }} />
+              <XAxis dataKey="name" stroke="#333333" style={{ fontSize: '12px', fontWeight: 600 }} />
+              <YAxis stroke="#333333" style={{ fontSize: '12px', fontWeight: 600 }} />
               <Tooltip 
                 contentStyle={{ 
-                  backgroundColor: 'rgba(255,255,255,0.98)', 
-                  border: '2px solid #FFD700',
+                  backgroundColor: '#FFFFFF', 
+                  border: '2px solid #FFC107',
                   borderRadius: '12px',
                   fontWeight: 600
                 }}
@@ -159,9 +149,9 @@ export default function DashboardCharts({ casos }) {
               <Line 
                 type="monotone" 
                 dataKey="itcmd" 
-                stroke="#FFD700" 
+                stroke="#FFC107" 
                 strokeWidth={3}
-                dot={{ fill: '#FFD700', r: 6, strokeWidth: 2, stroke: '#FFC107' }}
+                dot={{ fill: '#FFC107', r: 6, strokeWidth: 2, stroke: '#e6ac00' }}
                 activeDot={{ r: 8 }}
               />
             </LineChart>

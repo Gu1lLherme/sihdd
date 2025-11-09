@@ -140,21 +140,17 @@ export default function Layout({ children, currentPageName }) {
         }
 
         :root {
-          --primary-navy: #1A237E;
-          --primary-royal: #4169E1;
-          --accent-gold: #FFD700;
-          --accent-gold-soft: #FFC107;
-          --bg-main: #F5F7FA;
-          --text-primary: #333333;
-          --text-secondary: #6B7280;
+          --royal-blue: #4169E1;
+          --gold: #FFC107;
           --white: #FFFFFF;
-          --success: #10B981;
-          --warning: #F59E0B;
-          --error: #DC2626;
+          --gray-ice: #F5F5F5;
+          --gray-dark: #333333;
+          --gray-light: #AAAAAA;
+          --success: #28A745;
         }
 
         body {
-          background: var(--bg-main);
+          background: var(--white);
           overflow-x: hidden;
         }
 
@@ -165,7 +161,7 @@ export default function Layout({ children, currentPageName }) {
 
         @keyframes pulse-glow {
           0%, 100% { box-shadow: 0 0 20px rgba(65, 105, 225, 0.4); }
-          50% { box-shadow: 0 0 30px rgba(65, 105, 225, 0.6), 0 0 40px rgba(255, 215, 0, 0.3); }
+          50% { box-shadow: 0 0 30px rgba(65, 105, 225, 0.6), 0 0 40px rgba(255, 193, 7, 0.3); }
         }
 
         @keyframes slide-in {
@@ -182,13 +178,14 @@ export default function Layout({ children, currentPageName }) {
         }
 
         .nav-item-active {
-          background: linear-gradient(90deg, rgba(65, 105, 225, 0.2) 0%, rgba(65, 105, 225, 0.1) 100%);
-          border-left: 4px solid var(--accent-gold);
-          font-weight: 600;
+          background: #4169E1 !important;
+          color: white !important;
+          font-weight: 700;
+          box-shadow: 0 4px 12px rgba(65, 105, 225, 0.3);
         }
 
         .glassmorphism {
-          background: rgba(255, 255, 255, 0.95);
+          background: rgba(255, 255, 255, 0.98);
           backdrop-filter: blur(10px);
           -webkit-backdrop-filter: blur(10px);
         }
@@ -206,7 +203,6 @@ export default function Layout({ children, currentPageName }) {
           transform: translateY(-4px);
         }
 
-        /* Mobile First - Ícones padronizados */
         @media (max-width: 768px) {
           .animate-float {
             animation: none;
@@ -246,24 +242,24 @@ export default function Layout({ children, currentPageName }) {
         }
       `}</style>
       
-      <div className="min-h-screen flex w-full bg-[#F5F7FA]">
-        {/* Sidebar - Azul Marinho Escuro #1A237E */}
-        <Sidebar className="border-r-0 shadow-2xl hidden md:flex" style={{ backgroundColor: '#1A237E' }}>
-          <SidebarHeader className="border-b border-white/10 p-4 lg:p-6">
+      <div className="min-h-screen flex w-full bg-white">
+        {/* Sidebar - Fundo Branco/Cinza Claro */}
+        <Sidebar className="border-r-2 border-slate-200 shadow-lg hidden md:flex" style={{ backgroundColor: '#F5F5F5' }}>
+          <SidebarHeader className="border-b-2 border-slate-200 p-4 lg:p-6 bg-white">
             <div className="flex items-center gap-2 lg:gap-3">
-              <div className="w-10 h-10 lg:w-12 lg:h-12 bg-gradient-to-br from-[#4169E1] to-[#FFD700] rounded-xl lg:rounded-2xl flex items-center justify-center shadow-xl">
+              <div className="w-10 h-10 lg:w-12 lg:h-12 bg-[#4169E1] rounded-xl lg:rounded-2xl flex items-center justify-center shadow-xl">
                 <Scale className="w-5 h-5 lg:w-6 lg:h-6 text-white" />
               </div>
               <div>
-                <h2 className="font-bold text-lg lg:text-xl text-white tracking-tight">SIHDD</h2>
-                <p className="text-[10px] lg:text-xs text-blue-200 font-medium">Sistema Inteligente</p>
+                <h2 className="font-bold text-lg lg:text-xl text-[#333333] tracking-tight">SIHDD</h2>
+                <p className="text-[10px] lg:text-xs text-[#AAAAAA] font-medium">Sistema Inteligente</p>
               </div>
             </div>
           </SidebarHeader>
           
-          <SidebarContent className="p-2 lg:p-3">
+          <SidebarContent className="p-2 lg:p-3 bg-[#F5F5F5]">
             <SidebarGroup>
-              <SidebarGroupLabel className="text-[10px] lg:text-xs font-semibold text-blue-200 uppercase tracking-wider px-2 lg:px-3 py-2 mb-1 lg:mb-2">
+              <SidebarGroupLabel className="text-[10px] lg:text-xs font-semibold text-[#AAAAAA] uppercase tracking-wider px-2 lg:px-3 py-2 mb-1 lg:mb-2">
                 Módulos
               </SidebarGroupLabel>
               <SidebarGroupContent>
@@ -275,10 +271,12 @@ export default function Layout({ children, currentPageName }) {
                         <SidebarMenuButton 
                           asChild 
                           className={`
-                            group relative overflow-hidden
-                            hover:bg-white/10
-                            transition-all duration-300 rounded-lg lg:rounded-xl mb-1
-                            ${isActive ? 'nav-item-active text-white' : 'text-blue-100 hover:text-white'}
+                            group relative overflow-hidden rounded-lg lg:rounded-xl mb-1
+                            transition-all duration-300
+                            ${isActive 
+                              ? 'nav-item-active' 
+                              : 'text-[#333333] hover:bg-white/80 hover:text-[#4169E1]'
+                            }
                           `}
                         >
                           <Link to={item.url} className="flex items-center gap-2 lg:gap-3 px-2 lg:px-3 py-2 lg:py-3">
@@ -286,15 +284,15 @@ export default function Layout({ children, currentPageName }) {
                               w-8 h-8 lg:w-10 lg:h-10 rounded-lg lg:rounded-xl flex items-center justify-center
                               transition-all duration-300
                               ${isActive 
-                                ? 'bg-gradient-to-br from-[#4169E1] to-[#FFD700] shadow-lg scale-110' 
-                                : 'bg-white/5 group-hover:bg-white/10 group-hover:scale-105'
+                                ? 'bg-white/20 scale-110' 
+                                : 'bg-white/50 group-hover:bg-white group-hover:scale-105'
                               }
                             `}>
-                              <item.icon className="w-4 h-4 lg:w-5 lg:h-5" style={{ width: '1rem', height: '1rem' }} />
+                              <item.icon className={`w-4 h-4 lg:w-5 lg:h-5 ${isActive ? 'text-white' : 'text-[#4169E1]'}`} style={{ width: '1rem', height: '1rem' }} />
                             </div>
-                            <span className="flex-1 font-medium text-sm lg:text-base">{item.title}</span>
+                            <span className="flex-1 font-semibold text-sm lg:text-base">{item.title}</span>
                             {isActive && (
-                              <div className="w-2 h-2 rounded-full bg-[#FFD700] animate-pulse shadow-lg shadow-yellow-500/50" />
+                              <div className="w-2 h-2 rounded-full bg-[#FFC107] shadow-lg shadow-yellow-500/50" />
                             )}
                           </Link>
                         </SidebarMenuButton>
@@ -306,21 +304,21 @@ export default function Layout({ children, currentPageName }) {
             </SidebarGroup>
           </SidebarContent>
 
-          <SidebarFooter className="border-t border-white/10 p-3 lg:p-4">
+          <SidebarFooter className="border-t-2 border-slate-200 p-3 lg:p-4 bg-white">
             <Link to={createPageUrl("Configuracoes")} className="block">
-              <div className="flex items-center gap-2 lg:gap-3 p-2 lg:p-3 rounded-lg lg:rounded-xl bg-white/5 hover:bg-white/10 transition-colors cursor-pointer group">
-                <div className="w-8 h-8 lg:w-10 lg:h-10 bg-gradient-to-br from-[#4169E1] to-[#FFD700] rounded-full flex items-center justify-center shadow-lg">
+              <div className="flex items-center gap-2 lg:gap-3 p-2 lg:p-3 rounded-lg lg:rounded-xl bg-[#F5F5F5] hover:bg-white transition-colors cursor-pointer group">
+                <div className="w-8 h-8 lg:w-10 lg:h-10 bg-[#4169E1] rounded-full flex items-center justify-center shadow-lg">
                   <span className="text-white font-bold text-xs lg:text-sm">
                     {user?.full_name?.charAt(0)?.toUpperCase() || 'U'}
                   </span>
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="font-semibold text-white text-xs lg:text-sm truncate">
+                  <p className="font-semibold text-[#333333] text-xs lg:text-sm truncate">
                     {user?.full_name?.split(' ')[0] || 'Usuário'}
                   </p>
-                  <p className="text-[10px] lg:text-xs text-blue-200 truncate">Configurações</p>
+                  <p className="text-[10px] lg:text-xs text-[#AAAAAA] truncate">Configurações</p>
                 </div>
-                <Settings className="w-3 h-3 lg:w-4 lg:h-4 text-blue-200 opacity-0 group-hover:opacity-100 transition-opacity" />
+                <Settings className="w-3 h-3 lg:w-4 lg:h-4 text-[#AAAAAA] opacity-0 group-hover:opacity-100 transition-opacity" />
               </div>
             </Link>
           </SidebarFooter>
@@ -329,19 +327,19 @@ export default function Layout({ children, currentPageName }) {
         {/* Main Content */}
         <main className="flex-1 flex flex-col relative w-full min-w-0">
           {/* Top Bar */}
-          <header className="glassmorphism border-b border-slate-200 px-3 sm:px-4 lg:px-6 py-3 sm:py-4 sticky top-0 z-40 shadow-sm">
+          <header className="glassmorphism border-b-2 border-slate-200 px-3 sm:px-4 lg:px-6 py-3 sm:py-4 sticky top-0 z-40 shadow-sm">
             <div className="flex items-center justify-between gap-3 sm:gap-4">
               <div className="flex items-center gap-3 sm:gap-4">
                 <SidebarTrigger className="md:hidden hover:bg-slate-100 p-2 rounded-lg transition-colors duration-200">
-                  <Menu className="w-4 h-4 text-[#1A237E]" style={{ width: '1rem', height: '1rem' }} />
+                  <Menu className="w-4 h-4 text-[#333333]" style={{ width: '1rem', height: '1rem' }} />
                 </SidebarTrigger>
                 <div className="flex items-center gap-2">
-                  <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-br from-[#4169E1] to-[#FFD700] rounded-lg flex items-center justify-center shadow-lg">
+                  <div className="w-8 h-8 sm:w-10 sm:h-10 bg-[#4169E1] rounded-lg flex items-center justify-center shadow-lg">
                     <Scale className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
                   </div>
                   <div>
-                    <h1 className="text-base sm:text-lg lg:text-xl font-bold text-[#1A237E] leading-tight">SIHDD</h1>
-                    <p className="text-[10px] sm:text-xs text-[#6B7280] hidden sm:block">Sistema Inteligente</p>
+                    <h1 className="text-base sm:text-lg lg:text-xl font-bold text-[#333333] leading-tight">SIHDD</h1>
+                    <p className="text-[10px] sm:text-xs text-[#AAAAAA] hidden sm:block">Sistema Inteligente</p>
                   </div>
                 </div>
               </div>
@@ -350,13 +348,13 @@ export default function Layout({ children, currentPageName }) {
               <div className="flex items-center gap-2">
                 <button
                   onClick={() => setShowChat(!showChat)}
-                  className="md:hidden w-10 h-10 bg-gradient-to-br from-[#4169E1] to-[#FFD700] rounded-full flex items-center justify-center shadow-lg"
+                  className="md:hidden w-10 h-10 bg-[#4169E1] rounded-full flex items-center justify-center shadow-lg"
                 >
                   <Brain className="w-4 h-4 text-white" style={{ width: '1rem', height: '1rem' }} />
                 </button>
                 <Link to={createPageUrl("Configuracoes")} className="md:hidden">
-                  <button className="w-10 h-10 bg-slate-200 rounded-full flex items-center justify-center shadow-lg">
-                    <Settings className="w-4 h-4 text-[#1A237E]" style={{ width: '1rem', height: '1rem' }} />
+                  <button className="w-10 h-10 bg-[#F5F5F5] rounded-full flex items-center justify-center shadow-lg">
+                    <Settings className="w-4 h-4 text-[#333333]" style={{ width: '1rem', height: '1rem' }} />
                   </button>
                 </Link>
               </div>
@@ -367,19 +365,19 @@ export default function Layout({ children, currentPageName }) {
             {children}
           </div>
 
-          {/* Floating IA Button - Azul Royal com Dourado */}
+          {/* Floating IA Button - Azul Royal */}
           <button
             onClick={() => setShowChat(!showChat)}
-            className="floating-ai-button hidden md:flex fixed bottom-6 right-6 w-16 h-16 bg-gradient-to-br from-[#4169E1] via-[#5a7bea] to-[#FFD700] rounded-full shadow-2xl items-center justify-center hover:scale-110 transition-all duration-300 z-50 animate-float animate-pulse-glow group"
+            className="floating-ai-button hidden md:flex fixed bottom-6 right-6 w-16 h-16 bg-[#4169E1] rounded-full shadow-2xl items-center justify-center hover:scale-110 transition-all duration-300 z-50 animate-float animate-pulse-glow group"
           >
             <Brain className="w-8 h-8 text-white group-hover:scale-110 transition-transform" />
-            <div className="absolute -top-1 -right-1 w-4 h-4 bg-[#10B981] rounded-full border-2 border-white animate-pulse" />
+            <div className="absolute -top-1 -right-1 w-4 h-4 bg-[#28A745] rounded-full border-2 border-white animate-pulse" />
           </button>
 
           {/* Chat Widget */}
           {showChat && (
-            <div className="chat-widget fixed bottom-28 right-6 w-96 h-[600px] glassmorphism rounded-2xl shadow-2xl border border-slate-200 z-50 flex flex-col overflow-hidden animate-in slide-in-from-bottom-4 duration-300">
-              <div className="bg-gradient-to-r from-[#1A237E] via-[#4169E1] to-[#FFD700] p-3 sm:p-4 flex items-center justify-between">
+            <div className="chat-widget fixed bottom-28 right-6 w-96 h-[600px] glassmorphism rounded-2xl shadow-2xl border-2 border-slate-200 z-50 flex flex-col overflow-hidden animate-in slide-in-from-bottom-4 duration-300">
+              <div className="bg-[#4169E1] p-3 sm:p-4 flex items-center justify-between">
                 <div className="flex items-center gap-2 sm:gap-3">
                   <div className="w-8 h-8 sm:w-10 sm:h-10 bg-white/20 rounded-full flex items-center justify-center animate-pulse">
                     <Brain className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
@@ -387,8 +385,8 @@ export default function Layout({ children, currentPageName }) {
                   <div>
                     <h3 className="font-semibold text-white text-sm sm:text-base">RAG Tributário</h3>
                     <div className="flex items-center gap-2">
-                      <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-[#10B981] rounded-full animate-pulse" />
-                      <p className="text-[10px] sm:text-xs text-blue-100">IA Online</p>
+                      <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-[#28A745] rounded-full animate-pulse" />
+                      <p className="text-[10px] sm:text-xs text-white/80">IA Online</p>
                     </div>
                   </div>
                 </div>
