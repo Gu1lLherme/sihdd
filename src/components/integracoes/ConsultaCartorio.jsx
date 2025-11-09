@@ -4,13 +4,15 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
-import { Home, Search, CheckCircle2, Loader2 } from "lucide-react";
+import { Home, Search, CheckCircle2, Loader2, AlertCircle } from "lucide-react";
 import { base44 } from "@/api/base44Client";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { validarMatricula } from "@/utils/validations";
 
 export default function ConsultaCartorio() {
   const [matricula, setMatricula] = useState("");
   const [resultado, setResultado] = useState(null);
+  const [erro, setErro] = useState(null);
   const queryClient = useQueryClient();
 
   const consultaMutation = useMutation({
@@ -45,11 +47,26 @@ export default function ConsultaCartorio() {
     },
     onSuccess: (data) => {
       setResultado(data);
+      setErro(null);
       queryClient.invalidateQueries({ queryKey: ['integracoes-consultas'] });
     },
   });
 
   const handleConsultar = () => {
+    // Validar matrícula antes de consultar
+    const validacao = validarMatricula(matricula);
+    
+    if (!validacao.valido) {
+      setErro(validacao.erro);
+      return;
+    }
+    
+    if (!matricula.trim()) {
+      setErro('Por favor, informe o número da matrícula');
+      return;
+    }
+    
+    setErro(null);
     consultaMutation.mutate(matricula);
   };
 
@@ -65,15 +82,26 @@ export default function ConsultaCartorio() {
         <CardContent className="p-6">
           <div className="space-y-4">
             <div className="space-y-2">
-              <Label>Número da Matrícula</Label>
+              <Label htmlFor="matricula">Número da Matrícula</Label>
               <Input
+                id="matricula"
                 value={matricula}
-                onChange={(e) => setMatricula(e.target.value)}
+                onChange={(e) => {
+                  setMatricula(e.target.value);
+                  setErro(null);
+                }}
                 placeholder="Ex: 12345"
+                className={erro ? 'border-red-500' : ''}
               />
               <p className="text-xs text-slate-500">
                 Digite o número da matrícula do imóvel no Registro de Imóveis
               </p>
+              {erro && (
+                <p className="text-sm text-red-600 flex items-center gap-1">
+                  <AlertCircle className="w-3 h-3" />
+                  {erro}
+                </p>
+              )}
             </div>
 
             <Button

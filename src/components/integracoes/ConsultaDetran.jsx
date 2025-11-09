@@ -4,13 +4,15 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
-import { Car, Search, CheckCircle2, Loader2 } from "lucide-react";
+import { Car, Search, CheckCircle2, Loader2, AlertCircle } from "lucide-react";
 import { base44 } from "@/api/base44Client";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { validarPlaca, formatarPlaca } from "@/utils/validations";
 
 export default function ConsultaDetran() {
   const [placa, setPlaca] = useState("");
   const [resultado, setResultado] = useState(null);
+  const [erro, setErro] = useState(null);
   const queryClient = useQueryClient();
 
   const consultaMutation = useMutation({
@@ -50,12 +52,33 @@ export default function ConsultaDetran() {
     },
     onSuccess: (data) => {
       setResultado(data);
+      setErro(null);
       queryClient.invalidateQueries({ queryKey: ['integracoes-consultas'] });
     },
   });
 
   const handleConsultar = () => {
+    // Validar placa antes de consultar
+    const validacao = validarPlaca(placa);
+    
+    if (!validacao.valido) {
+      setErro(validacao.erro);
+      return;
+    }
+    
+    if (!placa.trim()) {
+      setErro('Por favor, informe a placa do veículo');
+      return;
+    }
+    
+    setErro(null);
     consultaMutation.mutate(placa);
+  };
+
+  const handlePlacaChange = (value) => {
+    const placaFormatada = formatarPlaca(value);
+    setPlaca(placaFormatada);
+    setErro(null);
   };
 
   return (
@@ -70,16 +93,24 @@ export default function ConsultaDetran() {
         <CardContent className="p-6">
           <div className="space-y-4">
             <div className="space-y-2">
-              <Label>Placa do Veículo</Label>
+              <Label htmlFor="placa">Placa do Veículo</Label>
               <Input
+                id="placa"
                 value={placa}
-                onChange={(e) => setPlaca(e.target.value.toUpperCase())}
+                onChange={(e) => handlePlacaChange(e.target.value)}
                 placeholder="Ex: ABC-1234"
                 maxLength={8}
+                className={erro ? 'border-red-500' : ''}
               />
               <p className="text-xs text-slate-500">
                 Digite a placa do veículo (formato antigo ou Mercosul)
               </p>
+              {erro && (
+                <p className="text-sm text-red-600 flex items-center gap-1">
+                  <AlertCircle className="w-3 h-3" />
+                  {erro}
+                </p>
+              )}
             </div>
 
             <Button
