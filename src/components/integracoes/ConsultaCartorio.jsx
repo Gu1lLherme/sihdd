@@ -8,7 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { Home, Search, CheckCircle2, Loader2, AlertCircle } from "lucide-react";
 import { base44 } from "@/api/base44Client";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { validarMatricula } from "@/utils/validations";
+import { validarMatricula } from "@/utils/validations.js";
 
 export default function ConsultaCartorio() {
   const [matricula, setMatricula] = useState("");
