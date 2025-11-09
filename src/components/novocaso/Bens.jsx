@@ -30,7 +30,7 @@ export default function Bens({ formData, setFormData }) {
       identificacao: '',
       observacoes: ''
     }];
-    setFormData(prev => ({ ...prev, bens: novosBens }));
+    setFormData(prev => ({ ...prev, bens: novosBBens }));
   };
 
   const removerBem = (index) => {
@@ -39,12 +39,7 @@ export default function Bens({ formData, setFormData }) {
     
     // Limpar erros do bem removido
     const novosErros = { ...erros };
-    // Remove all errors related to the removed item's index
-    Object.keys(novosErros).forEach(key => {
-      if (key.startsWith(`bem_${index}_`)) {
-        delete novosErros[key];
-      }
-    });
+    delete novosErros[`bem_${index}`];
     setErros(novosErros);
   };
 
@@ -75,12 +70,6 @@ export default function Bens({ formData, setFormData }) {
     
     if (!validacao.valido) {
       setErros(prev => ({ ...prev, [`bem_${index}_${campo}`]: validacao.erro }));
-    } else {
-      setErros(prev => {
-        const novosErros = { ...prev };
-        delete novosErros[`bem_${index}_${campo}`];
-        return novosErros;
-      });
     }
     
     return validacao.valido;
