@@ -1,7 +1,7 @@
 import React from "react";
 import { Link, useLocation } from "react-router-dom";
 import { createPageUrl } from "@/utils";
-import { Scale, FolderOpen, Link2, History, BarChart3, Brain, Users, Settings, Grid3x3, Shield } from "lucide-react";
+import { Scale, FolderOpen, Link2, History, BarChart3, Brain, Users, Settings, Grid3x3, Shield, Menu } from "lucide-react";
 import {
   Sidebar,
   SidebarContent,
@@ -92,6 +92,7 @@ export default function Layout({ children, currentPageName }) {
 
         body {
           background: var(--bg-main);
+          overflow-x: hidden;
         }
 
         @keyframes float {
@@ -141,27 +142,58 @@ export default function Layout({ children, currentPageName }) {
           box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
           transform: translateY(-4px);
         }
+
+        /* Mobile First Responsive */
+        @media (max-width: 768px) {
+          .animate-float {
+            animation: none;
+          }
+          
+          .card-shadow-hover:hover {
+            transform: translateY(0);
+          }
+        }
+
+        /* Floating Button Responsive */
+        @media (max-width: 640px) {
+          .floating-ai-button {
+            width: 56px !important;
+            height: 56px !important;
+            bottom: 20px !important;
+            right: 20px !important;
+          }
+        }
+
+        /* Hide chat widget on small screens */
+        @media (max-width: 640px) {
+          .chat-widget {
+            width: calc(100vw - 32px) !important;
+            right: 16px !important;
+            bottom: 90px !important;
+            height: 500px !important;
+          }
+        }
       `}</style>
       
       <div className="min-h-screen flex w-full bg-[#F9FAFB]">
         {/* Sidebar - Azul Petróleo Escuro */}
-        <Sidebar className="border-r-0 shadow-2xl" style={{ backgroundColor: '#0B1A2E' }}>
-          <SidebarHeader className="border-b border-white/10 p-6">
-            <div className="flex items-center gap-3">
-              <div className="w-12 h-12 bg-gradient-to-br from-[#1E40AF] to-[#3B82F6] rounded-2xl flex items-center justify-center shadow-xl animate-float">
-                <Scale className="w-7 h-7 text-white" />
+        <Sidebar className="border-r-0 shadow-2xl hidden md:flex" style={{ backgroundColor: '#0B1A2E' }}>
+          <SidebarHeader className="border-b border-white/10 p-4 lg:p-6">
+            <div className="flex items-center gap-2 lg:gap-3">
+              <div className="w-10 h-10 lg:w-12 lg:h-12 bg-gradient-to-br from-[#1E40AF] to-[#3B82F6] rounded-xl lg:rounded-2xl flex items-center justify-center shadow-xl animate-float">
+                <Scale className="w-6 h-6 lg:w-7 lg:h-7 text-white" />
               </div>
               <div>
-                <h2 className="font-bold text-xl text-white tracking-tight">SIHDD</h2>
-                <p className="text-xs text-blue-200 font-medium">Sistema Inteligente de Harmonização</p>
+                <h2 className="font-bold text-lg lg:text-xl text-white tracking-tight">SIHDD</h2>
+                <p className="text-[10px] lg:text-xs text-blue-200 font-medium">Sistema Inteligente</p>
               </div>
             </div>
           </SidebarHeader>
           
-          <SidebarContent className="p-3">
+          <SidebarContent className="p-2 lg:p-3">
             <SidebarGroup>
-              <SidebarGroupLabel className="text-xs font-semibold text-blue-200 uppercase tracking-wider px-3 py-2 mb-2">
-                Módulos Principais
+              <SidebarGroupLabel className="text-[10px] lg:text-xs font-semibold text-blue-200 uppercase tracking-wider px-2 lg:px-3 py-2 mb-1 lg:mb-2">
+                Módulos
               </SidebarGroupLabel>
               <SidebarGroupContent>
                 <SidebarMenu>
@@ -174,22 +206,22 @@ export default function Layout({ children, currentPageName }) {
                           className={`
                             group relative overflow-hidden
                             hover:bg-white/10
-                            transition-all duration-300 rounded-xl mb-1
+                            transition-all duration-300 rounded-lg lg:rounded-xl mb-1
                             ${isActive ? 'nav-item-active text-white' : 'text-blue-100 hover:text-white'}
                           `}
                         >
-                          <Link to={item.url} className="flex items-center gap-3 px-3 py-3">
+                          <Link to={item.url} className="flex items-center gap-2 lg:gap-3 px-2 lg:px-3 py-2 lg:py-3">
                             <div className={`
-                              w-10 h-10 rounded-xl flex items-center justify-center
+                              w-8 h-8 lg:w-10 lg:h-10 rounded-lg lg:rounded-xl flex items-center justify-center
                               transition-all duration-300
                               ${isActive 
                                 ? 'bg-gradient-to-br from-[#1E40AF] to-[#3B82F6] shadow-lg scale-110' 
                                 : 'bg-white/5 group-hover:bg-white/10 group-hover:scale-105'
                               }
                             `}>
-                              <item.icon className={`w-5 h-5 ${isActive ? 'text-white' : 'text-blue-200 group-hover:text-white'}`} />
+                              <item.icon className={`w-4 h-4 lg:w-5 lg:h-5 ${isActive ? 'text-white' : 'text-blue-200 group-hover:text-white'}`} />
                             </div>
-                            <span className="flex-1 font-medium">{item.title}</span>
+                            <span className="flex-1 font-medium text-sm lg:text-base">{item.title}</span>
                             {isActive && (
                               <div className="w-2 h-2 rounded-full bg-[#3B82F6] animate-pulse shadow-lg shadow-blue-500/50" />
                             )}
@@ -203,61 +235,78 @@ export default function Layout({ children, currentPageName }) {
             </SidebarGroup>
           </SidebarContent>
 
-          <SidebarFooter className="border-t border-white/10 p-4">
-            <div className="flex items-center gap-3 p-3 rounded-xl bg-white/5 hover:bg-white/10 transition-colors cursor-pointer">
-              <div className="w-10 h-10 bg-gradient-to-br from-[#3B82F6] to-[#1E40AF] rounded-full flex items-center justify-center shadow-lg">
-                <span className="text-white font-bold text-sm">A</span>
+          <SidebarFooter className="border-t border-white/10 p-3 lg:p-4">
+            <div className="flex items-center gap-2 lg:gap-3 p-2 lg:p-3 rounded-lg lg:rounded-xl bg-white/5 hover:bg-white/10 transition-colors cursor-pointer">
+              <div className="w-8 h-8 lg:w-10 lg:h-10 bg-gradient-to-br from-[#3B82F6] to-[#1E40AF] rounded-full flex items-center justify-center shadow-lg">
+                <span className="text-white font-bold text-xs lg:text-sm">A</span>
               </div>
               <div className="flex-1 min-w-0">
-                <p className="font-semibold text-white text-sm truncate">Advogado</p>
-                <p className="text-xs text-blue-200 truncate">Gestão Inteligente</p>
+                <p className="font-semibold text-white text-xs lg:text-sm truncate">Advogado</p>
+                <p className="text-[10px] lg:text-xs text-blue-200 truncate">Gestão Inteligente</p>
               </div>
-              <Settings className="w-4 h-4 text-blue-200 opacity-0 group-hover:opacity-100 transition-opacity" />
+              <Settings className="w-3 h-3 lg:w-4 lg:h-4 text-blue-200 opacity-0 group-hover:opacity-100 transition-opacity" />
             </div>
           </SidebarFooter>
         </Sidebar>
 
         {/* Main Content */}
-        <main className="flex-1 flex flex-col relative">
-          {/* Top Bar Mobile */}
-          <header className="glassmorphism border-b border-slate-200 px-6 py-4 md:hidden sticky top-0 z-10 shadow-sm">
-            <div className="flex items-center gap-4">
-              <SidebarTrigger className="hover:bg-slate-100 p-2 rounded-lg transition-colors duration-200" />
-              <div className="flex items-center gap-2">
-                <div className="w-8 h-8 bg-gradient-to-br from-[#1E40AF] to-[#3B82F6] rounded-lg flex items-center justify-center">
-                  <Scale className="w-5 h-5 text-white" />
+        <main className="flex-1 flex flex-col relative w-full min-w-0">
+          {/* Top Bar - Fixed for Mobile */}
+          <header className="glassmorphism border-b border-slate-200 px-3 sm:px-4 lg:px-6 py-3 sm:py-4 sticky top-0 z-40 shadow-sm">
+            <div className="flex items-center justify-between gap-3 sm:gap-4">
+              <div className="flex items-center gap-3 sm:gap-4">
+                <SidebarTrigger className="md:hidden hover:bg-slate-100 p-2 rounded-lg transition-colors duration-200">
+                  <Menu className="w-5 h-5" />
+                </SidebarTrigger>
+                <div className="flex items-center gap-2">
+                  <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-br from-[#1E40AF] to-[#3B82F6] rounded-lg flex items-center justify-center">
+                    <Scale className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
+                  </div>
+                  <div>
+                    <h1 className="text-base sm:text-lg lg:text-xl font-bold text-[#0B1A2E] leading-tight">SIHDD</h1>
+                    <p className="text-[10px] sm:text-xs text-[#6B7280] hidden sm:block">Sistema Inteligente</p>
+                  </div>
                 </div>
-                <h1 className="text-lg font-bold text-[#0B1A2E]">SIHDD</h1>
+              </div>
+              
+              {/* Mobile Quick Actions */}
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => setShowChat(!showChat)}
+                  className="md:hidden w-10 h-10 bg-gradient-to-br from-[#1E40AF] to-[#3B82F6] rounded-full flex items-center justify-center shadow-lg"
+                >
+                  <Brain className="w-5 h-5 text-white" />
+                </button>
               </div>
             </div>
           </header>
 
-          <div className="flex-1 overflow-auto">
+          <div className="flex-1 overflow-auto w-full">
             {children}
           </div>
 
-          {/* Floating IA Button */}
+          {/* Floating IA Button - Hidden on Mobile (replaced by header button) */}
           <button
             onClick={() => setShowChat(!showChat)}
-            className="fixed bottom-6 right-6 w-16 h-16 bg-gradient-to-br from-[#1E40AF] via-[#3B82F6] to-purple-600 rounded-full shadow-2xl flex items-center justify-center hover:scale-110 transition-all duration-300 z-50 animate-float animate-pulse-glow group"
+            className="floating-ai-button hidden md:flex fixed bottom-6 right-6 w-16 h-16 bg-gradient-to-br from-[#1E40AF] via-[#3B82F6] to-purple-600 rounded-full shadow-2xl items-center justify-center hover:scale-110 transition-all duration-300 z-50 animate-float animate-pulse-glow group"
           >
             <Brain className="w-8 h-8 text-white group-hover:scale-110 transition-transform" />
             <div className="absolute -top-1 -right-1 w-4 h-4 bg-[#10B981] rounded-full border-2 border-white animate-pulse" />
           </button>
 
-          {/* Chat Widget */}
+          {/* Chat Widget - Responsive */}
           {showChat && (
-            <div className="fixed bottom-28 right-6 w-96 h-[600px] glassmorphism rounded-2xl shadow-2xl border border-slate-200 z-50 flex flex-col overflow-hidden animate-in slide-in-from-bottom-4 duration-300">
-              <div className="bg-gradient-to-r from-[#0B1A2E] via-[#1E40AF] to-[#3B82F6] p-4 flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center animate-pulse">
-                    <Brain className="w-5 h-5 text-white" />
+            <div className="chat-widget fixed bottom-28 right-6 w-96 h-[600px] glassmorphism rounded-2xl shadow-2xl border border-slate-200 z-50 flex flex-col overflow-hidden animate-in slide-in-from-bottom-4 duration-300">
+              <div className="bg-gradient-to-r from-[#0B1A2E] via-[#1E40AF] to-[#3B82F6] p-3 sm:p-4 flex items-center justify-between">
+                <div className="flex items-center gap-2 sm:gap-3">
+                  <div className="w-8 h-8 sm:w-10 sm:h-10 bg-white/20 rounded-full flex items-center justify-center animate-pulse">
+                    <Brain className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
                   </div>
                   <div>
-                    <h3 className="font-semibold text-white">RAG Tributário</h3>
+                    <h3 className="font-semibold text-white text-sm sm:text-base">RAG Tributário</h3>
                     <div className="flex items-center gap-2">
-                      <div className="w-2 h-2 bg-[#10B981] rounded-full animate-pulse" />
-                      <p className="text-xs text-blue-100">IA Online • ITCMD/SE 2020-2025</p>
+                      <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-[#10B981] rounded-full animate-pulse" />
+                      <p className="text-[10px] sm:text-xs text-blue-100">IA Online</p>
                     </div>
                   </div>
                 </div>
