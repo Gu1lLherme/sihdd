@@ -55,15 +55,16 @@ export default function DashboardCharts({ casos }) {
     value: count
   }));
 
-  const COLORS = ['#1E40AF', '#3B82F6', '#10B981', '#F59E0B', '#8B5CF6', '#EC4899', '#06B6D4'];
+  // Cores Azul Royal e Dourado
+  const COLORS = ['#4169E1', '#5a7bea', '#FFD700', '#FFC107', '#10B981', '#F59E0B', '#06B6D4'];
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-      {/* Evolução de Casos */}
-      <Card className="glassmorphism border border-slate-200 card-shadow-hover">
-        <CardHeader className="border-b border-slate-200">
-          <CardTitle className="text-lg flex items-center gap-2 text-[#0B1A2E]">
-            <Activity className="w-5 h-5 text-[#1E40AF]" />
+      {/* Evolução de Casos - Azul Royal */}
+      <Card className="glassmorphism border-2 border-[#4169E1]/20 card-shadow-hover">
+        <CardHeader className="border-b border-slate-200 bg-gradient-to-r from-blue-50 to-indigo-50">
+          <CardTitle className="text-lg flex items-center gap-2 text-[#1A237E]">
+            <Activity className="w-5 h-5 text-[#4169E1]" />
             Evolução de Casos
           </CardTitle>
         </CardHeader>
@@ -71,12 +72,12 @@ export default function DashboardCharts({ casos }) {
           <ResponsiveContainer width="100%" height={250}>
             <BarChart data={casosData}>
               <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
-              <XAxis dataKey="name" stroke="#6B7280" style={{ fontSize: '12px', fontWeight: 600 }} />
-              <YAxis stroke="#6B7280" style={{ fontSize: '12px', fontWeight: 600 }} />
+              <XAxis dataKey="name" stroke="#1A237E" style={{ fontSize: '12px', fontWeight: 600 }} />
+              <YAxis stroke="#1A237E" style={{ fontSize: '12px', fontWeight: 600 }} />
               <Tooltip 
                 contentStyle={{ 
-                  backgroundColor: 'rgba(255,255,255,0.95)', 
-                  border: '1px solid #1E40AF',
+                  backgroundColor: 'rgba(255,255,255,0.98)', 
+                  border: '2px solid #4169E1',
                   borderRadius: '12px',
                   fontWeight: 600
                 }}
@@ -84,8 +85,8 @@ export default function DashboardCharts({ casos }) {
               <Bar dataKey="casos" fill="url(#blueGradient)" radius={[8, 8, 0, 0]} />
               <defs>
                 <linearGradient id="blueGradient" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stopColor="#1E40AF" />
-                  <stop offset="100%" stopColor="#3B82F6" />
+                  <stop offset="0%" stopColor="#4169E1" />
+                  <stop offset="100%" stopColor="#5a7bea" />
                 </linearGradient>
               </defs>
             </BarChart>
@@ -94,10 +95,10 @@ export default function DashboardCharts({ casos }) {
       </Card>
 
       {/* Distribuição por Status */}
-      <Card className="glassmorphism border border-slate-200 card-shadow-hover">
-        <CardHeader className="border-b border-slate-200">
-          <CardTitle className="text-lg flex items-center gap-2 text-[#0B1A2E]">
-            <PieChartIcon className="w-5 h-5 text-[#10B981]" />
+      <Card className="glassmorphism border-2 border-[#4169E1]/20 card-shadow-hover">
+        <CardHeader className="border-b border-slate-200 bg-gradient-to-r from-blue-50 to-indigo-50">
+          <CardTitle className="text-lg flex items-center gap-2 text-[#1A237E]">
+            <PieChartIcon className="w-5 h-5 text-[#4169E1]" />
             Distribuição por Status
           </CardTitle>
         </CardHeader>
@@ -120,8 +121,8 @@ export default function DashboardCharts({ casos }) {
               </Pie>
               <Tooltip 
                 contentStyle={{ 
-                  backgroundColor: 'rgba(255,255,255,0.95)', 
-                  border: '1px solid #10B981',
+                  backgroundColor: 'rgba(255,255,255,0.98)', 
+                  border: '2px solid #4169E1',
                   borderRadius: '12px',
                   fontWeight: 600
                 }}
@@ -132,24 +133,24 @@ export default function DashboardCharts({ casos }) {
         </CardContent>
       </Card>
 
-      {/* ITCMD Coletado */}
-      <Card className="glassmorphism border border-slate-200 card-shadow-hover">
-        <CardHeader className="border-b border-slate-200">
-          <CardTitle className="text-lg flex items-center gap-2 text-[#0B1A2E]">
-            <TrendingUp className="w-5 h-5 text-[#F59E0B]" />
-            ITCMD Coletado
+      {/* ITCMD Coletado - Dourado */}
+      <Card className="glassmorphism border-2 border-[#FFD700]/30 bg-gradient-to-br from-amber-50/30 to-yellow-50/30 card-shadow-hover">
+        <CardHeader className="border-b border-[#FFD700]/30 bg-gradient-to-r from-amber-50 to-yellow-50">
+          <CardTitle className="text-lg flex items-center gap-2 text-[#1A237E]">
+            <TrendingUp className="w-5 h-5 text-[#FFD700]" />
+            ITCMD Coletado (Premium)
           </CardTitle>
         </CardHeader>
         <CardContent className="pt-6">
           <ResponsiveContainer width="100%" height={250}>
             <LineChart data={itcmdData}>
               <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
-              <XAxis dataKey="name" stroke="#6B7280" style={{ fontSize: '12px', fontWeight: 600 }} />
-              <YAxis stroke="#6B7280" style={{ fontSize: '12px', fontWeight: 600 }} />
+              <XAxis dataKey="name" stroke="#1A237E" style={{ fontSize: '12px', fontWeight: 600 }} />
+              <YAxis stroke="#1A237E" style={{ fontSize: '12px', fontWeight: 600 }} />
               <Tooltip 
                 contentStyle={{ 
-                  backgroundColor: 'rgba(255,255,255,0.95)', 
-                  border: '1px solid #F59E0B',
+                  backgroundColor: 'rgba(255,255,255,0.98)', 
+                  border: '2px solid #FFD700',
                   borderRadius: '12px',
                   fontWeight: 600
                 }}
@@ -158,10 +159,10 @@ export default function DashboardCharts({ casos }) {
               <Line 
                 type="monotone" 
                 dataKey="itcmd" 
-                stroke="#F59E0B" 
+                stroke="#FFD700" 
                 strokeWidth={3}
-                dot={{ fill: '#F59E0B', r: 5 }}
-                activeDot={{ r: 7 }}
+                dot={{ fill: '#FFD700', r: 6, strokeWidth: 2, stroke: '#FFC107' }}
+                activeDot={{ r: 8 }}
               />
             </LineChart>
           </ResponsiveContainer>

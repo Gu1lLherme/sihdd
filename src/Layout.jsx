@@ -140,15 +140,17 @@ export default function Layout({ children, currentPageName }) {
         }
 
         :root {
-          --primary-dark: #0B1A2E;
-          --primary-royal: #1E40AF;
-          --primary-light: #3B82F6;
+          --primary-navy: #1A237E;
+          --primary-royal: #4169E1;
+          --accent-gold: #FFD700;
+          --accent-gold-soft: #FFC107;
+          --bg-main: #F5F7FA;
+          --text-primary: #333333;
+          --text-secondary: #6B7280;
+          --white: #FFFFFF;
           --success: #10B981;
           --warning: #F59E0B;
           --error: #DC2626;
-          --text-primary: #111827;
-          --text-secondary: #6B7280;
-          --bg-main: #F9FAFB;
         }
 
         body {
@@ -162,8 +164,8 @@ export default function Layout({ children, currentPageName }) {
         }
 
         @keyframes pulse-glow {
-          0%, 100% { box-shadow: 0 0 20px rgba(30, 64, 175, 0.4); }
-          50% { box-shadow: 0 0 30px rgba(30, 64, 175, 0.6), 0 0 40px rgba(59, 130, 246, 0.3); }
+          0%, 100% { box-shadow: 0 0 20px rgba(65, 105, 225, 0.4); }
+          50% { box-shadow: 0 0 30px rgba(65, 105, 225, 0.6), 0 0 40px rgba(255, 215, 0, 0.3); }
         }
 
         @keyframes slide-in {
@@ -180,13 +182,13 @@ export default function Layout({ children, currentPageName }) {
         }
 
         .nav-item-active {
-          background: linear-gradient(90deg, rgba(30, 64, 175, 0.15) 0%, rgba(59, 130, 246, 0.08) 100%);
-          border-left: 4px solid #3B82F6;
+          background: linear-gradient(90deg, rgba(65, 105, 225, 0.2) 0%, rgba(65, 105, 225, 0.1) 100%);
+          border-left: 4px solid var(--accent-gold);
           font-weight: 600;
         }
 
         .glassmorphism {
-          background: rgba(255, 255, 255, 0.85);
+          background: rgba(255, 255, 255, 0.95);
           backdrop-filter: blur(10px);
           -webkit-backdrop-filter: blur(10px);
         }
@@ -214,20 +216,17 @@ export default function Layout({ children, currentPageName }) {
             transform: translateY(0);
           }
 
-          /* Força tamanho padrão de ícones em mobile */
           svg {
             width: 1rem !important;
             height: 1rem !important;
           }
 
-          /* Exceção para ícones em cards específicos */
           .stat-icon svg {
             width: 1.25rem !important;
             height: 1.25rem !important;
           }
         }
 
-        /* Floating Button Responsive */
         @media (max-width: 640px) {
           .floating-ai-button {
             width: 56px !important;
@@ -237,7 +236,6 @@ export default function Layout({ children, currentPageName }) {
           }
         }
 
-        /* Chat widget responsive */
         @media (max-width: 640px) {
           .chat-widget {
             width: calc(100vw - 32px) !important;
@@ -248,12 +246,12 @@ export default function Layout({ children, currentPageName }) {
         }
       `}</style>
       
-      <div className="min-h-screen flex w-full bg-[#F9FAFB]">
-        {/* Sidebar - Azul Petróleo Escuro */}
-        <Sidebar className="border-r-0 shadow-2xl hidden md:flex" style={{ backgroundColor: '#0B1A2E' }}>
+      <div className="min-h-screen flex w-full bg-[#F5F7FA]">
+        {/* Sidebar - Azul Marinho Escuro #1A237E */}
+        <Sidebar className="border-r-0 shadow-2xl hidden md:flex" style={{ backgroundColor: '#1A237E' }}>
           <SidebarHeader className="border-b border-white/10 p-4 lg:p-6">
             <div className="flex items-center gap-2 lg:gap-3">
-              <div className="w-10 h-10 lg:w-12 lg:h-12 bg-gradient-to-br from-[#1E40AF] to-[#3B82F6] rounded-xl lg:rounded-2xl flex items-center justify-center shadow-xl">
+              <div className="w-10 h-10 lg:w-12 lg:h-12 bg-gradient-to-br from-[#4169E1] to-[#FFD700] rounded-xl lg:rounded-2xl flex items-center justify-center shadow-xl">
                 <Scale className="w-5 h-5 lg:w-6 lg:h-6 text-white" />
               </div>
               <div>
@@ -288,7 +286,7 @@ export default function Layout({ children, currentPageName }) {
                               w-8 h-8 lg:w-10 lg:h-10 rounded-lg lg:rounded-xl flex items-center justify-center
                               transition-all duration-300
                               ${isActive 
-                                ? 'bg-gradient-to-br from-[#1E40AF] to-[#3B82F6] shadow-lg scale-110' 
+                                ? 'bg-gradient-to-br from-[#4169E1] to-[#FFD700] shadow-lg scale-110' 
                                 : 'bg-white/5 group-hover:bg-white/10 group-hover:scale-105'
                               }
                             `}>
@@ -296,7 +294,7 @@ export default function Layout({ children, currentPageName }) {
                             </div>
                             <span className="flex-1 font-medium text-sm lg:text-base">{item.title}</span>
                             {isActive && (
-                              <div className="w-2 h-2 rounded-full bg-[#3B82F6] animate-pulse shadow-lg shadow-blue-500/50" />
+                              <div className="w-2 h-2 rounded-full bg-[#FFD700] animate-pulse shadow-lg shadow-yellow-500/50" />
                             )}
                           </Link>
                         </SidebarMenuButton>
@@ -311,7 +309,7 @@ export default function Layout({ children, currentPageName }) {
           <SidebarFooter className="border-t border-white/10 p-3 lg:p-4">
             <Link to={createPageUrl("Configuracoes")} className="block">
               <div className="flex items-center gap-2 lg:gap-3 p-2 lg:p-3 rounded-lg lg:rounded-xl bg-white/5 hover:bg-white/10 transition-colors cursor-pointer group">
-                <div className="w-8 h-8 lg:w-10 lg:h-10 bg-gradient-to-br from-[#3B82F6] to-[#1E40AF] rounded-full flex items-center justify-center shadow-lg">
+                <div className="w-8 h-8 lg:w-10 lg:h-10 bg-gradient-to-br from-[#4169E1] to-[#FFD700] rounded-full flex items-center justify-center shadow-lg">
                   <span className="text-white font-bold text-xs lg:text-sm">
                     {user?.full_name?.charAt(0)?.toUpperCase() || 'U'}
                   </span>
@@ -330,19 +328,19 @@ export default function Layout({ children, currentPageName }) {
 
         {/* Main Content */}
         <main className="flex-1 flex flex-col relative w-full min-w-0">
-          {/* Top Bar - Fixed for Mobile */}
+          {/* Top Bar */}
           <header className="glassmorphism border-b border-slate-200 px-3 sm:px-4 lg:px-6 py-3 sm:py-4 sticky top-0 z-40 shadow-sm">
             <div className="flex items-center justify-between gap-3 sm:gap-4">
               <div className="flex items-center gap-3 sm:gap-4">
                 <SidebarTrigger className="md:hidden hover:bg-slate-100 p-2 rounded-lg transition-colors duration-200">
-                  <Menu className="w-4 h-4" style={{ width: '1rem', height: '1rem' }} />
+                  <Menu className="w-4 h-4 text-[#1A237E]" style={{ width: '1rem', height: '1rem' }} />
                 </SidebarTrigger>
                 <div className="flex items-center gap-2">
-                  <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-br from-[#1E40AF] to-[#3B82F6] rounded-lg flex items-center justify-center">
+                  <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-br from-[#4169E1] to-[#FFD700] rounded-lg flex items-center justify-center shadow-lg">
                     <Scale className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
                   </div>
                   <div>
-                    <h1 className="text-base sm:text-lg lg:text-xl font-bold text-[#0B1A2E] leading-tight">SIHDD</h1>
+                    <h1 className="text-base sm:text-lg lg:text-xl font-bold text-[#1A237E] leading-tight">SIHDD</h1>
                     <p className="text-[10px] sm:text-xs text-[#6B7280] hidden sm:block">Sistema Inteligente</p>
                   </div>
                 </div>
@@ -352,13 +350,13 @@ export default function Layout({ children, currentPageName }) {
               <div className="flex items-center gap-2">
                 <button
                   onClick={() => setShowChat(!showChat)}
-                  className="md:hidden w-10 h-10 bg-gradient-to-br from-[#1E40AF] to-[#3B82F6] rounded-full flex items-center justify-center shadow-lg"
+                  className="md:hidden w-10 h-10 bg-gradient-to-br from-[#4169E1] to-[#FFD700] rounded-full flex items-center justify-center shadow-lg"
                 >
                   <Brain className="w-4 h-4 text-white" style={{ width: '1rem', height: '1rem' }} />
                 </button>
                 <Link to={createPageUrl("Configuracoes")} className="md:hidden">
                   <button className="w-10 h-10 bg-slate-200 rounded-full flex items-center justify-center shadow-lg">
-                    <Settings className="w-4 h-4 text-slate-700" style={{ width: '1rem', height: '1rem' }} />
+                    <Settings className="w-4 h-4 text-[#1A237E]" style={{ width: '1rem', height: '1rem' }} />
                   </button>
                 </Link>
               </div>
@@ -369,19 +367,19 @@ export default function Layout({ children, currentPageName }) {
             {children}
           </div>
 
-          {/* Floating IA Button - Hidden on Mobile */}
+          {/* Floating IA Button - Azul Royal com Dourado */}
           <button
             onClick={() => setShowChat(!showChat)}
-            className="floating-ai-button hidden md:flex fixed bottom-6 right-6 w-16 h-16 bg-gradient-to-br from-[#1E40AF] via-[#3B82F6] to-purple-600 rounded-full shadow-2xl items-center justify-center hover:scale-110 transition-all duration-300 z-50 animate-float animate-pulse-glow group"
+            className="floating-ai-button hidden md:flex fixed bottom-6 right-6 w-16 h-16 bg-gradient-to-br from-[#4169E1] via-[#5a7bea] to-[#FFD700] rounded-full shadow-2xl items-center justify-center hover:scale-110 transition-all duration-300 z-50 animate-float animate-pulse-glow group"
           >
             <Brain className="w-8 h-8 text-white group-hover:scale-110 transition-transform" />
             <div className="absolute -top-1 -right-1 w-4 h-4 bg-[#10B981] rounded-full border-2 border-white animate-pulse" />
           </button>
 
-          {/* Chat Widget - Responsive */}
+          {/* Chat Widget */}
           {showChat && (
             <div className="chat-widget fixed bottom-28 right-6 w-96 h-[600px] glassmorphism rounded-2xl shadow-2xl border border-slate-200 z-50 flex flex-col overflow-hidden animate-in slide-in-from-bottom-4 duration-300">
-              <div className="bg-gradient-to-r from-[#0B1A2E] via-[#1E40AF] to-[#3B82F6] p-3 sm:p-4 flex items-center justify-between">
+              <div className="bg-gradient-to-r from-[#1A237E] via-[#4169E1] to-[#FFD700] p-3 sm:p-4 flex items-center justify-between">
                 <div className="flex items-center gap-2 sm:gap-3">
                   <div className="w-8 h-8 sm:w-10 sm:h-10 bg-white/20 rounded-full flex items-center justify-center animate-pulse">
                     <Brain className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
