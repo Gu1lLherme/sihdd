@@ -11,6 +11,8 @@ import Modulos from './pages/Modulos';
 import Administracao from './pages/Administracao';
 import PortalCliente from './pages/PortalCliente';
 import Configuracoes from './pages/Configuracoes';
+import Tasks from './pages/Tasks';
+import Calendar from './pages/Calendar';
 import Layout from './Layout.jsx';
 
 
@@ -28,6 +30,8 @@ export const PAGES = {
     "Administracao": Administracao,
     "PortalCliente": PortalCliente,
     "Configuracoes": Configuracoes,
+    "Tasks": Tasks,
+    "Calendar": Calendar,
 }
 
 export const pagesConfig = {
