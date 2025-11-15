@@ -1,4 +1,3 @@
-
 import React from "react";
 import { Link, useLocation } from "react-router-dom";
 import { createPageUrl } from "@/utils";
@@ -203,8 +202,8 @@ export default function Layout({ children, currentPageName }) {
         }
 
         .nav-item-active {
-          background: rgba(255, 255, 255, 0.25) !important;
-          color: white !important;
+          background: rgba(255, 255, 255, 0.95) !important;
+          color: #4169E1 !important;
           font-weight: 700;
           border-left: 4px solid #FFC107;
         }
@@ -268,23 +267,23 @@ export default function Layout({ children, currentPageName }) {
       `}</style>
       
       <div className="min-h-screen flex w-full bg-white">
-        {/* Sidebar - Fundo Azul Royal */}
-        <Sidebar className="border-r-0 shadow-2xl hidden md:flex" style={{ backgroundColor: '#4169E1' }}>
-          <SidebarHeader className="border-b border-white/20 p-4 lg:p-6">
+        {/* Sidebar - Fundo Branco */}
+        <Sidebar className="border-r-2 border-slate-200 shadow-lg hidden md:flex bg-white">
+          <SidebarHeader className="border-b-2 border-slate-200 p-4 lg:p-6 bg-white">
             <div className="flex items-center gap-2 lg:gap-3">
-              <div className="w-10 h-10 lg:w-12 lg:h-12 bg-white/20 rounded-xl lg:rounded-2xl flex items-center justify-center shadow-xl backdrop-blur-sm">
+              <div className="w-10 h-10 lg:w-12 lg:h-12 bg-[#4169E1] rounded-xl lg:rounded-2xl flex items-center justify-center shadow-lg">
                 <Scale className="w-5 h-5 lg:w-6 lg:h-6 text-white" />
               </div>
               <div className="overflow-hidden">
-                <h2 className="font-bold text-lg lg:text-xl text-white tracking-tight truncate">SIHDD</h2>
-                <p className="text-[10px] lg:text-xs text-white/70 font-medium truncate">Sistema Inteligente</p>
+                <h2 className="font-bold text-lg lg:text-xl text-[#333333] tracking-tight truncate">SIHDD</h2>
+                <p className="text-[10px] lg:text-xs text-[#AAAAAA] font-medium truncate">Sistema Inteligente</p>
               </div>
             </div>
           </SidebarHeader>
           
-          <SidebarContent className="p-2 lg:p-3">
+          <SidebarContent className="p-2 lg:p-3 bg-white">
             <SidebarGroup>
-              <SidebarGroupLabel className="text-[10px] lg:text-xs font-semibold text-white/60 uppercase tracking-wider px-2 lg:px-3 py-2 mb-1 lg:mb-2 truncate">
+              <SidebarGroupLabel className="text-[10px] lg:text-xs font-semibold text-[#AAAAAA] uppercase tracking-wider px-2 lg:px-3 py-2 mb-1 lg:mb-2 truncate">
                 Módulos
               </SidebarGroupLabel>
               <SidebarGroupContent>
@@ -300,7 +299,7 @@ export default function Layout({ children, currentPageName }) {
                             transition-all duration-300
                             ${isActive 
                               ? 'nav-item-active' 
-                              : 'text-white/90 hover:bg-white/10 hover:text-white'
+                              : 'text-[#333333] hover:bg-slate-100 hover:text-[#4169E1]'
                             }
                           `}
                         >
@@ -309,11 +308,11 @@ export default function Layout({ children, currentPageName }) {
                               w-8 h-8 lg:w-10 lg:h-10 rounded-lg lg:rounded-xl flex items-center justify-center
                               transition-all duration-300 flex-shrink-0
                               ${isActive 
-                                ? 'bg-white/25 scale-110' 
-                                : 'bg-white/10 group-hover:bg-white/15 group-hover:scale-105'
+                                ? 'bg-[#4169E1] scale-110' 
+                                : 'bg-slate-100 group-hover:bg-[#4169E1] group-hover:scale-105'
                               }
                             `}>
-                              <item.icon className="w-4 h-4 lg:w-5 lg:h-5 text-white" style={{ width: '1rem', height: '1rem' }} />
+                              <item.icon className={`w-4 h-4 lg:w-5 lg:h-5 ${isActive ? 'text-white' : 'text-[#333333] group-hover:text-white'}`} />
                             </div>
                             <span className="flex-1 font-semibold text-sm lg:text-base truncate">{item.title}</span>
                             {isActive && (
@@ -329,21 +328,21 @@ export default function Layout({ children, currentPageName }) {
             </SidebarGroup>
           </SidebarContent>
 
-          <SidebarFooter className="border-t border-white/20 p-3 lg:p-4">
+          <SidebarFooter className="border-t-2 border-slate-200 p-3 lg:p-4 bg-white">
             <Link to={createPageUrl("Configuracoes")} className="block">
-              <div className="flex items-center gap-2 lg:gap-3 p-2 lg:p-3 rounded-lg lg:rounded-xl bg-white/10 hover:bg-white/20 transition-colors cursor-pointer group min-w-0">
-                <div className="w-8 h-8 lg:w-10 lg:h-10 bg-white/25 rounded-full flex items-center justify-center shadow-lg flex-shrink-0">
+              <div className="flex items-center gap-2 lg:gap-3 p-2 lg:p-3 rounded-lg lg:rounded-xl bg-slate-100 hover:bg-slate-200 transition-colors cursor-pointer group min-w-0">
+                <div className="w-8 h-8 lg:w-10 lg:h-10 bg-[#4169E1] rounded-full flex items-center justify-center shadow-lg flex-shrink-0">
                   <span className="text-white font-bold text-xs lg:text-sm">
                     {user?.full_name?.charAt(0)?.toUpperCase() || 'U'}
                   </span>
                 </div>
                 <div className="flex-1 min-w-0 overflow-hidden">
-                  <p className="font-semibold text-white text-xs lg:text-sm truncate">
+                  <p className="font-semibold text-[#333333] text-xs lg:text-sm truncate">
                     {user?.full_name?.split(' ')[0] || 'Usuário'}
                   </p>
-                  <p className="text-[10px] lg:text-xs text-white/70 truncate">Configurações</p>
+                  <p className="text-[10px] lg:text-xs text-[#AAAAAA] truncate">Configurações</p>
                 </div>
-                <Settings className="w-3 h-3 lg:w-4 lg:h-4 text-white/60 opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0" />
+                <Settings className="w-3 h-3 lg:w-4 lg:h-4 text-[#AAAAAA] opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0" />
               </div>
             </Link>
           </SidebarFooter>
