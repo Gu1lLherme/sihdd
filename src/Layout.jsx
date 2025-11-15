@@ -1,9 +1,10 @@
+
 import React from "react";
 import { Link, useLocation } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { base44 } from "@/api/base44Client";
 import { useQuery } from "@tanstack/react-query";
-import { Scale, FolderOpen, Link2, History, BarChart3, Brain, Users, Settings, Grid3x3, Shield, Menu } from "lucide-react";
+import { Scale, FolderOpen, Link2, History, BarChart3, Brain, Users, Settings, Grid3x3, Shield, Menu, CheckCircle2, Calendar, BookOpen } from "lucide-react";
 import {
   Sidebar,
   SidebarContent,
@@ -31,6 +32,18 @@ const ALL_NAVIGATION_ITEMS = [
     title: "Inventários",
     url: createPageUrl("Inventarios"),
     icon: FolderOpen,
+  },
+  {
+    key: "tasks",
+    title: "Tarefas",
+    url: createPageUrl("Tasks"),
+    icon: CheckCircle2,
+  },
+  {
+    key: "calendar",
+    title: "Calendário",
+    url: createPageUrl("Calendar"),
+    icon: Calendar,
   },
   {
     key: "chat",
@@ -74,6 +87,12 @@ const ALL_NAVIGATION_ITEMS = [
     url: createPageUrl("Relatorios"),
     icon: BarChart3,
   },
+  {
+    key: "documentacao",
+    title: "Documentação",
+    url: createPageUrl("Documentacao"),
+    icon: BookOpen,
+  },
 ];
 
 export default function Layout({ children, currentPageName }) {
@@ -97,6 +116,8 @@ export default function Layout({ children, currentPageName }) {
           sidebar_modules: {
             dashboard: true,
             inventarios: true,
+            tasks: true,
+            calendar: true,
             chat: true,
             portal: true,
             modulos: true,
@@ -104,6 +125,7 @@ export default function Layout({ children, currentPageName }) {
             administracao: true,
             auditoria: true,
             relatorios: true,
+            documentacao: true,
           }
         };
       }
@@ -115,6 +137,8 @@ export default function Layout({ children, currentPageName }) {
       sidebar_modules: {
         dashboard: true,
         inventarios: true,
+        tasks: true,
+        calendar: true,
         chat: true,
         portal: true,
         modulos: true,
@@ -122,6 +146,7 @@ export default function Layout({ children, currentPageName }) {
         administracao: true,
         auditoria: true,
         relatorios: true,
+        documentacao: true,
       }
     }
   });
@@ -178,10 +203,10 @@ export default function Layout({ children, currentPageName }) {
         }
 
         .nav-item-active {
-          background: #4169E1 !important;
+          background: rgba(255, 255, 255, 0.25) !important;
           color: white !important;
           font-weight: 700;
-          box-shadow: 0 4px 12px rgba(65, 105, 225, 0.3);
+          border-left: 4px solid #FFC107;
         }
 
         .glassmorphism {
@@ -243,23 +268,23 @@ export default function Layout({ children, currentPageName }) {
       `}</style>
       
       <div className="min-h-screen flex w-full bg-white">
-        {/* Sidebar - Fundo Branco/Cinza Claro */}
-        <Sidebar className="border-r-2 border-slate-200 shadow-lg hidden md:flex" style={{ backgroundColor: '#F5F5F5' }}>
-          <SidebarHeader className="border-b-2 border-slate-200 p-4 lg:p-6 bg-white">
+        {/* Sidebar - Fundo Azul Royal */}
+        <Sidebar className="border-r-0 shadow-2xl hidden md:flex" style={{ backgroundColor: '#4169E1' }}>
+          <SidebarHeader className="border-b border-white/20 p-4 lg:p-6">
             <div className="flex items-center gap-2 lg:gap-3">
-              <div className="w-10 h-10 lg:w-12 lg:h-12 bg-[#4169E1] rounded-xl lg:rounded-2xl flex items-center justify-center shadow-xl">
+              <div className="w-10 h-10 lg:w-12 lg:h-12 bg-white/20 rounded-xl lg:rounded-2xl flex items-center justify-center shadow-xl backdrop-blur-sm">
                 <Scale className="w-5 h-5 lg:w-6 lg:h-6 text-white" />
               </div>
-              <div>
-                <h2 className="font-bold text-lg lg:text-xl text-[#333333] tracking-tight">SIHDD</h2>
-                <p className="text-[10px] lg:text-xs text-[#AAAAAA] font-medium">Sistema Inteligente</p>
+              <div className="overflow-hidden">
+                <h2 className="font-bold text-lg lg:text-xl text-white tracking-tight truncate">SIHDD</h2>
+                <p className="text-[10px] lg:text-xs text-white/70 font-medium truncate">Sistema Inteligente</p>
               </div>
             </div>
           </SidebarHeader>
           
-          <SidebarContent className="p-2 lg:p-3 bg-[#F5F5F5]">
+          <SidebarContent className="p-2 lg:p-3">
             <SidebarGroup>
-              <SidebarGroupLabel className="text-[10px] lg:text-xs font-semibold text-[#AAAAAA] uppercase tracking-wider px-2 lg:px-3 py-2 mb-1 lg:mb-2">
+              <SidebarGroupLabel className="text-[10px] lg:text-xs font-semibold text-white/60 uppercase tracking-wider px-2 lg:px-3 py-2 mb-1 lg:mb-2 truncate">
                 Módulos
               </SidebarGroupLabel>
               <SidebarGroupContent>
@@ -275,24 +300,24 @@ export default function Layout({ children, currentPageName }) {
                             transition-all duration-300
                             ${isActive 
                               ? 'nav-item-active' 
-                              : 'text-[#333333] hover:bg-white/80 hover:text-[#4169E1]'
+                              : 'text-white/90 hover:bg-white/10 hover:text-white'
                             }
                           `}
                         >
-                          <Link to={item.url} className="flex items-center gap-2 lg:gap-3 px-2 lg:px-3 py-2 lg:py-3">
+                          <Link to={item.url} className="flex items-center gap-2 lg:gap-3 px-2 lg:px-3 py-2 lg:py-3 min-w-0">
                             <div className={`
                               w-8 h-8 lg:w-10 lg:h-10 rounded-lg lg:rounded-xl flex items-center justify-center
-                              transition-all duration-300
+                              transition-all duration-300 flex-shrink-0
                               ${isActive 
-                                ? 'bg-white/20 scale-110' 
-                                : 'bg-white/50 group-hover:bg-white group-hover:scale-105'
+                                ? 'bg-white/25 scale-110' 
+                                : 'bg-white/10 group-hover:bg-white/15 group-hover:scale-105'
                               }
                             `}>
-                              <item.icon className={`w-4 h-4 lg:w-5 lg:h-5 ${isActive ? 'text-white' : 'text-[#4169E1]'}`} style={{ width: '1rem', height: '1rem' }} />
+                              <item.icon className="w-4 h-4 lg:w-5 lg:h-5 text-white" style={{ width: '1rem', height: '1rem' }} />
                             </div>
-                            <span className="flex-1 font-semibold text-sm lg:text-base">{item.title}</span>
+                            <span className="flex-1 font-semibold text-sm lg:text-base truncate">{item.title}</span>
                             {isActive && (
-                              <div className="w-2 h-2 rounded-full bg-[#FFC107] shadow-lg shadow-yellow-500/50" />
+                              <div className="w-2 h-2 rounded-full bg-[#FFC107] shadow-lg shadow-yellow-500/50 flex-shrink-0" />
                             )}
                           </Link>
                         </SidebarMenuButton>
@@ -304,21 +329,21 @@ export default function Layout({ children, currentPageName }) {
             </SidebarGroup>
           </SidebarContent>
 
-          <SidebarFooter className="border-t-2 border-slate-200 p-3 lg:p-4 bg-white">
+          <SidebarFooter className="border-t border-white/20 p-3 lg:p-4">
             <Link to={createPageUrl("Configuracoes")} className="block">
-              <div className="flex items-center gap-2 lg:gap-3 p-2 lg:p-3 rounded-lg lg:rounded-xl bg-[#F5F5F5] hover:bg-white transition-colors cursor-pointer group">
-                <div className="w-8 h-8 lg:w-10 lg:h-10 bg-[#4169E1] rounded-full flex items-center justify-center shadow-lg">
+              <div className="flex items-center gap-2 lg:gap-3 p-2 lg:p-3 rounded-lg lg:rounded-xl bg-white/10 hover:bg-white/20 transition-colors cursor-pointer group min-w-0">
+                <div className="w-8 h-8 lg:w-10 lg:h-10 bg-white/25 rounded-full flex items-center justify-center shadow-lg flex-shrink-0">
                   <span className="text-white font-bold text-xs lg:text-sm">
                     {user?.full_name?.charAt(0)?.toUpperCase() || 'U'}
                   </span>
                 </div>
-                <div className="flex-1 min-w-0">
-                  <p className="font-semibold text-[#333333] text-xs lg:text-sm truncate">
+                <div className="flex-1 min-w-0 overflow-hidden">
+                  <p className="font-semibold text-white text-xs lg:text-sm truncate">
                     {user?.full_name?.split(' ')[0] || 'Usuário'}
                   </p>
-                  <p className="text-[10px] lg:text-xs text-[#AAAAAA] truncate">Configurações</p>
+                  <p className="text-[10px] lg:text-xs text-white/70 truncate">Configurações</p>
                 </div>
-                <Settings className="w-3 h-3 lg:w-4 lg:h-4 text-[#AAAAAA] opacity-0 group-hover:opacity-100 transition-opacity" />
+                <Settings className="w-3 h-3 lg:w-4 lg:h-4 text-white/60 opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0" />
               </div>
             </Link>
           </SidebarFooter>
@@ -329,23 +354,23 @@ export default function Layout({ children, currentPageName }) {
           {/* Top Bar */}
           <header className="glassmorphism border-b-2 border-slate-200 px-3 sm:px-4 lg:px-6 py-3 sm:py-4 sticky top-0 z-40 shadow-sm">
             <div className="flex items-center justify-between gap-3 sm:gap-4">
-              <div className="flex items-center gap-3 sm:gap-4">
-                <SidebarTrigger className="md:hidden hover:bg-slate-100 p-2 rounded-lg transition-colors duration-200">
+              <div className="flex items-center gap-3 sm:gap-4 min-w-0 overflow-hidden">
+                <SidebarTrigger className="md:hidden hover:bg-slate-100 p-2 rounded-lg transition-colors duration-200 flex-shrink-0">
                   <Menu className="w-4 h-4 text-[#333333]" style={{ width: '1rem', height: '1rem' }} />
                 </SidebarTrigger>
-                <div className="flex items-center gap-2">
-                  <div className="w-8 h-8 sm:w-10 sm:h-10 bg-[#4169E1] rounded-lg flex items-center justify-center shadow-lg">
+                <div className="flex items-center gap-2 min-w-0 overflow-hidden">
+                  <div className="w-8 h-8 sm:w-10 sm:h-10 bg-[#4169E1] rounded-lg flex items-center justify-center shadow-lg flex-shrink-0">
                     <Scale className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
                   </div>
-                  <div>
-                    <h1 className="text-base sm:text-lg lg:text-xl font-bold text-[#333333] leading-tight">SIHDD</h1>
-                    <p className="text-[10px] sm:text-xs text-[#AAAAAA] hidden sm:block">Sistema Inteligente</p>
+                  <div className="min-w-0 overflow-hidden">
+                    <h1 className="text-base sm:text-lg lg:text-xl font-bold text-[#333333] leading-tight truncate">SIHDD</h1>
+                    <p className="text-[10px] sm:text-xs text-[#AAAAAA] hidden sm:block truncate">Sistema Inteligente</p>
                   </div>
                 </div>
               </div>
               
               {/* Mobile Quick Actions */}
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2 flex-shrink-0">
                 <button
                   onClick={() => setShowChat(!showChat)}
                   className="md:hidden w-10 h-10 bg-[#4169E1] rounded-full flex items-center justify-center shadow-lg"
@@ -378,21 +403,21 @@ export default function Layout({ children, currentPageName }) {
           {showChat && (
             <div className="chat-widget fixed bottom-28 right-6 w-96 h-[600px] glassmorphism rounded-2xl shadow-2xl border-2 border-slate-200 z-50 flex flex-col overflow-hidden animate-in slide-in-from-bottom-4 duration-300">
               <div className="bg-[#4169E1] p-3 sm:p-4 flex items-center justify-between">
-                <div className="flex items-center gap-2 sm:gap-3">
-                  <div className="w-8 h-8 sm:w-10 sm:h-10 bg-white/20 rounded-full flex items-center justify-center animate-pulse">
+                <div className="flex items-center gap-2 sm:gap-3 min-w-0 overflow-hidden">
+                  <div className="w-8 h-8 sm:w-10 sm:h-10 bg-white/20 rounded-full flex items-center justify-center animate-pulse flex-shrink-0">
                     <Brain className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
                   </div>
-                  <div>
-                    <h3 className="font-semibold text-white text-sm sm:text-base">RAG Tributário</h3>
+                  <div className="min-w-0 overflow-hidden">
+                    <h3 className="font-semibold text-white text-sm sm:text-base truncate">RAG Tributário</h3>
                     <div className="flex items-center gap-2">
-                      <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-[#28A745] rounded-full animate-pulse" />
-                      <p className="text-[10px] sm:text-xs text-white/80">IA Online</p>
+                      <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-[#28A745] rounded-full animate-pulse flex-shrink-0" />
+                      <p className="text-[10px] sm:text-xs text-white/80 truncate">IA Online</p>
                     </div>
                   </div>
                 </div>
                 <button
                   onClick={() => setShowChat(false)}
-                  className="text-white hover:bg-white/20 p-2 rounded-lg transition-colors"
+                  className="text-white hover:bg-white/20 p-2 rounded-lg transition-colors flex-shrink-0"
                 >
                   ✕
                 </button>
