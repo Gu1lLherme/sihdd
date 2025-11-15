@@ -13,6 +13,7 @@ import PortalCliente from './pages/PortalCliente';
 import Configuracoes from './pages/Configuracoes';
 import Tasks from './pages/Tasks';
 import Calendar from './pages/Calendar';
+import Documentacao from './pages/Documentacao';
 import Layout from './Layout.jsx';
 
 
@@ -32,6 +33,7 @@ export const PAGES = {
     "Configuracoes": Configuracoes,
     "Tasks": Tasks,
     "Calendar": Calendar,
+    "Documentacao": Documentacao,
 }
 
 export const pagesConfig = {
