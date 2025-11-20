@@ -14,7 +14,13 @@ import Configuracoes from './pages/Configuracoes';
 import Tasks from './pages/Tasks';
 import Calendar from './pages/Calendar';
 import Documentacao from './pages/Documentacao';
-import Layout from './Layout.jsx';
+import ModelagemPartilha from './pages/ModelagemPartilha';
+import SimuladorPlanejamento from './pages/SimuladorPlanejamento';
+import ArvoreGenealogica from './pages/ArvoreGenealogica';
+import BotCNDs from './pages/BotCNDs';
+import AvaliacaoBens from './pages/AvaliacaoBens';
+import CofreDigital from './pages/CofreDigital';
+import __Layout from './Layout.jsx';
 
 
 export const PAGES = {
@@ -34,10 +40,16 @@ export const PAGES = {
     "Tasks": Tasks,
     "Calendar": Calendar,
     "Documentacao": Documentacao,
+    "ModelagemPartilha": ModelagemPartilha,
+    "SimuladorPlanejamento": SimuladorPlanejamento,
+    "ArvoreGenealogica": ArvoreGenealogica,
+    "BotCNDs": BotCNDs,
+    "AvaliacaoBens": AvaliacaoBens,
+    "CofreDigital": CofreDigital,
 }
 
 export const pagesConfig = {
     mainPage: "Dashboard",
     Pages: PAGES,
-    Layout: Layout,
+    Layout: __Layout,
 };
