@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
+import { masks } from "@/components/Masks";
 import { TrendingUp, Home, Car, Building2, Upload, ChevronDown, ChevronUp } from "lucide-react";
 
 const TIPO_ICONS = {
@@ -185,7 +186,12 @@ export default function AvaliacaoBens() {
                             <div>
                               <Label htmlFor={`placa-${bem.id}`}>Placa</Label>
                               <div className="flex gap-2">
-                                <Input id={`placa-${bem.id}`} placeholder="ABC-1234" />
+                                <Input 
+                                  id={`placa-${bem.id}`} 
+                                  placeholder="ABC-1234" 
+                                  onChange={(e) => e.target.value = masks.plate(e.target.value)}
+                                  maxLength={8}
+                                />
                                 <Button className="bg-[#4169E1] hover:bg-[#3151c7] text-white">
                                   Buscar FIPE
                                 </Button>

@@ -68,7 +68,7 @@ export default function ConsultaCartorio() {
               <Label>Número da Matrícula</Label>
               <Input
                 value={matricula}
-                onChange={(e) => setMatricula(e.target.value)}
+                onChange={(e) => setMatricula(e.target.value.replace(/\D/g, ''))}
                 placeholder="Ex: 12345"
               />
               <p className="text-xs text-slate-500">

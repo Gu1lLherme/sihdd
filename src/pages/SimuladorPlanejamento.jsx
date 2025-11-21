@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { masks } from "@/components/Masks";
 import { TrendingUp, Building, FileText, DollarSign, PieChart as PieChartIcon } from "lucide-react";
 import { PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip } from 'recharts';
 
@@ -68,9 +69,9 @@ export default function SimuladorPlanejamento() {
                 <Label htmlFor="valor">Valor Total do Patrimônio</Label>
                 <Input
                   id="valor"
-                  type="number"
-                  value={valorPatrimonio}
-                  onChange={(e) => setValorPatrimonio(Number(e.target.value))}
+                  type="text"
+                  value={masks.currency(valorPatrimonio)}
+                  onChange={(e) => setValorPatrimonio(Number(e.target.value.replace(/\D/g, "")) / 100)}
                   className="text-lg font-bold"
                 />
               </div>

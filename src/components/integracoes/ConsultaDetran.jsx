@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
+import { masks } from "@/components/Masks";
 import { Car, Search, CheckCircle2, Loader2 } from "lucide-react";
 import { base44 } from "@/api/base44Client";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -73,7 +74,7 @@ export default function ConsultaDetran() {
               <Label>Placa do Veículo</Label>
               <Input
                 value={placa}
-                onChange={(e) => setPlaca(e.target.value.toUpperCase())}
+                onChange={(e) => setPlaca(masks.plate(e.target.value))}
                 placeholder="Ex: ABC-1234"
                 maxLength={8}
               />

@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
+import { masks } from "@/components/Masks";
 import { Building2, Search, CheckCircle2, AlertCircle, Loader2 } from "lucide-react";
 import { base44 } from "@/api/base44Client";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -100,11 +101,10 @@ export default function ConsultaSEFAZ() {
               <div className="space-y-2">
                 <Label>Valor do Patrimônio (R$)</Label>
                 <Input
-                  type="number"
-                  step="0.01"
-                  value={valorPatrimonio}
-                  onChange={(e) => setValorPatrimonio(e.target.value)}
-                  placeholder="1000000.00"
+                  type="text"
+                  value={masks.currency(valorPatrimonio)}
+                  onChange={(e) => setValorPatrimonio(Number(e.target.value.replace(/\D/g, "")) / 100)}
+                  placeholder="1.000.000,00"
                 />
               </div>
             )}
