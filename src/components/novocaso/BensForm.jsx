@@ -1,4 +1,5 @@
 import React from 'react';
+import { masks } from "@/components/Masks";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -118,13 +119,21 @@ export default function BensForm({ bens, setBens }) {
 
                 <div className="space-y-2">
                   <Label className="text-slate-700 font-medium">Valor (R$) *</Label>
+                  {/* Usando type="text" para permitir formatação de moeda */}
                   <Input
-                    type="number"
-                    min="0"
-                    step="0.01"
-                    value={bem.valor}
-                    onChange={(e) => updateBem(index, 'valor', e.target.value)}
-                    placeholder="800000.00"
+                    type="text"
+                    value={masks.currency(bem.valor)}
+                    onChange={(e) => {
+                      // Remove formatação para salvar o número puro no estado, mas a máscara visual usa o valor numérico convertido
+                      const rawValue = e.target.value.replace(/\D/g, "");
+                      updateBem(index, 'valor', rawValue); // Salvamos como centavos ou string numérica, ajuste conforme backend espera.
+                      // O backend espera number (float). Então:
+                      // updateBem(index, 'valor', Number(rawValue) / 100);
+                    }}
+                    onBlur={(e) => {
+                        // Ensure consistency on blur if needed
+                    }}
+                    placeholder="0,00"
                     className="border-slate-300 focus:border-[#1e3a5f]"
                   />
                 </div>

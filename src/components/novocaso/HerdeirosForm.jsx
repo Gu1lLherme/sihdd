@@ -1,4 +1,5 @@
 import React from 'react';
+import { masks } from "@/components/Masks";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -93,8 +94,9 @@ export default function HerdeirosForm({ herdeiros, setHerdeiros }) {
                 <Label className="text-slate-700 font-medium">CPF</Label>
                 <Input
                   value={herdeiro.cpf}
-                  onChange={(e) => updateHerdeiro(index, 'cpf', e.target.value)}
+                  onChange={(e) => updateHerdeiro(index, 'cpf', masks.cpf(e.target.value))}
                   placeholder="000.000.000-00"
+                  maxLength={14}
                   className="border-slate-300 focus:border-[#1e3a5f]"
                 />
               </div>
@@ -152,8 +154,9 @@ export default function HerdeirosForm({ herdeiros, setHerdeiros }) {
                 <Label className="text-slate-700 font-medium">Telefone</Label>
                 <Input
                   value={herdeiro.telefone}
-                  onChange={(e) => updateHerdeiro(index, 'telefone', e.target.value)}
+                  onChange={(e) => updateHerdeiro(index, 'telefone', masks.phone(e.target.value))}
                   placeholder="(79) 99999-9999"
+                  maxLength={15}
                   className="border-slate-300 focus:border-[#1e3a5f]"
                 />
               </div>

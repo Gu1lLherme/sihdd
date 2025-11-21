@@ -1,4 +1,5 @@
 import React from 'react';
+import { masks } from "@/components/Masks";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -37,8 +38,9 @@ export default function DadosFalecidoForm({ dadosCaso, setDadosCaso }) {
           <Input
             id="cpf_falecido"
             value={dadosCaso.cpf_falecido}
-            onChange={(e) => handleChange('cpf_falecido', e.target.value)}
+            onChange={(e) => handleChange('cpf_falecido', masks.cpf(e.target.value))}
             placeholder="000.000.000-00"
+            maxLength={14}
             className="border-slate-300 focus:border-[#1e3a5f]"
           />
         </div>
@@ -96,8 +98,9 @@ export default function DadosFalecidoForm({ dadosCaso, setDadosCaso }) {
           <Input
             id="conjuge_cpf"
             value={dadosCaso.conjuge_cpf}
-            onChange={(e) => handleChange('conjuge_cpf', e.target.value)}
+            onChange={(e) => handleChange('conjuge_cpf', masks.cpf(e.target.value))}
             placeholder="000.000.000-00"
+            maxLength={14}
             className="border-slate-300 focus:border-[#1e3a5f]"
           />
         </div>

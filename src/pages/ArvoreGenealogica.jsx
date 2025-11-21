@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogDescription } from "@/components/ui/dialog";
+import { masks } from "@/components/Masks";
 import { Users, Plus, ZoomIn, ZoomOut, Maximize2, User, CheckCircle2, AlertCircle, Trash2, Edit, Save, X } from "lucide-react";
 import { toast } from "sonner"; // Assuming sonner or similar is available, or I'll use standard alerts if not configured, but base44 usually has ui components. I'll stick to standard UI feedback for now.
 
@@ -397,7 +398,8 @@ export default function ArvoreGenealogica() {
                 <Input
                   id="cpf"
                   value={formData.cpf}
-                  onChange={(e) => setFormData({ ...formData, cpf: e.target.value })}
+                  onChange={(e) => setFormData({ ...formData, cpf: masks.cpf(e.target.value) })}
+                  maxLength={14}
                 />
               </div>
                <div className="grid gap-2">
