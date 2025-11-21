@@ -61,6 +61,44 @@ const ALL_NAVIGATION_ITEMS = [
     title: "Módulos",
     url: createPageUrl("Modulos"),
     icon: Grid3x3,
+    subItems: [
+      {
+        key: "modelagem_partilha",
+        title: "Modelagem de Partilha",
+        url: createPageUrl("ModelagemPartilha"),
+        icon: Scale,
+      },
+      {
+        key: "simulador_planejamento",
+        title: "Simulador Planejamento",
+        url: createPageUrl("SimuladorPlanejamento"),
+        icon: BarChart3,
+      },
+      {
+        key: "arvore_genealogica",
+        title: "Árvore Genealógica",
+        url: createPageUrl("ArvoreGenealogica"),
+        icon: Users,
+      },
+      {
+        key: "bot_cnds",
+        title: "Bot CNDs",
+        url: createPageUrl("BotCNDs"),
+        icon: Shield,
+      },
+      {
+        key: "avaliacao_bens",
+        title: "Avaliação de Bens",
+        url: createPageUrl("AvaliacaoBens"),
+        icon: BarChart3,
+      },
+      {
+        key: "cofre_digital",
+        title: "Cofre Digital",
+        url: createPageUrl("CofreDigital"),
+        icon: Shield,
+      },
+    ]
   },
   {
     key: "integracoes",
@@ -120,6 +158,12 @@ export default function Layout({ children, currentPageName }) {
             chat: true,
             portal: true,
             modulos: true,
+            modelagem_partilha: true,
+            simulador_planejamento: true,
+            arvore_genealogica: true,
+            bot_cnds: true,
+            avaliacao_bens: true,
+            cofre_digital: true,
             integracoes: true,
             administracao: true,
             auditoria: true,
@@ -290,37 +334,93 @@ export default function Layout({ children, currentPageName }) {
                 <SidebarMenu>
                   {navigationItems.map((item) => {
                     const isActive = location.pathname === item.url;
+                    const hasSubItems = item.subItems && item.subItems.length > 0;
+                    const [isExpanded, setIsExpanded] = React.useState(false);
+
                     return (
-                      <SidebarMenuItem key={item.key}>
-                        <SidebarMenuButton 
-                          asChild 
-                          className={`
-                            group relative overflow-hidden rounded-lg lg:rounded-xl mb-1
-                            transition-all duration-300
-                            ${isActive 
-                              ? 'nav-item-active' 
-                              : 'text-[#333333] hover:bg-slate-100 hover:text-[#4169E1]'
-                            }
-                          `}
-                        >
-                          <Link to={item.url} className="flex items-center gap-2 lg:gap-3 px-2 lg:px-3 py-2 lg:py-3 min-w-0">
-                            <div className={`
-                              w-8 h-8 lg:w-10 lg:h-10 rounded-lg lg:rounded-xl flex items-center justify-center
-                              transition-all duration-300 flex-shrink-0
+                      <React.Fragment key={item.key}>
+                        <SidebarMenuItem>
+                          <SidebarMenuButton 
+                            asChild={!hasSubItems}
+                            onClick={hasSubItems ? () => setIsExpanded(!isExpanded) : undefined}
+                            className={`
+                              group relative overflow-hidden rounded-lg lg:rounded-xl mb-1
+                              transition-all duration-300
                               ${isActive 
-                                ? 'bg-[#4169E1] scale-110' 
-                                : 'bg-slate-100 group-hover:bg-[#4169E1] group-hover:scale-105'
+                                ? 'nav-item-active' 
+                                : 'text-[#333333] hover:bg-slate-100 hover:text-[#4169E1]'
                               }
-                            `}>
-                              <item.icon className={`w-4 h-4 lg:w-5 lg:h-5 ${isActive ? 'text-white' : 'text-[#333333] group-hover:text-white'}`} />
-                            </div>
-                            <span className="flex-1 font-semibold text-sm lg:text-base truncate">{item.title}</span>
-                            {isActive && (
-                              <div className="w-2 h-2 rounded-full bg-[#FFC107] shadow-lg shadow-yellow-500/50 flex-shrink-0" />
+                            `}
+                          >
+                            {hasSubItems ? (
+                              <div className="flex items-center gap-2 lg:gap-3 px-2 lg:px-3 py-2 lg:py-3 min-w-0 cursor-pointer">
+                                <div className={`
+                                  w-8 h-8 lg:w-10 lg:h-10 rounded-lg lg:rounded-xl flex items-center justify-center
+                                  transition-all duration-300 flex-shrink-0
+                                  ${isActive 
+                                    ? 'bg-[#4169E1] scale-110' 
+                                    : 'bg-slate-100 group-hover:bg-[#4169E1] group-hover:scale-105'
+                                  }
+                                `}>
+                                  <item.icon className={`w-4 h-4 lg:w-5 lg:h-5 ${isActive ? 'text-white' : 'text-[#333333] group-hover:text-white'}`} />
+                                </div>
+                                <span className="flex-1 font-semibold text-sm lg:text-base truncate">{item.title}</span>
+                                <span className="text-xs">{isExpanded ? '▼' : '▶'}</span>
+                              </div>
+                            ) : (
+                              <Link to={item.url} className="flex items-center gap-2 lg:gap-3 px-2 lg:px-3 py-2 lg:py-3 min-w-0">
+                                <div className={`
+                                  w-8 h-8 lg:w-10 lg:h-10 rounded-lg lg:rounded-xl flex items-center justify-center
+                                  transition-all duration-300 flex-shrink-0
+                                  ${isActive 
+                                    ? 'bg-[#4169E1] scale-110' 
+                                    : 'bg-slate-100 group-hover:bg-[#4169E1] group-hover:scale-105'
+                                  }
+                                `}>
+                                  <item.icon className={`w-4 h-4 lg:w-5 lg:h-5 ${isActive ? 'text-white' : 'text-[#333333] group-hover:text-white'}`} />
+                                </div>
+                                <span className="flex-1 font-semibold text-sm lg:text-base truncate">{item.title}</span>
+                                {isActive && (
+                                  <div className="w-2 h-2 rounded-full bg-[#FFC107] shadow-lg shadow-yellow-500/50 flex-shrink-0" />
+                                )}
+                              </Link>
                             )}
-                          </Link>
-                        </SidebarMenuButton>
-                      </SidebarMenuItem>
+                          </SidebarMenuButton>
+                        </SidebarMenuItem>
+
+                        {hasSubItems && isExpanded && item.subItems.map((subItem) => {
+                          const isSubActive = location.pathname === subItem.url;
+                          return (
+                            <SidebarMenuItem key={subItem.key} className="ml-4">
+                              <SidebarMenuButton 
+                                asChild
+                                className={`
+                                  group relative overflow-hidden rounded-lg mb-1
+                                  transition-all duration-300
+                                  ${isSubActive 
+                                    ? 'nav-item-active' 
+                                    : 'text-[#333333] hover:bg-slate-100 hover:text-[#4169E1]'
+                                  }
+                                `}
+                              >
+                                <Link to={subItem.url} className="flex items-center gap-2 px-2 py-2 min-w-0">
+                                  <div className={`
+                                    w-6 h-6 rounded-lg flex items-center justify-center
+                                    transition-all duration-300 flex-shrink-0
+                                    ${isSubActive 
+                                      ? 'bg-[#4169E1]' 
+                                      : 'bg-slate-100 group-hover:bg-[#4169E1]'
+                                    }
+                                  `}>
+                                    <subItem.icon className={`w-3 h-3 ${isSubActive ? 'text-white' : 'text-[#333333] group-hover:text-white'}`} />
+                                  </div>
+                                  <span className="flex-1 font-semibold text-xs truncate">{subItem.title}</span>
+                                </Link>
+                              </SidebarMenuButton>
+                            </SidebarMenuItem>
+                          );
+                        })}
+                      </React.Fragment>
                     );
                   })}
                 </SidebarMenu>
