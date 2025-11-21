@@ -30,13 +30,13 @@ export default function BotCNDs() {
   const getStatusBadge = (status) => {
     switch(status) {
       case 'valid':
-        return <Badge className="bg-green-100 text-green-700 border-0">Valid</Badge>;
+        return <Badge className="bg-green-100 text-green-700 border-0">Válida</Badge>;
       case 'expiring':
-        return <Badge className="bg-amber-100 text-amber-700 border-0">Expiring Soon</Badge>;
+        return <Badge className="bg-amber-100 text-amber-700 border-0">Vencendo em Breve</Badge>;
       case 'expired':
-        return <Badge className="bg-red-100 text-red-700 border-0">Expired/With Debt</Badge>;
+        return <Badge className="bg-red-100 text-red-700 border-0">Vencida/Com Débito</Badge>;
       default:
-        return <Badge>Unknown</Badge>;
+        return <Badge>Desconhecido</Badge>;
     }
   };
 
@@ -51,13 +51,13 @@ export default function BotCNDs() {
                 <Shield className="w-8 h-8 text-white" />
               </div>
               <div>
-                <h1 className="text-2xl font-bold text-white mb-1">Clearance Certificate Bot (CNDs)</h1>
-                <p className="text-green-100 text-sm">Automated monitoring of tax clearance certificates</p>
+                <h1 className="text-2xl font-bold text-white mb-1">Robô de CNDs (Certidões Negativas)</h1>
+                <p className="text-green-100 text-sm">Monitoramento automatizado de certidões fiscais</p>
               </div>
             </div>
             <Button className="bg-white text-[#28A745] hover:bg-green-50 font-bold">
               <RefreshCw className="w-4 h-4 mr-2" />
-              Run Full Scan
+              Executar Varredura
             </Button>
           </div>
         </div>
@@ -71,7 +71,7 @@ export default function BotCNDs() {
                   <CheckCircle2 className="w-6 h-6 text-green-600" />
                 </div>
                 <div>
-                  <p className="text-xs font-bold text-[#AAAAAA] uppercase">Valid</p>
+                  <p className="text-xs font-bold text-[#AAAAAA] uppercase">Válidas</p>
                   <p className="text-2xl font-bold text-green-600">{stats.valid}</p>
                 </div>
               </div>
@@ -85,7 +85,7 @@ export default function BotCNDs() {
                   <Clock className="w-6 h-6 text-amber-600" />
                 </div>
                 <div>
-                  <p className="text-xs font-bold text-[#AAAAAA] uppercase">Expiring in 5 days</p>
+                  <p className="text-xs font-bold text-[#AAAAAA] uppercase">Vencendo em 5 dias</p>
                   <p className="text-2xl font-bold text-amber-600">{stats.expiring}</p>
                 </div>
               </div>
@@ -99,7 +99,7 @@ export default function BotCNDs() {
                   <AlertCircle className="w-6 h-6 text-red-600" />
                 </div>
                 <div>
-                  <p className="text-xs font-bold text-[#AAAAAA] uppercase">Expired/With Debt</p>
+                  <p className="text-xs font-bold text-[#AAAAAA] uppercase">Vencidas/Com Débito</p>
                   <p className="text-2xl font-bold text-red-600">{stats.expired}</p>
                 </div>
               </div>
@@ -116,7 +116,7 @@ export default function BotCNDs() {
                 <Input
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  placeholder="Search by certificate name or CNPJ..."
+                  placeholder="Buscar por nome da certidão ou CNPJ..."
                   className="pl-10"
                 />
               </div>
@@ -127,20 +127,20 @@ export default function BotCNDs() {
         {/* Table */}
         <Card className="border-2 border-slate-200">
           <CardHeader className="bg-slate-50 border-b-2 border-slate-200">
-            <CardTitle className="text-[#333333]">Certificate Status Dashboard</CardTitle>
+            <CardTitle className="text-[#333333]">Painel de Status das Certidões</CardTitle>
           </CardHeader>
           <CardContent className="p-0">
             <div className="overflow-x-auto">
               <table className="w-full">
                 <thead className="bg-slate-100 border-b-2 border-slate-200">
                   <tr>
-                    <th className="px-4 py-3 text-left text-xs font-bold text-[#333333] uppercase">Sphere/Level</th>
-                    <th className="px-4 py-3 text-left text-xs font-bold text-[#333333] uppercase">Certificate Name</th>
-                    <th className="px-4 py-3 text-left text-xs font-bold text-[#333333] uppercase">Tax ID</th>
-                    <th className="px-4 py-3 text-left text-xs font-bold text-[#333333] uppercase">Issue Date</th>
-                    <th className="px-4 py-3 text-left text-xs font-bold text-[#333333] uppercase">Validity</th>
+                    <th className="px-4 py-3 text-left text-xs font-bold text-[#333333] uppercase">Esfera/Nível</th>
+                    <th className="px-4 py-3 text-left text-xs font-bold text-[#333333] uppercase">Nome da Certidão</th>
+                    <th className="px-4 py-3 text-left text-xs font-bold text-[#333333] uppercase">CNPJ/CPF</th>
+                    <th className="px-4 py-3 text-left text-xs font-bold text-[#333333] uppercase">Data Emissão</th>
+                    <th className="px-4 py-3 text-left text-xs font-bold text-[#333333] uppercase">Validade</th>
                     <th className="px-4 py-3 text-left text-xs font-bold text-[#333333] uppercase">Status</th>
-                    <th className="px-4 py-3 text-left text-xs font-bold text-[#333333] uppercase">Actions</th>
+                    <th className="px-4 py-3 text-left text-xs font-bold text-[#333333] uppercase">Ações</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -160,7 +160,7 @@ export default function BotCNDs() {
                             {new Date(cert.validade).toLocaleDateString('pt-BR')}
                           </p>
                           <p className={`text-xs ${cert.diasRestantes > 0 ? 'text-[#AAAAAA]' : 'text-red-600 font-bold'}`}>
-                            {cert.diasRestantes > 0 ? `expires in ${cert.diasRestantes} days` : `expired ${Math.abs(cert.diasRestantes)} days ago`}
+                            {cert.diasRestantes > 0 ? `vence em ${cert.diasRestantes} dias` : `venceu há ${Math.abs(cert.diasRestantes)} dias`}
                           </p>
                         </div>
                       </td>

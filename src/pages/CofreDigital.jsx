@@ -38,8 +38,8 @@ export default function CofreDigital() {
               <Shield className="w-8 h-8 text-white" />
             </div>
             <div>
-              <h1 className="text-2xl font-bold text-white mb-1">Digital Vault</h1>
-              <p className="text-blue-100 text-sm">Secure storage for digital assets and credentials</p>
+              <h1 className="text-2xl font-bold text-white mb-1">Cofre Digital</h1>
+              <p className="text-blue-100 text-sm">Armazenamento seguro para ativos digitais e credenciais</p>
             </div>
           </div>
         </div>
@@ -50,9 +50,9 @@ export default function CofreDigital() {
             <div className="flex items-center gap-3">
               <Lock className="w-6 h-6 text-[#4169E1]" />
               <div>
-                <p className="font-bold text-[#333333]">End-to-end Encrypted Environment</p>
+                <p className="font-bold text-[#333333]">Ambiente com Criptografia Ponta a Ponta</p>
                 <p className="text-sm text-[#AAAAAA]">
-                  All data is encrypted using AES-256 and only accessible with your master password
+                  Todos os dados são criptografados usando AES-256 e acessíveis apenas com sua senha mestra
                 </p>
               </div>
             </div>
@@ -64,17 +64,17 @@ export default function CofreDigital() {
           <CardContent className="p-4">
             <div className="flex items-center gap-4">
               <div className="flex-1">
-                <Label htmlFor="master-password">Master Password (required for viewing)</Label>
+                <Label htmlFor="master-password">Senha Mestra (necessária para visualizar)</Label>
                 <Input
                   id="master-password"
                   type="password"
                   value={masterPassword}
                   onChange={(e) => setMasterPassword(e.target.value)}
-                  placeholder="Enter your master password"
+                  placeholder="Digite sua senha mestra"
                 />
               </div>
               <Badge className="bg-green-100 text-green-700 border-0 whitespace-nowrap">
-                {masterPassword ? "Unlocked" : "Locked"}
+                {masterPassword ? "Desbloqueado" : "Bloqueado"}
               </Badge>
             </div>
           </CardContent>
@@ -90,40 +90,40 @@ export default function CofreDigital() {
                   <div className="w-20 h-20 bg-slate-100 rounded-full flex items-center justify-center mb-4">
                     <Plus className="w-10 h-10 text-[#AAAAAA]" />
                   </div>
-                  <p className="font-bold text-[#333333]">Add Digital Asset</p>
+                  <p className="font-bold text-[#333333]">Adicionar Ativo Digital</p>
                   <p className="text-sm text-[#AAAAAA] text-center mt-2">
-                    Store credentials, crypto keys, or social media access
+                    Armazene credenciais, chaves cripto ou acesso a redes sociais
                   </p>
                 </CardContent>
               </Card>
             </DialogTrigger>
             <DialogContent>
               <DialogHeader>
-                <DialogTitle>Add New Digital Asset</DialogTitle>
+                <DialogTitle>Adicionar Novo Ativo Digital</DialogTitle>
               </DialogHeader>
               <div className="space-y-4 pt-4">
                 <div>
-                  <Label htmlFor="platform">Platform</Label>
-                  <Input id="platform" placeholder="e.g., Gmail, Instagram" />
+                  <Label htmlFor="platform">Plataforma</Label>
+                  <Input id="platform" placeholder="ex: Gmail, Instagram" />
                 </div>
                 <div>
-                  <Label htmlFor="username">Username/Email</Label>
-                  <Input id="username" placeholder="user@example.com" />
+                  <Label htmlFor="username">Usuário/Email</Label>
+                  <Input id="username" placeholder="usuario@exemplo.com" />
                 </div>
                 <div>
-                  <Label htmlFor="password">Password/Seed Phrase</Label>
+                  <Label htmlFor="password">Senha/Frase Semente</Label>
                   <Input id="password" type="password" placeholder="••••••••" />
                 </div>
                 <div>
-                  <Label htmlFor="notes">Notes (optional)</Label>
-                  <Input id="notes" placeholder="Additional information" />
+                  <Label htmlFor="notes">Notas (opcional)</Label>
+                  <Input id="notes" placeholder="Informações adicionais" />
                 </div>
                 <div className="flex gap-3 pt-4">
                   <Button variant="outline" className="flex-1" onClick={() => setShowNewAsset(false)}>
-                    Cancel
+                    Cancelar
                   </Button>
                   <Button className="flex-1 bg-[#4169E1] hover:bg-[#3151c7] text-white">
-                    Save Asset
+                    Salvar Ativo
                   </Button>
                 </div>
               </div>
@@ -150,12 +150,12 @@ export default function CofreDigital() {
                 </CardHeader>
                 <CardContent className="p-6 space-y-4">
                   <div>
-                    <Label className="text-xs text-[#AAAAAA] uppercase">Username/Email</Label>
+                    <Label className="text-xs text-[#AAAAAA] uppercase">Usuário/Email</Label>
                     <p className="font-bold text-[#333333] mt-1">{asset.username}</p>
                   </div>
                   
                   <div>
-                    <Label className="text-xs text-[#AAAAAA] uppercase">Password/Key</Label>
+                    <Label className="text-xs text-[#AAAAAA] uppercase">Senha/Chave</Label>
                     <div className="flex items-center gap-2 mt-1">
                       <p className="flex-1 font-mono text-[#333333] bg-slate-100 px-3 py-2 rounded-lg">
                         {isRevealed ? "MySecurePassword123!" : asset.password}
@@ -173,7 +173,7 @@ export default function CofreDigital() {
 
                   <div className="pt-2 border-t border-slate-200">
                     <p className="text-xs text-[#AAAAAA]">
-                      Last accessed: <span className="font-bold text-[#333333]">Never</span>
+                      Último acesso: <span className="font-bold text-[#333333]">Nunca</span>
                     </p>
                   </div>
                 </CardContent>

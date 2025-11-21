@@ -37,8 +37,8 @@ export default function SimuladorPlanejamento() {
   const economia = totalInventario - totalHolding;
 
   const chartData = [
-    { name: "Probate/Inventory", value: totalInventario, color: "#DC2626" },
-    { name: "Holding/Donation", value: totalHolding, color: "#16A34A" },
+    { name: "Inventário", value: totalInventario, color: "#DC2626" },
+    { name: "Holding", value: totalHolding, color: "#16A34A" },
   ];
 
   return (
@@ -51,8 +51,8 @@ export default function SimuladorPlanejamento() {
               <TrendingUp className="w-8 h-8 text-white" />
             </div>
             <div>
-              <h1 className="text-2xl font-bold text-white mb-1">Planning Simulator</h1>
-              <p className="text-amber-100 text-sm">Compare Holding vs. Traditional Probate costs</p>
+              <h1 className="text-2xl font-bold text-white mb-1">Simulador de Planejamento</h1>
+              <p className="text-amber-100 text-sm">Compare custos de Holding vs. Inventário Tradicional</p>
             </div>
           </div>
         </div>
@@ -60,12 +60,12 @@ export default function SimuladorPlanejamento() {
         {/* Input Parameters */}
         <Card className="border-2 border-[#FFC107] mb-6">
           <CardHeader className="bg-amber-50 border-b-2 border-[#FFC107]">
-            <CardTitle className="text-[#333333]">Simulation Parameters</CardTitle>
+            <CardTitle className="text-[#333333]">Parâmetros da Simulação</CardTitle>
           </CardHeader>
           <CardContent className="p-6">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div>
-                <Label htmlFor="valor">Total Asset Value</Label>
+                <Label htmlFor="valor">Valor Total do Patrimônio</Label>
                 <Input
                   id="valor"
                   type="number"
@@ -75,7 +75,7 @@ export default function SimuladorPlanejamento() {
                 />
               </div>
               <div>
-                <Label htmlFor="estado">State/Region</Label>
+                <Label htmlFor="estado">Estado/Região</Label>
                 <Select value={estado} onValueChange={setEstado}>
                   <SelectTrigger>
                     <SelectValue />
@@ -90,7 +90,7 @@ export default function SimuladorPlanejamento() {
                 </Select>
               </div>
               <div>
-                <Label htmlFor="herdeiros">Number of Heirs</Label>
+                <Label htmlFor="herdeiros">Número de Herdeiros</Label>
                 <Input
                   id="herdeiros"
                   type="number"
@@ -109,24 +109,24 @@ export default function SimuladorPlanejamento() {
             <CardHeader className="bg-red-50 border-b-2 border-red-700">
               <CardTitle className="flex items-center gap-2 text-[#333333]">
                 <FileText className="w-6 h-6 text-red-700" />
-                Scenario A: Probate/Inventory
+                Cenário A: Inventário/Partilha
               </CardTitle>
             </CardHeader>
             <CardContent className="p-6 space-y-4">
               <div className="flex items-center justify-between pb-3 border-b border-slate-200">
-                <span className="text-[#333333] font-medium">Inheritance Tax (ITCMD {estadoInfo.aliquota_itcmd}%)</span>
+                <span className="text-[#333333] font-medium">Imposto ITCMD ({estadoInfo.aliquota_itcmd}%)</span>
                 <span className="font-bold text-red-700">R$ {itcmd.toLocaleString('pt-BR')}</span>
               </div>
               <div className="flex items-center justify-between pb-3 border-b border-slate-200">
-                <span className="text-[#333333] font-medium">Attorney Fees ({percentualAdvocaticios}%)</span>
+                <span className="text-[#333333] font-medium">Honorários Advocatícios ({percentualAdvocaticios}%)</span>
                 <span className="font-bold text-red-700">R$ {honorariosA.toLocaleString('pt-BR')}</span>
               </div>
               <div className="flex items-center justify-between pb-3 border-b border-slate-200">
-                <span className="text-[#333333] font-medium">Court/Notary Costs (1.5%)</span>
+                <span className="text-[#333333] font-medium">Custas Judiciais/Cartório (1.5%)</span>
                 <span className="font-bold text-red-700">R$ {custoCartorio.toLocaleString('pt-BR')}</span>
               </div>
               <div className="bg-red-100 rounded-xl p-4 mt-6">
-                <p className="text-sm text-[#AAAAAA] mb-1">Total Cost</p>
+                <p className="text-sm text-[#AAAAAA] mb-1">Custo Total</p>
                 <p className="text-3xl font-extrabold text-red-700">R$ {totalInventario.toLocaleString('pt-BR')}</p>
               </div>
             </CardContent>
@@ -137,24 +137,24 @@ export default function SimuladorPlanejamento() {
             <CardHeader className="bg-green-50 border-b-2 border-green-600">
               <CardTitle className="flex items-center gap-2 text-[#333333]">
                 <Building className="w-6 h-6 text-green-600" />
-                Scenario B: Holding/Donation
+                Cenário B: Holding/Doação
               </CardTitle>
             </CardHeader>
             <CardContent className="p-6 space-y-4">
               <div className="flex items-center justify-between pb-3 border-b border-slate-200">
-                <span className="text-[#333333] font-medium">Transfer Tax (ITBI {estadoInfo.aliquota_itbi}%)</span>
+                <span className="text-[#333333] font-medium">Imposto ITBI ({estadoInfo.aliquota_itbi}%)</span>
                 <span className="font-bold text-green-600">R$ {itbi.toLocaleString('pt-BR')}</span>
               </div>
               <div className="flex items-center justify-between pb-3 border-b border-slate-200">
-                <span className="text-[#333333] font-medium">Incorporation Costs</span>
+                <span className="text-[#333333] font-medium">Custos de Abertura</span>
                 <span className="font-bold text-green-600">R$ {custoConstituicao.toLocaleString('pt-BR')}</span>
               </div>
               <div className="flex items-center justify-between pb-3 border-b border-slate-200">
-                <span className="text-[#333333] font-medium">Accounting/Legal Fees (annual)</span>
+                <span className="text-[#333333] font-medium">Honorários Contábeis/Jurídicos (anual)</span>
                 <span className="font-bold text-green-600">R$ {honorariosContabeis.toLocaleString('pt-BR')}</span>
               </div>
               <div className="bg-green-100 rounded-xl p-4 mt-6">
-                <p className="text-sm text-[#AAAAAA] mb-1">Total Cost</p>
+                <p className="text-sm text-[#AAAAAA] mb-1">Custo Total</p>
                 <p className="text-3xl font-extrabold text-green-600">R$ {totalHolding.toLocaleString('pt-BR')}</p>
               </div>
             </CardContent>
@@ -166,7 +166,7 @@ export default function SimuladorPlanejamento() {
           <CardHeader className="border-b-2 border-[#FFC107]">
             <CardTitle className="flex items-center gap-2 text-[#333333]">
               <PieChartIcon className="w-6 h-6 text-[#FFC107]" />
-              Financial Impact Analysis
+              Análise de Impacto Financeiro
             </CardTitle>
           </CardHeader>
           <CardContent className="p-6">
@@ -198,12 +198,12 @@ export default function SimuladorPlanejamento() {
                   <div className="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-4">
                     <DollarSign className="w-10 h-10 text-white" />
                   </div>
-                  <p className="text-white text-lg font-bold mb-2">Generated Savings</p>
+                  <p className="text-white text-lg font-bold mb-2">Economia Gerada</p>
                   <p className="text-5xl font-extrabold text-white mb-4">
                     R$ {economia.toLocaleString('pt-BR')}
                   </p>
                   <p className="text-green-100 text-sm">
-                    {economia > 0 ? `Save ${((economia/totalInventario)*100).toFixed(1)}% choosing Holding` : 'Traditional probate is cheaper in this case'}
+                    {economia > 0 ? `Economize ${((economia/totalInventario)*100).toFixed(1)}% escolhendo Holding` : 'Inventário tradicional é mais barato neste caso'}
                   </p>
                 </div>
               </div>

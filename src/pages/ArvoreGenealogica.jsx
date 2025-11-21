@@ -37,8 +37,8 @@ export default function ArvoreGenealogica() {
                 <Users className="w-8 h-8 text-white" />
               </div>
               <div>
-                <h1 className="text-2xl font-bold text-white mb-1">Successional Family Tree</h1>
-                <p className="text-blue-100 text-sm">Visual genealogical organogram</p>
+                <h1 className="text-2xl font-bold text-white mb-1">Árvore Genealógica Sucessória</h1>
+                <p className="text-blue-100 text-sm">Organograma genealógico visual</p>
               </div>
             </div>
           </div>
@@ -78,7 +78,7 @@ export default function ArvoreGenealogica() {
                       </div>
                       <div className="bg-white rounded-xl p-3 shadow-lg text-center border-2 border-slate-200">
                         <p className="font-bold text-[#333333]">{casoAtual.nome_falecido}</p>
-                        <Badge variant="outline" className="mt-1">Deceased</Badge>
+                        <Badge variant="outline" className="mt-1">Falecido</Badge>
                       </div>
                     </div>
 
@@ -111,8 +111,8 @@ export default function ArvoreGenealogica() {
                   <div className="flex items-center justify-center h-full">
                     <div className="text-center">
                       <Users className="w-20 h-20 text-[#AAAAAA] mx-auto mb-4" />
-                      <h3 className="text-xl font-bold text-[#333333] mb-2">No Family Tree Available</h3>
-                      <p className="text-[#AAAAAA]">Select a case with heirs to visualize</p>
+                      <h3 className="text-xl font-bold text-[#333333] mb-2">Nenhuma Árvore Genealógica Disponível</h3>
+                      <p className="text-[#AAAAAA]">Selecione um caso com herdeiros para visualizar</p>
                     </div>
                   </div>
                 )}
@@ -125,7 +125,7 @@ export default function ArvoreGenealogica() {
             {selectedPerson ? (
               <Card className="border-2 border-[#4169E1]">
                 <CardHeader className="bg-blue-50 border-b-2 border-[#4169E1]">
-                  <CardTitle className="text-[#333333]">Person Details</CardTitle>
+                  <CardTitle className="text-[#333333]">Detalhes da Pessoa</CardTitle>
                 </CardHeader>
                 <CardContent className="p-4 space-y-4">
                   <div className="text-center">
@@ -139,34 +139,34 @@ export default function ArvoreGenealogica() {
                   <div className="space-y-3 pt-4 border-t border-slate-200">
                     <div>
                       <p className="text-xs font-bold text-[#AAAAAA] uppercase mb-1">CPF</p>
-                      <p className="text-sm text-[#333333]">{selectedPerson.cpf || "Not informed"}</p>
+                      <p className="text-sm text-[#333333]">{selectedPerson.cpf || "Não informado"}</p>
                     </div>
                     <div>
                       <p className="text-xs font-bold text-[#AAAAAA] uppercase mb-1">Email</p>
-                      <p className="text-sm text-[#333333]">{selectedPerson.email || "Not informed"}</p>
+                      <p className="text-sm text-[#333333]">{selectedPerson.email || "Não informado"}</p>
                     </div>
                     <div>
-                      <p className="text-xs font-bold text-[#AAAAAA] uppercase mb-1">Share</p>
+                      <p className="text-xs font-bold text-[#AAAAAA] uppercase mb-1">Quota-parte</p>
                       <p className="text-lg font-bold text-[#4169E1]">{selectedPerson.percentual_partilha}%</p>
                     </div>
                   </div>
 
                   <div className="pt-4 border-t border-slate-200">
-                    <p className="text-xs font-bold text-[#AAAAAA] uppercase mb-2">Attached Documents</p>
+                    <p className="text-xs font-bold text-[#AAAAAA] uppercase mb-2">Documentos Anexados</p>
                     <div className="space-y-2">
                       <div className="flex items-center justify-between p-2 bg-green-50 rounded-lg">
-                        <span className="text-xs text-[#333333]">ID Document</span>
+                        <span className="text-xs text-[#333333]">Documento de Identidade</span>
                         <CheckCircle2 className="w-4 h-4 text-green-600" />
                       </div>
                       <div className="flex items-center justify-between p-2 bg-red-50 rounded-lg">
-                        <span className="text-xs text-[#333333]">Proof of Address</span>
+                        <span className="text-xs text-[#333333]">Comprovante de Residência</span>
                         <AlertCircle className="w-4 h-4 text-red-600" />
                       </div>
                     </div>
                   </div>
 
                   <Button className="w-full bg-[#4169E1] hover:bg-[#3151c7] text-white mt-4">
-                    Edit Profile
+                    Editar Perfil
                   </Button>
                 </CardContent>
               </Card>
@@ -174,7 +174,7 @@ export default function ArvoreGenealogica() {
               <Card className="border-2 border-slate-200">
                 <CardContent className="p-8 text-center">
                   <User className="w-16 h-16 text-[#AAAAAA] mx-auto mb-3" />
-                  <p className="text-sm text-[#AAAAAA]">Click on a person in the tree to view details</p>
+                  <p className="text-sm text-[#AAAAAA]">Clique em uma pessoa na árvore para ver detalhes</p>
                 </CardContent>
               </Card>
             )}

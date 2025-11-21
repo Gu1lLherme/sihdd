@@ -81,8 +81,8 @@ export default function ModelagemPartilha() {
                 <Calculator className="w-8 h-8 text-white" />
               </div>
               <div>
-                <h1 className="text-2xl font-bold text-white mb-1">Estate Partition Modeling</h1>
-                <p className="text-blue-100 text-sm">Simulate asset distribution among heirs</p>
+                <h1 className="text-2xl font-bold text-white mb-1">Modelagem de Partilha de Bens</h1>
+                <p className="text-blue-100 text-sm">Simule a distribuição de bens entre os herdeiros</p>
               </div>
             </div>
             <div className="flex gap-3">
@@ -97,7 +97,7 @@ export default function ModelagemPartilha() {
                 </SelectContent>
               </Select>
               <Button className="bg-white text-[#4169E1] hover:bg-blue-50">
-                Recalculate
+                Recalcular
               </Button>
             </div>
           </div>
@@ -107,10 +107,10 @@ export default function ModelagemPartilha() {
         <Card className="border-2 border-slate-200 mb-6">
           <CardContent className="p-4">
             <div className="flex items-center gap-4">
-              <Label className="font-bold text-[#333333]">Select Case:</Label>
+              <Label className="font-bold text-[#333333]">Selecionar Caso:</Label>
               <Select value={selectedCaso} onValueChange={setSelectedCaso}>
                 <SelectTrigger className="w-full">
-                  <SelectValue placeholder="Choose an estate case" />
+                  <SelectValue placeholder="Escolha um caso de inventário" />
                 </SelectTrigger>
                 <SelectContent>
                   {casos.map((caso) => (
@@ -132,7 +132,7 @@ export default function ModelagemPartilha() {
                 <CardHeader className="bg-blue-50 border-b-2 border-[#4169E1]">
                   <CardTitle className="flex items-center gap-2 text-[#333333]">
                     <TrendingUp className="w-5 h-5 text-[#4169E1]" />
-                    Total Estate - Available Assets
+                    Patrimônio Total - Bens Disponíveis
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="p-4">
@@ -160,7 +160,7 @@ export default function ModelagemPartilha() {
                                     <p className="font-bold text-lg text-[#4169E1]">
                                       R$ {bem.valor.toLocaleString('pt-BR')}
                                     </p>
-                                    <Badge className="bg-green-100 text-green-700 border-0">Available</Badge>
+                                    <Badge className="bg-green-100 text-green-700 border-0">Disponível</Badge>
                                   </div>
                                 </div>
                               </div>
@@ -215,7 +215,7 @@ export default function ModelagemPartilha() {
                               })}
                               {(partilha[herdeiro.id] || []).length === 0 && (
                                 <div className="border-2 border-dashed border-slate-300 rounded-lg p-8 text-center text-[#AAAAAA]">
-                                  Drop assets here
+                                  Arraste bens aqui
                                 </div>
                               )}
                               {provided.placeholder}
@@ -224,7 +224,7 @@ export default function ModelagemPartilha() {
                         </Droppable>
                         <div className="mt-4">
                           <div className="flex items-center justify-between mb-2">
-                            <span className="text-sm font-bold text-[#333333]">Progress:</span>
+                            <span className="text-sm font-bold text-[#333333]">Progresso:</span>
                             <span className="text-sm font-bold text-[#4169E1]">{percentualAtual.toFixed(1)}%</span>
                           </div>
                           <div className="w-full bg-slate-200 rounded-full h-3">
@@ -245,8 +245,8 @@ export default function ModelagemPartilha() {
           <Card className="border-2 border-slate-200">
             <CardContent className="p-12 text-center">
               <Calculator className="w-20 h-20 text-[#AAAAAA] mx-auto mb-4" />
-              <h3 className="text-xl font-bold text-[#333333] mb-2">Select a Case to Start</h3>
-              <p className="text-[#AAAAAA]">Choose an estate case to model the partition</p>
+              <h3 className="text-xl font-bold text-[#333333] mb-2">Selecione um Caso para Iniciar</h3>
+              <p className="text-[#AAAAAA]">Escolha um caso de inventário para modelar a partilha</p>
             </CardContent>
           </Card>
         )}
@@ -259,17 +259,17 @@ export default function ModelagemPartilha() {
                 {totalPartilhado === totalPatrimonio ? (
                   <div className="flex items-center gap-2 text-green-600">
                     <CheckCircle2 className="w-6 h-6" />
-                    <span className="font-bold">Legitimate Share Compliance</span>
+                    <span className="font-bold">Conformidade com a Legítima</span>
                   </div>
                 ) : (
                   <div className="flex items-center gap-2 text-amber-600">
                     <AlertCircle className="w-6 h-6" />
-                    <span className="font-bold">Pending Distribution</span>
+                    <span className="font-bold">Distribuição Pendente</span>
                   </div>
                 )}
               </div>
               <div className="text-center">
-                <p className="text-sm text-[#AAAAAA]">Partitioned vs Total</p>
+                <p className="text-sm text-[#AAAAAA]">Partilhado vs Total</p>
                 <p className="text-lg font-bold text-[#333333]">
                   R$ {totalPartilhado.toLocaleString('pt-BR')} / R$ {totalPatrimonio.toLocaleString('pt-BR')}
                 </p>
@@ -277,11 +277,11 @@ export default function ModelagemPartilha() {
               <div className="flex gap-3">
                 <Button variant="outline" className="border-slate-300">
                   <Save className="w-4 h-4 mr-2" />
-                  Save Scenario
+                  Salvar Cenário
                 </Button>
                 <Button className="bg-[#4169E1] hover:bg-[#3151c7] text-white">
                   <Download className="w-4 h-4 mr-2" />
-                  Generate Partition Draft (PDF)
+                  Gerar Minuta de Partilha (PDF)
                 </Button>
               </div>
             </div>

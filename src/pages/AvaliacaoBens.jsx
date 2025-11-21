@@ -50,8 +50,8 @@ export default function AvaliacaoBens() {
               <TrendingUp className="w-8 h-8 text-white" />
             </div>
             <div>
-              <h1 className="text-2xl font-bold text-white mb-1">Asset Valuation and Pricing</h1>
-              <p className="text-amber-100 text-sm">Manage and appraise estate assets</p>
+              <h1 className="text-2xl font-bold text-white mb-1">Avaliação e Precificação de Bens</h1>
+              <p className="text-amber-100 text-sm">Gerencie e avalie os bens do espólio</p>
             </div>
           </div>
         </div>
@@ -61,13 +61,13 @@ export default function AvaliacaoBens() {
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-[#AAAAAA] font-bold uppercase mb-1">Total Asset Value</p>
+                <p className="text-sm text-[#AAAAAA] font-bold uppercase mb-1">Valor Total dos Bens</p>
                 <p className="text-3xl font-extrabold text-[#FFC107]">
                   R$ {totalValor.toLocaleString('pt-BR')}
                 </p>
               </div>
               <div className="text-right">
-                <p className="text-sm text-[#AAAAAA] font-bold uppercase mb-1">Total Assets</p>
+                <p className="text-sm text-[#AAAAAA] font-bold uppercase mb-1">Total de Bens</p>
                 <p className="text-3xl font-extrabold text-[#4169E1]">{bensFiltrados.length}</p>
               </div>
             </div>
@@ -77,7 +77,7 @@ export default function AvaliacaoBens() {
         {/* Filters */}
         <Card className="border-2 border-slate-200 mb-6">
           <CardHeader className="bg-slate-50 border-b-2 border-slate-200">
-            <CardTitle className="text-[#333333]">Filter by Type</CardTitle>
+            <CardTitle className="text-[#333333]">Filtrar por Tipo</CardTitle>
           </CardHeader>
           <CardContent className="p-4">
             <div className="flex flex-wrap gap-2">
@@ -86,7 +86,7 @@ export default function AvaliacaoBens() {
                 onClick={() => setTipoFiltro("all")}
                 className={tipoFiltro === "all" ? "bg-[#4169E1]" : ""}
               >
-                All Assets
+                Todos os Bens
               </Button>
               <Button
                 variant={tipoFiltro === "imovel" ? "default" : "outline"}
@@ -94,7 +94,7 @@ export default function AvaliacaoBens() {
                 className={tipoFiltro === "imovel" ? "bg-[#4169E1]" : ""}
               >
                 <Home className="w-4 h-4 mr-2" />
-                Real Estate
+                Imóveis
               </Button>
               <Button
                 variant={tipoFiltro === "veiculo" ? "default" : "outline"}
@@ -102,7 +102,7 @@ export default function AvaliacaoBens() {
                 className={tipoFiltro === "veiculo" ? "bg-[#4169E1]" : ""}
               >
                 <Car className="w-4 h-4 mr-2" />
-                Vehicles
+                Veículos
               </Button>
               <Button
                 variant={tipoFiltro === "investimento" ? "default" : "outline"}
@@ -110,7 +110,7 @@ export default function AvaliacaoBens() {
                 className={tipoFiltro === "investimento" ? "bg-[#4169E1]" : ""}
               >
                 <TrendingUp className="w-4 h-4 mr-2" />
-                Investments
+                Investimentos
               </Button>
               <Button
                 variant={tipoFiltro === "empresa" ? "default" : "outline"}
@@ -118,7 +118,7 @@ export default function AvaliacaoBens() {
                 className={tipoFiltro === "empresa" ? "bg-[#4169E1]" : ""}
               >
                 <Building2 className="w-4 h-4 mr-2" />
-                Companies
+                Empresas
               </Button>
             </div>
           </CardContent>
@@ -142,21 +142,21 @@ export default function AvaliacaoBens() {
                     </div>
                     <div className="flex-1 grid grid-cols-1 md:grid-cols-4 gap-4">
                       <div>
-                        <p className="text-xs text-[#AAAAAA] font-bold uppercase mb-1">Asset Name</p>
+                        <p className="text-xs text-[#AAAAAA] font-bold uppercase mb-1">Nome do Bem</p>
                         <p className="font-bold text-[#333333]">{bem.descricao}</p>
                         <Badge variant="outline" className="mt-1">{bem.tipo}</Badge>
                       </div>
                       <div>
-                        <p className="text-xs text-[#AAAAAA] font-bold uppercase mb-1">Declared Value</p>
+                        <p className="text-xs text-[#AAAAAA] font-bold uppercase mb-1">Valor Declarado</p>
                         <p className="font-bold text-[#333333]">R$ {bem.valor?.toLocaleString('pt-BR') || 0}</p>
                       </div>
                       <div>
-                        <p className="text-xs text-[#AAAAAA] font-bold uppercase mb-1">Market Value</p>
+                        <p className="text-xs text-[#AAAAAA] font-bold uppercase mb-1">Valor de Mercado</p>
                         <p className="font-bold text-[#FFC107]">R$ {bem.valor?.toLocaleString('pt-BR') || 0}</p>
                       </div>
                       <div>
-                        <p className="text-xs text-[#AAAAAA] font-bold uppercase mb-1">Source</p>
-                        <Badge className="bg-green-100 text-green-700 border-0">Tax Assessment</Badge>
+                        <p className="text-xs text-[#AAAAAA] font-bold uppercase mb-1">Fonte</p>
+                        <Badge className="bg-green-100 text-green-700 border-0">Valor Venal/IPTU</Badge>
                       </div>
                     </div>
                     {isExpanded ? <ChevronUp className="w-5 h-5 text-[#AAAAAA]" /> : <ChevronDown className="w-5 h-5 text-[#AAAAAA]" />}
@@ -167,58 +167,58 @@ export default function AvaliacaoBens() {
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div className="space-y-4">
                           <div>
-                            <Label htmlFor={`fonte-${bem.id}`}>Valuation Source</Label>
+                            <Label htmlFor={`fonte-${bem.id}`}>Fonte da Avaliação</Label>
                             <Select defaultValue="tax">
                               <SelectTrigger id={`fonte-${bem.id}`}>
                                 <SelectValue />
                               </SelectTrigger>
                               <SelectContent>
-                                <SelectItem value="tax">Tax Assessment</SelectItem>
-                                <SelectItem value="fipe">FIPE Table</SelectItem>
-                                <SelectItem value="broker">Broker Appraisal</SelectItem>
-                                <SelectItem value="market">Market Research</SelectItem>
+                                <SelectItem value="tax">Valor Venal/IPTU</SelectItem>
+                                <SelectItem value="fipe">Tabela FIPE</SelectItem>
+                                <SelectItem value="broker">Avaliação de Corretor</SelectItem>
+                                <SelectItem value="market">Pesquisa de Mercado</SelectItem>
                               </SelectContent>
                             </Select>
                           </div>
 
                           {bem.tipo === "veiculo" && (
                             <div>
-                              <Label htmlFor={`placa-${bem.id}`}>License Plate</Label>
+                              <Label htmlFor={`placa-${bem.id}`}>Placa</Label>
                               <div className="flex gap-2">
                                 <Input id={`placa-${bem.id}`} placeholder="ABC-1234" />
                                 <Button className="bg-[#4169E1] hover:bg-[#3151c7] text-white">
-                                  Fetch FIPE
+                                  Buscar FIPE
                                 </Button>
                               </div>
                             </div>
                           )}
 
                           <div>
-                            <Label htmlFor={`identification-${bem.id}`}>Identification</Label>
+                            <Label htmlFor={`identification-${bem.id}`}>Identificação</Label>
                             <Input
                               id={`identification-${bem.id}`}
                               defaultValue={bem.identificacao}
-                              placeholder="Registration number, plate, etc."
+                              placeholder="Matrícula, placa, conta, etc."
                             />
                           </div>
                         </div>
 
                         <div>
-                          <Label htmlFor={`upload-${bem.id}`}>Upload Appraisal PDF</Label>
+                          <Label htmlFor={`upload-${bem.id}`}>Upload do Laudo de Avaliação (PDF)</Label>
                           <div className="border-2 border-dashed border-slate-300 rounded-lg p-8 text-center hover:border-[#4169E1] cursor-pointer transition-colors">
                             <Upload className="w-12 h-12 text-[#AAAAAA] mx-auto mb-2" />
                             <p className="text-sm text-[#AAAAAA] font-medium">
-                              Click to upload or drag and drop
+                              Clique para enviar ou arraste e solte
                             </p>
-                            <p className="text-xs text-[#AAAAAA] mt-1">PDF up to 10MB</p>
+                            <p className="text-xs text-[#AAAAAA] mt-1">PDF até 10MB</p>
                           </div>
                         </div>
                       </div>
 
                       <div className="flex justify-end gap-3 mt-6">
-                        <Button variant="outline">Cancel</Button>
+                        <Button variant="outline">Cancelar</Button>
                         <Button className="bg-[#28A745] hover:bg-[#218838] text-white">
-                          Save Changes
+                          Salvar Alterações
                         </Button>
                       </div>
                     </div>
