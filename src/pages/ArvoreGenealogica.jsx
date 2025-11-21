@@ -1,16 +1,16 @@
 import React, { useState } from "react";
 import { base44 } from "@/api/base44Client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogDescription } from "@/components/ui/dialog";
-import { masks } from "@/components/Masks";
-import { Users, Plus, ZoomIn, ZoomOut, Maximize2, User, CheckCircle2, AlertCircle, Trash2, Edit, Save, X } from "lucide-react";
-import { toast } from "sonner"; // Assuming sonner or similar is available, or I'll use standard alerts if not configured, but base44 usually has ui components. I'll stick to standard UI feedback for now.
+import { Users, Plus, ZoomIn, ZoomOut, Maximize2 } from "lucide-react";
+
+// Imported components
+import DetalhesMembro from "@/components/arvore-genealogica/DetalhesMembro";
+import CanvasArvore from "@/components/arvore-genealogica/CanvasArvore";
+import FormularioMembro from "@/components/arvore-genealogica/FormularioMembro";
 
 export default function ArvoreGenealogica() {
   const queryClient = useQueryClient();
@@ -190,235 +190,36 @@ export default function ArvoreGenealogica() {
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
           {/* Canvas Area */}
           <div className="lg:col-span-3">
-            <Card className="border-2 border-slate-200 h-[600px] overflow-hidden">
-              <CardContent className="p-6 h-full bg-slate-50 relative overflow-auto custom-scrollbar">
-                {casoAtual ? (
-                  <div 
-                    className="flex flex-col items-center justify-start space-y-8 pt-8 min-w-max min-h-max transition-transform origin-top"
-                    style={{ transform: `scale(${zoomLevel})` }}
-                  >
-                    {/* Deceased */}
-                    <div className="flex flex-col items-center">
-                      <div className="w-24 h-24 rounded-full bg-slate-800 flex items-center justify-center border-4 border-white shadow-xl mb-2 relative group cursor-help">
-                        <User className="w-12 h-12 text-white" />
-                        <div className="absolute -bottom-2 bg-black text-white text-[10px] px-2 py-0.5 rounded-full">Falecido</div>
-                      </div>
-                      <div className="bg-white rounded-xl p-3 shadow-lg text-center border-2 border-slate-200">
-                        <p className="font-bold text-[#333333] text-lg">{casoAtual.nome_falecido}</p>
-                        <p className="text-xs text-slate-500">{new Date(casoAtual.data_obito).toLocaleDateString('pt-BR')}</p>
-                      </div>
-                    </div>
-
-                    {/* Connectors */}
-                    <div className="flex flex-col items-center">
-                      <div className="w-px h-12 bg-slate-400" />
-                      {herdeirosDosCaso.length > 0 && (
-                        <div className="h-px bg-slate-400" style={{ width: `${Math.max((herdeirosDosCaso.length - 1) * 120, 0)}px` }} />
-                      )}
-                    </div>
-
-                    {/* Heirs */}
-                    <div className="flex flex-wrap justify-center gap-8 items-start">
-                      {herdeirosDosCaso.map((herdeiro) => {
-                        const isSelected = selectedPerson?.id === herdeiro.id;
-                        // Simulando status de documento aleatório para visualização
-                        const hasDocuments = herdeiro.id.length % 2 === 0; 
-                        
-                        return (
-                          <div
-                            key={herdeiro.id}
-                            onClick={() => setSelectedPerson(herdeiro)}
-                            className="flex flex-col items-center cursor-pointer group relative"
-                          >
-                             <div className="h-8 w-px bg-slate-400 absolute -top-8" />
-                            <div className={`
-                              w-20 h-20 rounded-full flex items-center justify-center border-4 shadow-xl mb-2 transition-all
-                              ${isSelected ? 'ring-4 ring-blue-400 ring-opacity-50 scale-110' : 'hover:scale-105'}
-                              ${hasDocuments ? 'bg-green-500 border-white' : 'bg-amber-500 border-white'}
-                            `}>
-                              <User className="w-10 h-10 text-white" />
-                            </div>
-                            <div className={`
-                              bg-white rounded-xl p-3 shadow-lg text-center border-2 transition-colors max-w-[140px]
-                              ${isSelected ? 'border-[#4169E1] bg-blue-50' : 'border-slate-200'}
-                            `}>
-                              <p className="font-bold text-sm text-[#333333] truncate w-full">{herdeiro.nome}</p>
-                              <Badge variant={isSelected ? "default" : "outline"} className={`mt-1 text-xs ${isSelected ? "bg-[#4169E1]" : ""}`}>
-                                {herdeiro.parentesco}
-                              </Badge>
-                            </div>
-                          </div>
-                        );
-                      })}
-                      {herdeirosDosCaso.length === 0 && (
-                        <div className="text-center p-4 border-2 border-dashed border-slate-300 rounded-lg bg-white/50">
-                          <p className="text-slate-500 text-sm">Nenhum herdeiro cadastrado.</p>
-                          <Button variant="link" onClick={handleOpenCreate} className="text-[#4169E1]">
-                            + Adicionar Herdeiro
-                          </Button>
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                ) : (
-                  <div className="flex items-center justify-center h-full">
-                    <div className="text-center">
-                      <Users className="w-20 h-20 text-[#AAAAAA] mx-auto mb-4" />
-                      <h3 className="text-xl font-bold text-[#333333] mb-2">Nenhuma Árvore Selecionada</h3>
-                      <p className="text-[#AAAAAA]">Selecione um caso acima para visualizar a árvore genealógica</p>
-                    </div>
-                  </div>
-                )}
-              </CardContent>
-            </Card>
+            <CanvasArvore 
+              casoAtual={casoAtual}
+              herdeiros={herdeirosDosCaso}
+              selectedPersonId={selectedPerson?.id}
+              onSelectPerson={setSelectedPerson}
+              onCreatePerson={handleOpenCreate}
+              zoomLevel={zoomLevel}
+            />
           </div>
 
           {/* Sidebar */}
           <div className="lg:col-span-1">
-            {selectedPerson ? (
-              <Card className="border-2 border-[#4169E1] h-full sticky top-6">
-                <CardHeader className="bg-blue-50 border-b-2 border-[#4169E1] flex flex-row items-center justify-between p-4">
-                  <CardTitle className="text-[#333333] text-lg">Detalhes</CardTitle>
-                  <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => setSelectedPerson(null)}>
-                    <X className="w-4 h-4" />
-                  </Button>
-                </CardHeader>
-                <CardContent className="p-4 space-y-6">
-                  <div className="text-center">
-                    <div className="w-24 h-24 rounded-full bg-[#4169E1] flex items-center justify-center mx-auto mb-3 shadow-lg">
-                      <User className="w-12 h-12 text-white" />
-                    </div>
-                    <h3 className="font-bold text-xl text-[#333333] leading-tight">{selectedPerson.nome}</h3>
-                    <Badge className="mt-2 text-sm px-3 py-1 bg-blue-100 text-[#4169E1] hover:bg-blue-200 border-0">
-                      {selectedPerson.parentesco}
-                    </Badge>
-                  </div>
-
-                  <div className="space-y-4 pt-2">
-                    <div className="bg-slate-50 p-3 rounded-lg border border-slate-100">
-                      <p className="text-xs font-bold text-[#AAAAAA] uppercase mb-1">CPF</p>
-                      <p className="text-sm font-medium text-[#333333]">{selectedPerson.cpf || "Não informado"}</p>
-                    </div>
-                    <div className="bg-slate-50 p-3 rounded-lg border border-slate-100">
-                      <p className="text-xs font-bold text-[#AAAAAA] uppercase mb-1">Email</p>
-                      <p className="text-sm font-medium text-[#333333]">{selectedPerson.email || "Não informado"}</p>
-                    </div>
-                    <div className="bg-slate-50 p-3 rounded-lg border border-slate-100">
-                      <p className="text-xs font-bold text-[#AAAAAA] uppercase mb-1">Participação na Partilha</p>
-                      <div className="flex items-center justify-between">
-                         <p className="text-xl font-bold text-[#4169E1]">{selectedPerson.percentual_partilha}%</p>
-                         <div className="h-2 w-24 bg-slate-200 rounded-full overflow-hidden">
-                            <div className="h-full bg-[#4169E1]" style={{width: `${selectedPerson.percentual_partilha}%`}}></div>
-                         </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-3 pt-2">
-                    <Button 
-                        variant="outline" 
-                        className="w-full border-[#4169E1] text-[#4169E1] hover:bg-blue-50"
-                        onClick={() => handleOpenEdit(selectedPerson)}
-                    >
-                      <Edit className="w-4 h-4 mr-2" />
-                      Editar
-                    </Button>
-                    <Button 
-                        variant="outline" 
-                        className="w-full border-red-200 text-red-600 hover:bg-red-50 hover:border-red-300"
-                        onClick={() => setIsDeleteAlertOpen(true)}
-                    >
-                      <Trash2 className="w-4 h-4 mr-2" />
-                      Excluir
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
-            ) : (
-              <Card className="border-2 border-slate-200 border-dashed h-full flex items-center justify-center min-h-[300px]">
-                <CardContent className="p-8 text-center">
-                  <User className="w-16 h-16 text-slate-300 mx-auto mb-3" />
-                  <p className="text-slate-400 font-medium">Clique em um herdeiro na árvore para ver e editar seus detalhes</p>
-                </CardContent>
-              </Card>
-            )}
+            <DetalhesMembro 
+              selectedPerson={selectedPerson}
+              onClose={() => setSelectedPerson(null)}
+              onEdit={handleOpenEdit}
+              onDelete={() => setIsDeleteAlertOpen(true)}
+            />
           </div>
         </div>
 
-        {/* Dialog Criar/Editar */}
-        <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
-          <DialogContent className="sm:max-w-[425px]">
-            <DialogHeader>
-              <DialogTitle>{editingId ? "Editar Membro" : "Adicionar Novo Membro"}</DialogTitle>
-              <DialogDescription>
-                Preencha os dados do membro da família ou herdeiro.
-              </DialogDescription>
-            </DialogHeader>
-            <div className="grid gap-4 py-4">
-              <div className="grid gap-2">
-                <Label htmlFor="nome">Nome Completo *</Label>
-                <Input
-                  id="nome"
-                  value={formData.nome}
-                  onChange={(e) => setFormData({ ...formData, nome: e.target.value })}
-                />
-              </div>
-              <div className="grid grid-cols-2 gap-4">
-                <div className="grid gap-2">
-                  <Label htmlFor="parentesco">Parentesco *</Label>
-                   <Select 
-                      value={formData.parentesco} 
-                      onValueChange={(val) => setFormData({ ...formData, parentesco: val })}
-                    >
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="conjuge">Cônjuge</SelectItem>
-                      <SelectItem value="filho">Filho(a)</SelectItem>
-                      <SelectItem value="pai">Pai/Mãe</SelectItem>
-                      <SelectItem value="neto">Neto(a)</SelectItem>
-                      <SelectItem value="irmao">Irmão/Irmã</SelectItem>
-                      <SelectItem value="outro">Outro</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div className="grid gap-2">
-                  <Label htmlFor="partilha">% Partilha</Label>
-                  <Input
-                    id="partilha"
-                    type="number"
-                    value={formData.percentual_partilha}
-                    onChange={(e) => setFormData({ ...formData, percentual_partilha: parseFloat(e.target.value) || 0 })}
-                  />
-                </div>
-              </div>
-              <div className="grid gap-2">
-                <Label htmlFor="cpf">CPF</Label>
-                <Input
-                  id="cpf"
-                  value={formData.cpf}
-                  onChange={(e) => setFormData({ ...formData, cpf: masks.cpf(e.target.value) })}
-                  maxLength={14}
-                />
-              </div>
-               <div className="grid gap-2">
-                <Label htmlFor="email">Email</Label>
-                <Input
-                  id="email"
-                  value={formData.email}
-                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                />
-              </div>
-            </div>
-            <DialogFooter>
-              <Button variant="outline" onClick={() => setIsModalOpen(false)}>Cancelar</Button>
-              <Button onClick={handleSubmit} className="bg-[#4169E1] hover:bg-[#3151c7]">
-                {editingId ? "Salvar Alterações" : "Adicionar Membro"}
-              </Button>
-            </DialogFooter>
-          </DialogContent>
-        </Dialog>
+        {/* Form Dialog */}
+        <FormularioMembro 
+          isOpen={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+          onSubmit={handleSubmit}
+          formData={formData}
+          setFormData={setFormData}
+          isEditing={!!editingId}
+        />
 
         {/* Dialog Confirmar Exclusão */}
         <Dialog open={isDeleteAlertOpen} onOpenChange={setIsDeleteAlertOpen}>
