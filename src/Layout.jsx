@@ -81,12 +81,6 @@ const ALL_NAVIGATION_ITEMS = [
         icon: Users,
       },
       {
-        key: "bot_cnds",
-        title: "Bot CNDs",
-        url: createPageUrl("BotCNDs"),
-        icon: Shield,
-      },
-      {
         key: "avaliacao_bens",
         title: "Avaliação de Bens",
         url: createPageUrl("AvaliacaoBens"),
@@ -161,7 +155,6 @@ export default function Layout({ children, currentPageName }) {
             modelagem_partilha: true,
             simulador_planejamento: true,
             arvore_genealogica: true,
-            bot_cnds: true,
             avaliacao_bens: true,
             cofre_digital: true,
             integracoes: true,
