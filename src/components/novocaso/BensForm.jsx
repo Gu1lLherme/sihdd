@@ -124,14 +124,9 @@ export default function BensForm({ bens, setBens }) {
                     type="text"
                     value={masks.currency(bem.valor)}
                     onChange={(e) => {
-                      // Remove formatação para salvar o número puro no estado, mas a máscara visual usa o valor numérico convertido
                       const rawValue = e.target.value.replace(/\D/g, "");
-                      updateBem(index, 'valor', rawValue); // Salvamos como centavos ou string numérica, ajuste conforme backend espera.
-                      // O backend espera number (float). Então:
-                      // updateBem(index, 'valor', Number(rawValue) / 100);
-                    }}
-                    onBlur={(e) => {
-                        // Ensure consistency on blur if needed
+                      // Store as float for backend and calculations
+                      updateBem(index, 'valor', Number(rawValue) / 100); 
                     }}
                     placeholder="0,00"
                     className="border-slate-300 focus:border-[#1e3a5f]"
