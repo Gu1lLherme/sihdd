@@ -1,9 +1,12 @@
 import React, { useState } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Badge } from "@/components/ui/badge";
-import { Shield, Download, RefreshCw, Search, CheckCircle2, AlertCircle, Clock } from "lucide-react";
+import { Shield, RefreshCw, Search } from "lucide-react";
+
+// Imported components
+import EstatisticasCertidoes from "@/components/bot-cnds/EstatisticasCertidoes";
+import TabelaCertidoes from "@/components/bot-cnds/TabelaCertidoes";
 
 const CERTIDOES_MOCK = [
   { id: 1, esfera: "Federal", nome: "CND Receita Federal", cnpj: "12.345.678/0001-90", emissao: "2025-01-15", validade: "2025-07-15", status: "valid", diasRestantes: 236 },
@@ -27,19 +30,6 @@ export default function BotCNDs() {
     c.cnpj.includes(searchTerm)
   );
 
-  const getStatusBadge = (status) => {
-    switch(status) {
-      case 'valid':
-        return <Badge className="bg-green-100 text-green-700 border-0">Válida</Badge>;
-      case 'expiring':
-        return <Badge className="bg-amber-100 text-amber-700 border-0">Vencendo em Breve</Badge>;
-      case 'expired':
-        return <Badge className="bg-red-100 text-red-700 border-0">Vencida/Com Débito</Badge>;
-      default:
-        return <Badge>Desconhecido</Badge>;
-    }
-  };
-
   return (
     <div className="p-3 sm:p-4 md:p-6 lg:p-8 bg-white min-h-screen">
       <div className="max-w-7xl mx-auto">
@@ -62,50 +52,7 @@ export default function BotCNDs() {
           </div>
         </div>
 
-        {/* Summary Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-          <Card className="border-2 border-green-500">
-            <CardContent className="p-4">
-              <div className="flex items-center gap-3">
-                <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
-                  <CheckCircle2 className="w-6 h-6 text-green-600" />
-                </div>
-                <div>
-                  <p className="text-xs font-bold text-[#AAAAAA] uppercase">Válidas</p>
-                  <p className="text-2xl font-bold text-green-600">{stats.valid}</p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card className="border-2 border-amber-500">
-            <CardContent className="p-4">
-              <div className="flex items-center gap-3">
-                <div className="w-12 h-12 bg-amber-100 rounded-lg flex items-center justify-center">
-                  <Clock className="w-6 h-6 text-amber-600" />
-                </div>
-                <div>
-                  <p className="text-xs font-bold text-[#AAAAAA] uppercase">Vencendo em 5 dias</p>
-                  <p className="text-2xl font-bold text-amber-600">{stats.expiring}</p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card className="border-2 border-red-500">
-            <CardContent className="p-4">
-              <div className="flex items-center gap-3">
-                <div className="w-12 h-12 bg-red-100 rounded-lg flex items-center justify-center">
-                  <AlertCircle className="w-6 h-6 text-red-600" />
-                </div>
-                <div>
-                  <p className="text-xs font-bold text-[#AAAAAA] uppercase">Vencidas/Com Débito</p>
-                  <p className="text-2xl font-bold text-red-600">{stats.expired}</p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
+        <EstatisticasCertidoes stats={stats} />
 
         {/* Search */}
         <Card className="border-2 border-slate-200 mb-6">
@@ -124,64 +71,7 @@ export default function BotCNDs() {
           </CardContent>
         </Card>
 
-        {/* Table */}
-        <Card className="border-2 border-slate-200">
-          <CardHeader className="bg-slate-50 border-b-2 border-slate-200">
-            <CardTitle className="text-[#333333]">Painel de Status das Certidões</CardTitle>
-          </CardHeader>
-          <CardContent className="p-0">
-            <div className="overflow-x-auto">
-              <table className="w-full">
-                <thead className="bg-slate-100 border-b-2 border-slate-200">
-                  <tr>
-                    <th className="px-4 py-3 text-left text-xs font-bold text-[#333333] uppercase">Esfera/Nível</th>
-                    <th className="px-4 py-3 text-left text-xs font-bold text-[#333333] uppercase">Nome da Certidão</th>
-                    <th className="px-4 py-3 text-left text-xs font-bold text-[#333333] uppercase">CNPJ/CPF</th>
-                    <th className="px-4 py-3 text-left text-xs font-bold text-[#333333] uppercase">Data Emissão</th>
-                    <th className="px-4 py-3 text-left text-xs font-bold text-[#333333] uppercase">Validade</th>
-                    <th className="px-4 py-3 text-left text-xs font-bold text-[#333333] uppercase">Status</th>
-                    <th className="px-4 py-3 text-left text-xs font-bold text-[#333333] uppercase">Ações</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {filteredCertidoes.map((cert) => (
-                    <tr key={cert.id} className="border-b border-slate-200 hover:bg-slate-50">
-                      <td className="px-4 py-4">
-                        <Badge variant="outline">{cert.esfera}</Badge>
-                      </td>
-                      <td className="px-4 py-4 font-semibold text-[#333333]">{cert.nome}</td>
-                      <td className="px-4 py-4 text-sm text-[#AAAAAA]">{cert.cnpj}</td>
-                      <td className="px-4 py-4 text-sm text-[#AAAAAA]">
-                        {new Date(cert.emissao).toLocaleDateString('pt-BR')}
-                      </td>
-                      <td className="px-4 py-4">
-                        <div>
-                          <p className="text-sm text-[#333333] font-medium">
-                            {new Date(cert.validade).toLocaleDateString('pt-BR')}
-                          </p>
-                          <p className={`text-xs ${cert.diasRestantes > 0 ? 'text-[#AAAAAA]' : 'text-red-600 font-bold'}`}>
-                            {cert.diasRestantes > 0 ? `vence em ${cert.diasRestantes} dias` : `venceu há ${Math.abs(cert.diasRestantes)} dias`}
-                          </p>
-                        </div>
-                      </td>
-                      <td className="px-4 py-4">{getStatusBadge(cert.status)}</td>
-                      <td className="px-4 py-4">
-                        <div className="flex gap-2">
-                          <Button size="icon" variant="outline" className="w-8 h-8">
-                            <Download className="w-4 h-4" />
-                          </Button>
-                          <Button size="icon" variant="outline" className="w-8 h-8">
-                            <RefreshCw className="w-4 h-4" />
-                          </Button>
-                        </div>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </CardContent>
-        </Card>
+        <TabelaCertidoes certidoes={filteredCertidoes} />
       </div>
     </div>
   );
