@@ -57,42 +57,22 @@ const ALL_NAVIGATION_ITEMS = [
     icon: Shield,
   },
   {
-    key: "modulos",
-    title: "Módulos",
-    url: createPageUrl("Modulos"),
-    icon: Grid3x3,
-    subItems: [
-      {
-        key: "modelagem_partilha",
-        title: "Modelagem de Partilha",
-        url: createPageUrl("ModelagemPartilha"),
-        icon: Scale,
-      },
-      {
-        key: "simulador_planejamento",
-        title: "Simulador Planejamento",
-        url: createPageUrl("SimuladorPlanejamento"),
-        icon: BarChart3,
-      },
-      {
-        key: "arvore_genealogica",
-        title: "Árvore Genealógica",
-        url: createPageUrl("ArvoreGenealogica"),
-        icon: Users,
-      },
-      {
-        key: "avaliacao_bens",
-        title: "Avaliação de Bens",
-        url: createPageUrl("AvaliacaoBens"),
-        icon: BarChart3,
-      },
-      {
-        key: "cofre_digital",
-        title: "Cofre Digital",
-        url: createPageUrl("CofreDigital"),
-        icon: Shield,
-      },
-    ]
+    key: "modelagem_partilha",
+    title: "Modelagem de Partilha",
+    url: createPageUrl("ModelagemPartilha"),
+    icon: Scale,
+  },
+  {
+    key: "simulador_planejamento",
+    title: "Simulador Planejamento",
+    url: createPageUrl("SimuladorPlanejamento"),
+    icon: BarChart3,
+  },
+  {
+    key: "arvore_genealogica",
+    title: "Árvore Genealógica",
+    url: createPageUrl("ArvoreGenealogica"),
+    icon: Users,
   },
   {
     key: "integracoes",
@@ -151,12 +131,9 @@ export default function Layout({ children, currentPageName }) {
             calendar: true,
             chat: true,
             portal: true,
-            modulos: true,
             modelagem_partilha: true,
             simulador_planejamento: true,
             arvore_genealogica: true,
-            avaliacao_bens: true,
-            cofre_digital: true,
             integracoes: true,
             administracao: true,
             auditoria: true,
@@ -165,11 +142,11 @@ export default function Layout({ children, currentPageName }) {
           }
         };
       }
-      
+
       return userSettings;
-    },
-    enabled: !!user?.email,
-    initialData: {
+      },
+      enabled: !!user?.email,
+      initialData: {
       sidebar_modules: {
         dashboard: true,
         inventarios: true,
@@ -177,20 +154,16 @@ export default function Layout({ children, currentPageName }) {
         calendar: true,
         chat: true,
         portal: true,
-        modulos: true,
         modelagem_partilha: true,
         simulador_planejamento: true,
         arvore_genealogica: true,
-        bot_cnds: true,
-        avaliacao_bens: true,
-        cofre_digital: true,
         integracoes: true,
         administracao: true,
         auditoria: true,
         relatorios: true,
         documentacao: true,
       }
-    }
+      }
   });
 
   const navigationItems = ALL_NAVIGATION_ITEMS.filter(item => 
