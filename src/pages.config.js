@@ -17,6 +17,10 @@ import Documentacao from './pages/Documentacao';
 import ModelagemPartilha from './pages/ModelagemPartilha';
 import SimuladorPlanejamento from './pages/SimuladorPlanejamento';
 import ArvoreGenealogica from './pages/ArvoreGenealogica';
+import Doacoes from './pages/Doacoes';
+import NovaDoacao from './pages/NovaDoacao';
+import Divorcios from './pages/Divorcios';
+import NovoDivorcio from './pages/NovoDivorcio';
 import __Layout from './Layout.jsx';
 
 
@@ -40,6 +44,10 @@ export const PAGES = {
     "ModelagemPartilha": ModelagemPartilha,
     "SimuladorPlanejamento": SimuladorPlanejamento,
     "ArvoreGenealogica": ArvoreGenealogica,
+    "Doacoes": Doacoes,
+    "NovaDoacao": NovaDoacao,
+    "Divorcios": Divorcios,
+    "NovoDivorcio": NovoDivorcio,
 }
 
 export const pagesConfig = {
