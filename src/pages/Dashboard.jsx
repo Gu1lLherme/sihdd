@@ -4,7 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
-import { Plus, Brain, FileText, Sparkles, TrendingUp, Clock, CheckCircle2, AlertCircle, DollarSign } from "lucide-react";
+import { Plus, Brain, FileText, Sparkles, TrendingUp, Clock, CheckCircle2, AlertCircle, DollarSign, Gift, HeartCrack, ClipboardList } from "lucide-react";
 
 import CasoCard from "../components/dashboard/CasoCard";
 import StatsCards from "../components/dashboard/StatsCards";
@@ -12,16 +12,50 @@ import CasosTable from "../components/dashboard/CasosTable";
 import DashboardCharts from "../components/dashboard/DashboardCharts";
 
 export default function Dashboard() {
-  const { data: casos, isLoading } = useQuery({
+  const { data: casos = [], isLoading: loadingCasos } = useQuery({
     queryKey: ['casos'],
     queryFn: () => base44.entities.Caso.list("-created_date"),
     initialData: [],
   });
 
-  const totalCasos = casos.length;
-  const casosAtivos = casos.filter(c => c.status !== 'finalizado').length;
-  const totalPatrimonio = casos.reduce((sum, c) => sum + (c.valor_patrimonio || 0), 0);
-  const totalITCMD = casos.reduce((sum, c) => sum + (c.valor_itcmd || 0), 0);
+  const { data: doacoes = [], isLoading: loadingDoacoes } = useQuery({
+    queryKey: ['doacoes'],
+    queryFn: () => base44.entities.Doacao.list("-created_date"),
+    initialData: [],
+  });
+
+  const { data: divorcios = [], isLoading: loadingDivorcios } = useQuery({
+    queryKey: ['divorcios'],
+    queryFn: () => base44.entities.Divorcio.list("-created_date"),
+    initialData: [],
+  });
+
+  const { data: tasks = [], isLoading: loadingTasks } = useQuery({
+    queryKey: ['tasks'],
+    queryFn: () => base44.entities.Task.list("-created_date"),
+    initialData: [],
+  });
+
+  const isLoading = loadingCasos || loadingDoacoes || loadingDivorcios || loadingTasks;
+
+  // Aggregating Totals
+  const totalProcessos = casos.length + doacoes.length + divorcios.length;
+  const processosAtivos = 
+    casos.filter(c => c.status !== 'finalizado').length + 
+    doacoes.filter(d => d.status !== 'concluido').length + 
+    divorcios.filter(d => d.status !== 'concluido').length;
+
+  const totalPatrimonio = 
+    casos.reduce((sum, c) => sum + (c.valor_patrimonio || 0), 0) +
+    doacoes.reduce((sum, d) => sum + (d.valor_total_bens || 0), 0) +
+    divorcios.reduce((sum, d) => sum + (d.valor_excesso_meacao || 0), 0);
+
+  const totalITCMD = 
+    casos.reduce((sum, c) => sum + (c.valor_itcmd || 0), 0) +
+    doacoes.reduce((sum, d) => sum + (d.valor_tributo || 0), 0) +
+    divorcios.reduce((sum, d) => sum + (d.valor_tributo || 0), 0);
+  
+  const tarefasPendentes = tasks.filter(t => t.status !== 'concluida' && t.status !== 'cancelada').length;
 
   const casosRecentes = casos.slice(0, 4);
 
@@ -41,37 +75,56 @@ export default function Dashboard() {
                 </h1>
                 <p className="text-sm sm:text-base lg:text-lg text-[#AAAAAA] mt-1 flex items-center gap-2">
                   <Sparkles className="w-3 h-3 sm:w-4 sm:h-4 text-[#FFC107]" />
-                  Automação Jurídica e Tributária
+                  Visão Geral do Escritório
                 </p>
               </div>
             </div>
-            <Link to={createPageUrl("NovoCaso")} className="w-full sm:w-auto">
-              <Button className="w-full sm:w-auto bg-[#4169E1] hover:bg-[#3151c7] text-white shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105 h-11 sm:h-12 px-6 sm:px-8 font-bold text-sm sm:text-base">
-                <Plus className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
-                Novo Inventário
-              </Button>
-            </Link>
+            <div className="flex gap-2 w-full sm:w-auto">
+                <Link to={createPageUrl("NovaDoacao")}>
+                  <Button className="flex-1 sm:flex-none bg-blue-500 hover:bg-blue-600 text-white shadow-lg h-11 sm:h-12 px-4">
+                    <Gift className="w-4 h-4 sm:w-5 sm:h-5" />
+                  </Button>
+                </Link>
+                <Link to={createPageUrl("NovoDivorcio")}>
+                  <Button className="flex-1 sm:flex-none bg-purple-500 hover:bg-purple-600 text-white shadow-lg h-11 sm:h-12 px-4">
+                    <HeartCrack className="w-4 h-4 sm:w-5 sm:h-5" />
+                  </Button>
+                </Link>
+                <Link to={createPageUrl("NovoCaso")}>
+                  <Button className="flex-1 sm:flex-none bg-[#4169E1] hover:bg-[#3151c7] text-white shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105 h-11 sm:h-12 px-6 sm:px-8 font-bold text-sm sm:text-base">
+                    <Plus className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
+                    Novo Inventário
+                  </Button>
+                </Link>
+            </div>
           </div>
         </div>
 
-        {/* Stats Cards */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 lg:gap-6 mb-6 sm:mb-8 lg:mb-10">
+        {/* Stats Cards - Updated with Aggregated Data */}
+        <div className="grid grid-cols-2 lg:grid-cols-5 gap-3 sm:gap-4 lg:gap-6 mb-6 sm:mb-8 lg:mb-10">
           <StatsCards 
-            title="Total de Casos" 
-            value={totalCasos}
+            title="Total Processos" 
+            value={totalProcessos}
             icon={FileText}
             color="#4169E1"
             isPremium={false}
           />
           <StatsCards 
-            title="Casos Ativos" 
-            value={casosAtivos}
+            title="Processos Ativos" 
+            value={processosAtivos}
             icon={Clock}
             color="#4169E1"
             isPremium={false}
           />
           <StatsCards 
-            title="Patrimônio" 
+            title="Tarefas Pendentes" 
+            value={tarefasPendentes}
+            icon={ClipboardList}
+            color="#F59E0B"
+            isPremium={false}
+          />
+          <StatsCards 
+            title="Patrimônio Total" 
             value={`R$ ${(totalPatrimonio / 1000).toFixed(0)}k`}
             icon={DollarSign}
             color="#FFC107"
