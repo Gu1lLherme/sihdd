@@ -3,7 +3,7 @@ import { Link, useLocation } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { base44 } from "@/api/base44Client";
 import { useQuery } from "@tanstack/react-query";
-import { Scale, FolderOpen, Link2, History, BarChart3, Brain, Users, Settings, Grid3x3, Shield, Menu, CheckCircle2, Calendar, BookOpen } from "lucide-react";
+import { Scale, FolderOpen, Link2, History, BarChart3, Brain, Users, Settings, Grid3x3, Shield, Menu, CheckCircle2, Calendar, BookOpen, Gift, HeartCrack } from "lucide-react";
 import {
   Sidebar,
   SidebarContent,
@@ -31,6 +31,18 @@ const ALL_NAVIGATION_ITEMS = [
     title: "Inventários",
     url: createPageUrl("Inventarios"),
     icon: FolderOpen,
+  },
+  {
+    key: "doacoes",
+    title: "Doações",
+    url: createPageUrl("Doacoes"),
+    icon: Gift,
+  },
+  {
+    key: "divorcios",
+    title: "Divórcios",
+    url: createPageUrl("Divorcios"),
+    icon: HeartCrack,
   },
   {
     key: "tasks",
@@ -127,6 +139,8 @@ export default function Layout({ children, currentPageName }) {
           sidebar_modules: {
             dashboard: true,
             inventarios: true,
+            doacoes: true,
+            divorcios: true,
             tasks: true,
             calendar: true,
             chat: true,
