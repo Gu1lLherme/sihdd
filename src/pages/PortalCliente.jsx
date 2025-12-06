@@ -10,6 +10,8 @@ import CaseStatus from "../components/portalcliente/CaseStatus";
 import DocumentUpload from "../components/portalcliente/DocumentUpload";
 import ChatAdvogado from "../components/portalcliente/ChatAdvogado";
 import Notifications from "../components/portalcliente/Notifications";
+import PortalTasks from "@/components/portalcliente/PortalTasks";
+import { ClipboardList } from "lucide-react";
 
 export default function PortalCliente() {
   const [activeTab, setActiveTab] = useState("casos");
@@ -37,6 +39,19 @@ export default function PortalCliente() {
     },
     initialData: [],
     enabled: !!user?.email,
+  });
+
+  const { data: tasks = [] } = useQuery({
+    queryKey: ['tasks-cliente', user?.email],
+    queryFn: async () => {
+      // Assuming client can see tasks related to their cases
+      // In a real scenario, we might filter by assigned user, but here linking via cases is safer for "mirroring"
+      const allTasks = await base44.entities.Task.list("-created_date");
+      const userCaseIds = casos.map(c => c.id);
+      return allTasks.filter(t => userCaseIds.includes(t.caso_id) && t.status !== 'concluida');
+    },
+    initialData: [],
+    enabled: casos.length > 0,
   });
 
   return (
@@ -161,6 +176,13 @@ export default function PortalCliente() {
               Docs
             </TabsTrigger>
             <TabsTrigger 
+              value="tarefas" 
+              className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-amber-500 data-[state=active]:to-amber-600 data-[state=active]:text-white font-semibold px-3 sm:px-6 py-2 sm:py-3 text-xs sm:text-sm whitespace-nowrap"
+            >
+              <ClipboardList className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
+              Tarefas
+            </TabsTrigger>
+            <TabsTrigger 
               value="chat" 
               className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-cyan-600 data-[state=active]:to-cyan-500 data-[state=active]:text-white font-semibold px-3 sm:px-6 py-2 sm:py-3 text-xs sm:text-sm whitespace-nowrap"
             >
@@ -182,6 +204,10 @@ export default function PortalCliente() {
 
           <TabsContent value="documentos" className="space-y-4 sm:space-y-6">
             <DocumentUpload casos={casos} userEmail={user?.email} />
+          </TabsContent>
+
+          <TabsContent value="tarefas" className="space-y-4 sm:space-y-6">
+            <PortalTasks tasks={tasks} />
           </TabsContent>
 
           <TabsContent value="chat" className="space-y-4 sm:space-y-6">

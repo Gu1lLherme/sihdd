@@ -11,12 +11,23 @@ import DadosBasicos from "../components/novocaso/DadosBasicos";
 import Herdeiros from "../components/novocaso/Herdeiros";
 import Bens from "../components/novocaso/Bens";
 import Resumo from "../components/novocaso/Resumo";
+import FormInventariante from "@/components/inventarios/FormInventariante";
+
+const WrapperInventariante = ({ formData, setFormData }) => {
+    return (
+        <FormInventariante 
+            data={formData.inventariante || {}} 
+            onChange={(data) => setFormData({...formData, inventariante: data})} 
+        />
+    );
+};
 
 const ETAPAS = [
   { id: 1, titulo: "Dados Básicos", componente: DadosBasicos },
-  { id: 2, titulo: "Herdeiros", componente: Herdeiros },
-  { id: 3, titulo: "Bens", componente: Bens },
-  { id: 4, titulo: "Resumo", componente: Resumo },
+  { id: 2, titulo: "Inventariante", componente: WrapperInventariante },
+  { id: 3, titulo: "Herdeiros", componente: Herdeiros },
+  { id: 4, titulo: "Bens", componente: Bens },
+  { id: 5, titulo: "Resumo", componente: Resumo },
 ];
 
 export default function NovoCaso() {
@@ -34,6 +45,14 @@ export default function NovoCaso() {
     status: "coleta_dados",
     herdeiros: [],
     bens: [],
+    inventariante: {
+        nome: "",
+        cpf_cnpj: "",
+        email: "",
+        data_nomeacao: "",
+        vinculo: "herdeiro",
+        status: "ativo"
+    }
   });
 
   const { data: user } = useQuery({
@@ -70,6 +89,52 @@ export default function NovoCaso() {
         );
       }
 
+      // Criar Inventariante
+      if (data.inventariante && data.inventariante.nome) {
+          await base44.entities.Inventariante.create({
+              ...data.inventariante,
+              caso_id: caso.id
+          });
+
+          // Automação: Criar Tarefas
+          const dataNomeacao = new Date(data.inventariante.data_nomeacao);
+          const due5Days = new Date(dataNomeacao); due5Days.setDate(due5Days.getDate() + 5);
+          const due10Days = new Date(dataNomeacao); due10Days.setDate(due10Days.getDate() + 10);
+          const due12Months = new Date(dataNomeacao); due12Months.setMonth(due12Months.getMonth() + 12);
+
+          await base44.entities.Task.bulkCreate([
+              {
+                  caso_id: caso.id,
+                  titulo: "Requisitar Documentos Iniciais ao Inventariante",
+                  descricao: "Solicitar documentos pessoais e do espólio.",
+                  tipo: "documento",
+                  status: "pendente",
+                  data_vencimento: due5Days.toISOString().split('T')[0],
+                  prioridade: "alta"
+              },
+              {
+                  caso_id: caso.id,
+                  titulo: "Revisão de Prazos Fiscais Estaduais (ITCMD/ITCD)",
+                  descricao: "Verificar prazos para declaração e pagamento de impostos.",
+                  tipo: "prazo",
+                  status: "pendente",
+                  data_vencimento: due10Days.toISOString().split('T')[0],
+                  prioridade: "alta"
+              }
+          ]);
+
+          // Automação: Criar Evento Calendário
+          await base44.entities.CalendarEvent.create({
+              caso_id: caso.id,
+              titulo: "Prazo Finalização Inventário (12 meses)",
+              tipo: "prazo_itcmd",
+              data_inicio: due12Months.toISOString(),
+              data_fim: due12Months.toISOString(),
+              descricao: "Prazo estimado para finalização do processo de inventário.",
+              cor: "red"
+          });
+      }
+
       // Registrar na auditoria
       await base44.entities.AuditLog.create({
         caso_id: caso.id,
@@ -96,6 +161,14 @@ export default function NovoCaso() {
   });
 
   const avancar = () => {
+    // Validação Inventariante (Etapa 2)
+    if (etapaAtual === 2) {
+        if (!formData.inventariante?.nome || !formData.inventariante?.cpf_cnpj || !formData.inventariante?.data_nomeacao) {
+            alert("Por favor, preencha os dados obrigatórios do Inventariante.");
+            return;
+        }
+    }
+
     if (etapaAtual < ETAPAS.length) {
       setEtapaAtual(etapaAtual + 1);
     }
