@@ -7,7 +7,7 @@ import { Calendar, Clock, MapPin, User, FileText, Phone, Mail } from "lucide-rea
 
 export default function DadosBasicos({ formData, setFormData }) {
   const handleChange = (field, value) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
+    setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
   return (
@@ -17,19 +17,19 @@ export default function DadosBasicos({ formData, setFormData }) {
       <div className="space-y-6">
         <div className="flex items-center gap-2 border-b pb-2 border-slate-200">
           <User className="w-5 h-5 text-blue-900" />
-          <h3 className="font-bold text-xl text-blue-900">1.1 Dados do Falecido (De Cujus)</h3>
+          <h3 className="font-bold text-xl text-blue-900">Dados do Falecido
+          </h3>
         </div>
 
         {/* Nome Completo */}
         <div className="space-y-2">
           <Label htmlFor="nome_falecido">Nome Completo *</Label>
-          <Input
-            id="nome_falecido"
-            value={formData.nome_falecido}
-            onChange={(e) => handleChange('nome_falecido', e.target.value)}
-            placeholder="Nome completo do falecido"
-            className="text-lg"
-          />
+          <Input id="nome_falecido"
+          value={formData.nome_falecido}
+          onChange={(e) => handleChange('nome_falecido', e.target.value)}
+          placeholder="Nome completo do falecido"
+          className="text-lg" />
+
         </div>
 
         {/* Documentação */}
@@ -40,8 +40,8 @@ export default function DadosBasicos({ formData, setFormData }) {
               id="cpf_falecido"
               value={formData.cpf_falecido}
               onChange={(e) => handleChange('cpf_falecido', masks.cpf(e.target.value))}
-              placeholder="000.000.000-00"
-            />
+              placeholder="000.000.000-00" />
+
           </div>
           <div className="space-y-2">
             <Label htmlFor="rg">RG</Label>
@@ -49,8 +49,8 @@ export default function DadosBasicos({ formData, setFormData }) {
               id="rg"
               value={formData.rg || ''}
               onChange={(e) => handleChange('rg', e.target.value)}
-              placeholder="Número do RG"
-            />
+              placeholder="Número do RG" />
+
           </div>
           <div className="space-y-2">
             <Label htmlFor="orgao_expedidor">Órgão Expedidor</Label>
@@ -58,8 +58,8 @@ export default function DadosBasicos({ formData, setFormData }) {
               id="orgao_expedidor"
               value={formData.orgao_expedidor || ''}
               onChange={(e) => handleChange('orgao_expedidor', e.target.value.toUpperCase())}
-              placeholder="SSP/UF"
-            />
+              placeholder="SSP/UF" />
+
           </div>
           <div className="space-y-2">
             <Label htmlFor="data_expedicao">Data Expedição</Label>
@@ -67,8 +67,8 @@ export default function DadosBasicos({ formData, setFormData }) {
               id="data_expedicao"
               type="date"
               value={formData.data_expedicao || ''}
-              onChange={(e) => handleChange('data_expedicao', e.target.value)}
-            />
+              onChange={(e) => handleChange('data_expedicao', e.target.value)} />
+
           </div>
         </div>
 
@@ -76,10 +76,10 @@ export default function DadosBasicos({ formData, setFormData }) {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div className="space-y-2">
             <Label htmlFor="sexo">Sexo</Label>
-            <Select 
-              value={formData.sexo} 
-              onValueChange={(val) => handleChange('sexo', val)}
-            >
+            <Select
+              value={formData.sexo}
+              onValueChange={(val) => handleChange('sexo', val)}>
+
               <SelectTrigger>
                 <SelectValue placeholder="Selecione" />
               </SelectTrigger>
@@ -95,8 +95,8 @@ export default function DadosBasicos({ formData, setFormData }) {
               id="nacionalidade"
               value={formData.nacionalidade || 'Brasileira'}
               onChange={(e) => handleChange('nacionalidade', e.target.value)}
-              placeholder="Ex: Brasileira"
-            />
+              placeholder="Ex: Brasileira" />
+
           </div>
           <div className="space-y-2">
             <Label htmlFor="data_nascimento">Data de Nascimento</Label>
@@ -104,8 +104,8 @@ export default function DadosBasicos({ formData, setFormData }) {
               id="data_nascimento"
               type="date"
               value={formData.data_nascimento || ''}
-              onChange={(e) => handleChange('data_nascimento', e.target.value)}
-            />
+              onChange={(e) => handleChange('data_nascimento', e.target.value)} />
+
           </div>
         </div>
 
@@ -120,8 +120,8 @@ export default function DadosBasicos({ formData, setFormData }) {
                 type="date"
                 className="pl-10"
                 value={formData.data_obito}
-                onChange={(e) => handleChange('data_obito', e.target.value)}
-              />
+                onChange={(e) => handleChange('data_obito', e.target.value)} />
+
             </div>
           </div>
           <div className="space-y-2">
@@ -133,8 +133,8 @@ export default function DadosBasicos({ formData, setFormData }) {
                 type="time"
                 className="pl-10"
                 value={formData.horario_obito || ''}
-                onChange={(e) => handleChange('horario_obito', e.target.value)}
-              />
+                onChange={(e) => handleChange('horario_obito', e.target.value)} />
+
             </div>
           </div>
           <div className="space-y-2">
@@ -143,8 +143,8 @@ export default function DadosBasicos({ formData, setFormData }) {
               id="local_obito"
               value={formData.local_obito || ''}
               onChange={(e) => handleChange('local_obito', e.target.value)}
-              placeholder="Cidade/Estado ou Hospital"
-            />
+              placeholder="Cidade/Estado ou Hospital" />
+
           </div>
         </div>
 
@@ -159,8 +159,8 @@ export default function DadosBasicos({ formData, setFormData }) {
                 className="pl-10"
                 value={formData.endereco || ''}
                 onChange={(e) => handleChange('endereco', e.target.value)}
-                placeholder="Rua, Número, Bairro, Cidade - UF"
-              />
+                placeholder="Rua, Número, Bairro, Cidade - UF" />
+
             </div>
           </div>
           <div className="space-y-2">
@@ -169,18 +169,18 @@ export default function DadosBasicos({ formData, setFormData }) {
               id="cep"
               value={formData.cep || ''}
               onChange={(e) => handleChange('cep', masks.cep(e.target.value))}
-              placeholder="00000-000"
-            />
+              placeholder="00000-000" />
+
           </div>
         </div>
 
         {/* Regime de Bens */}
         <div className="space-y-2">
           <Label htmlFor="regime_bens">Regime de Bens do Casamento</Label>
-          <Select 
-            value={formData.regime_bens} 
-            onValueChange={(val) => handleChange('regime_bens', val)}
-          >
+          <Select
+            value={formData.regime_bens}
+            onValueChange={(val) => handleChange('regime_bens', val)}>
+
             <SelectTrigger>
               <SelectValue placeholder="Selecione o regime de bens" />
             </SelectTrigger>
@@ -199,7 +199,7 @@ export default function DadosBasicos({ formData, setFormData }) {
       <div className="space-y-6 pt-6 border-t border-slate-200">
         <div className="flex items-center gap-2 border-b pb-2 border-slate-200">
           <User className="w-5 h-5 text-amber-600" />
-          <h3 className="font-bold text-xl text-slate-900">1.2 Dados do Cônjuge Sobrevivente (Meeiro)</h3>
+          <h3 className="font-bold text-xl text-slate-900">Dados do Cônjuge Sobrevivente</h3>
         </div>
 
         <div className="space-y-2">
@@ -208,8 +208,8 @@ export default function DadosBasicos({ formData, setFormData }) {
             id="conjuge_nome"
             value={formData.conjuge_nome}
             onChange={(e) => handleChange('conjuge_nome', e.target.value)}
-            placeholder="Nome completo do viúvo(a)"
-          />
+            placeholder="Nome completo do viúvo(a)" />
+
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -219,8 +219,8 @@ export default function DadosBasicos({ formData, setFormData }) {
               id="conjuge_endereco"
               value={formData.conjuge_endereco || ''}
               onChange={(e) => handleChange('conjuge_endereco', e.target.value)}
-              placeholder="Mesmo do falecido, se aplicável"
-            />
+              placeholder="Mesmo do falecido, se aplicável" />
+
           </div>
           <div className="space-y-2">
             <Label htmlFor="conjuge_cep">CEP</Label>
@@ -228,8 +228,8 @@ export default function DadosBasicos({ formData, setFormData }) {
               id="conjuge_cep"
               value={formData.conjuge_cep || ''}
               onChange={(e) => handleChange('conjuge_cep', masks.cep(e.target.value))}
-              placeholder="00000-000"
-            />
+              placeholder="00000-000" />
+
           </div>
         </div>
 
@@ -243,8 +243,8 @@ export default function DadosBasicos({ formData, setFormData }) {
                 className="pl-10"
                 value={formData.conjuge_telefone || ''}
                 onChange={(e) => handleChange('conjuge_telefone', masks.phone(e.target.value))}
-                placeholder="(00) 00000-0000"
-              />
+                placeholder="(00) 00000-0000" />
+
             </div>
           </div>
           <div className="space-y-2">
@@ -257,8 +257,8 @@ export default function DadosBasicos({ formData, setFormData }) {
                 className="pl-10"
                 value={formData.conjuge_email || ''}
                 onChange={(e) => handleChange('conjuge_email', e.target.value)}
-                placeholder="email@exemplo.com"
-              />
+                placeholder="email@exemplo.com" />
+
             </div>
           </div>
           <div className="space-y-2">
@@ -267,11 +267,11 @@ export default function DadosBasicos({ formData, setFormData }) {
               id="data_atendimento"
               type="date"
               value={formData.data_atendimento || ''}
-              onChange={(e) => handleChange('data_atendimento', e.target.value)}
-            />
+              onChange={(e) => handleChange('data_atendimento', e.target.value)} />
+
           </div>
         </div>
       </div>
-    </div>
-  );
+    </div>);
+
 }
