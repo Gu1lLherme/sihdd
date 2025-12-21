@@ -10,6 +10,7 @@ import { createPageUrl } from "@/utils";
 import DadosBasicos from "../components/novocaso/DadosBasicos";
 import Herdeiros from "../components/novocaso/Herdeiros";
 import Bens from "../components/novocaso/Bens";
+import Dividas from "../components/novocaso/Dividas";
 import Resumo from "../components/novocaso/Resumo";
 import FormInventariante from "@/components/inventarios/FormInventariante";
 
@@ -23,11 +24,12 @@ const WrapperInventariante = ({ formData, setFormData }) => {
 };
 
 const ETAPAS = [
-  { id: 1, titulo: "Dados Básicos", componente: DadosBasicos },
-  { id: 2, titulo: "Inventariante", componente: WrapperInventariante },
-  { id: 3, titulo: "Herdeiros", componente: Herdeiros },
+  { id: 1, titulo: "Dados Iniciais", componente: DadosBasicos },
+  { id: 2, titulo: "Herdeiros", componente: Herdeiros },
+  { id: 3, titulo: "Inventariante", componente: WrapperInventariante },
   { id: 4, titulo: "Bens", componente: Bens },
-  { id: 5, titulo: "Resumo", componente: Resumo },
+  { id: 5, titulo: "Dívidas", componente: Dividas },
+  { id: 6, titulo: "Resumo", componente: Resumo },
 ];
 
 export default function NovoCaso() {
@@ -49,6 +51,7 @@ export default function NovoCaso() {
     status: "coleta_dados",
     herdeiros: [],
     bens: [],
+    dividas: [],
     inventariante: {
         nome: "",
         cpf_cnpj: "",
@@ -75,12 +78,14 @@ export default function NovoCaso() {
         // For simplicity in this structure, we'd need to fetch related entities too to populate formData fully
         const herdeiros = (await base44.entities.Herdeiro.list()).filter(h => h.caso_id === casoId);
         const bens = (await base44.entities.Bem.list()).filter(b => b.caso_id === casoId);
+        const dividas = (await base44.entities.Divida.list()).filter(d => d.caso_id === casoId);
         const inventariante = (await base44.entities.Inventariante.list()).find(i => i.caso_id === casoId);
 
         setFormData({
             ...caso,
             herdeiros,
             bens,
+            dividas,
             inventariante: inventariante || formData.inventariante
         });
         return caso;
@@ -114,6 +119,12 @@ export default function NovoCaso() {
       if (data.bens.length > 0) {
         await base44.entities.Bem.bulkCreate(
           data.bens.map(b => ({ ...b, caso_id: caso.id }))
+        );
+      }
+
+      if (data.dividas && data.dividas.length > 0) {
+        await base44.entities.Divida.bulkCreate(
+          data.dividas.map(d => ({ ...d, caso_id: caso.id }))
         );
       }
 
@@ -189,8 +200,8 @@ export default function NovoCaso() {
   });
 
   const avancar = () => {
-    // Validação Inventariante (Etapa 2)
-    if (etapaAtual === 2) {
+    // Validação Inventariante (agora etapa 3)
+    if (etapaAtual === 3) {
         if (!formData.inventariante?.nome || !formData.inventariante?.cpf_cnpj || !formData.inventariante?.data_nomeacao) {
             alert("Por favor, preencha os dados obrigatórios do Inventariante.");
             return;
