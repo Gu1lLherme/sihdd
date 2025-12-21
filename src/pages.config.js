@@ -20,7 +20,6 @@ import NovoCaso from './pages/NovoCaso';
 import NovoDivorcio from './pages/NovoDivorcio';
 import PortalCliente from './pages/PortalCliente';
 import Relatorios from './pages/Relatorios';
-import SimuladorPlanejamento from './pages/SimuladorPlanejamento';
 import Tasks from './pages/Tasks';
 import __Layout from './Layout.jsx';
 
@@ -48,7 +47,6 @@ export const PAGES = {
     "NovoDivorcio": NovoDivorcio,
     "PortalCliente": PortalCliente,
     "Relatorios": Relatorios,
-    "SimuladorPlanejamento": SimuladorPlanejamento,
     "Tasks": Tasks,
 }
 

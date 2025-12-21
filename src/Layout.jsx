@@ -75,12 +75,6 @@ const ALL_NAVIGATION_ITEMS = [
     icon: Scale,
   },
   {
-    key: "simulador_planejamento",
-    title: "Simulador Planejamento",
-    url: createPageUrl("SimuladorPlanejamento"),
-    icon: BarChart3,
-  },
-  {
     key: "arvore_genealogica",
     title: "Árvore Genealógica",
     url: createPageUrl("ArvoreGenealogica"),
@@ -146,7 +140,7 @@ export default function Layout({ children, currentPageName }) {
             chat: true,
             portal: true,
             modelagem_partilha: true,
-            simulador_planejamento: true,
+            
             arvore_genealogica: true,
             integracoes: true,
             administracao: true,
@@ -169,7 +163,7 @@ export default function Layout({ children, currentPageName }) {
         chat: true,
         portal: true,
         modelagem_partilha: true,
-        simulador_planejamento: true,
+        
         arvore_genealogica: true,
         integracoes: true,
         administracao: true,
