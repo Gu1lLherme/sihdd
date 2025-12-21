@@ -23,7 +23,9 @@ import {
   TrendingUp,
   UserCheck,
   Calculator,
-  FileText
+  FileText,
+  Trash2,
+  Edit
 } from "lucide-react";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
@@ -44,10 +46,26 @@ const statusConfig = {
   pago: { label: "Pago", color: "bg-blue-100 text-blue-700", icon: CheckCircle2 },
 };
 
+import { useQueryClient, useMutation } from "@tanstack/react-query";
+
 export default function Inventarios() {
+  const queryClient = useQueryClient();
   const [filtroStatus, setFiltroStatus] = useState("todos");
   const [filtroBusca, setFiltroBusca] = useState("");
   const [ordenacao, setOrdenacao] = useState("-created_date");
+
+  const deleteMutation = useMutation({
+    mutationFn: (id) => base44.entities.Caso.delete(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['casos'] });
+    }
+  });
+
+  const handleDelete = (id) => {
+    if (window.confirm("Tem certeza que deseja excluir este inventário?")) {
+      deleteMutation.mutate(id);
+    }
+  };
 
   const { data: casos, isLoading } = useQuery({
     queryKey: ['casos', ordenacao],
@@ -389,12 +407,22 @@ export default function Inventarios() {
                             </span>
                           </div>
                         )}
-                        <Link to={createPageUrl(`DetalheCaso?id=${caso.id}`)}>
-                          <Button className="w-full bg-blue-900 hover:bg-blue-800">
-                            <Eye className="w-4 h-4 mr-2" />
-                            Ver Detalhes
+                        <div className="flex gap-2">
+                          <Link to={createPageUrl(`DetalheCaso?id=${caso.id}`)} className="flex-1">
+                            <Button className="w-full bg-blue-900 hover:bg-blue-800">
+                              <Eye className="w-4 h-4 mr-2" />
+                              Ver
+                            </Button>
+                          </Link>
+                          <Link to={createPageUrl(`NovoCaso?id=${caso.id}`)}>
+                             <Button variant="outline" size="icon">
+                               <Edit className="w-4 h-4 text-blue-600" />
+                             </Button>
+                          </Link>
+                          <Button variant="outline" size="icon" onClick={() => handleDelete(caso.id)} className="text-red-600 hover:text-red-700 hover:bg-red-50">
+                            <Trash2 className="w-4 h-4" />
                           </Button>
-                        </Link>
+                        </div>
                       </div>
                     </div>
                   </CardContent>

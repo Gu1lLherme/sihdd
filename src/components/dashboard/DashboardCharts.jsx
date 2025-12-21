@@ -123,12 +123,12 @@ export default function DashboardCharts({ casos }) {
         </CardContent>
       </Card>
 
-      {/* ITCMD Coletado - Dourado */}
-      <Card className="bg-white border-2 border-[#FFC107] card-shadow-hover">
-        <CardHeader className="border-b-2 border-[#FFC107] bg-amber-50">
+      {/* ITCMD Coletado */}
+      <Card className="bg-white border-2 border-slate-200 card-shadow-hover">
+        <CardHeader className="border-b-2 border-slate-200 bg-blue-50">
           <CardTitle className="text-lg flex items-center gap-2 text-[#333333]">
-            <TrendingUp className="w-5 h-5 text-[#FFC107]" />
-            ITCMD Coletado (Premium)
+            <TrendingUp className="w-5 h-5 text-[#4169E1]" />
+            ITCMD Coletado
           </CardTitle>
         </CardHeader>
         <CardContent className="pt-6">
@@ -140,7 +140,7 @@ export default function DashboardCharts({ casos }) {
               <Tooltip 
                 contentStyle={{ 
                   backgroundColor: '#FFFFFF', 
-                  border: '2px solid #FFC107',
+                  border: '2px solid #4169E1',
                   borderRadius: '12px',
                   fontWeight: 600
                 }}
@@ -149,9 +149,9 @@ export default function DashboardCharts({ casos }) {
               <Line 
                 type="monotone" 
                 dataKey="itcmd" 
-                stroke="#FFC107" 
+                stroke="#4169E1" 
                 strokeWidth={3}
-                dot={{ fill: '#FFC107', r: 6, strokeWidth: 2, stroke: '#e6ac00' }}
+                dot={{ fill: '#4169E1', r: 6, strokeWidth: 2, stroke: '#4169E1' }}
                 activeDot={{ r: 8 }}
               />
             </LineChart>

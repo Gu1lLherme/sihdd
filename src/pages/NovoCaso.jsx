@@ -33,6 +33,10 @@ const ETAPAS = [
 export default function NovoCaso() {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
+  const urlParams = new URLSearchParams(window.location.search);
+  const casoId = urlParams.get("id");
+  const isEditing = !!casoId;
+
   const [etapaAtual, setEtapaAtual] = useState(1);
   const [formData, setFormData] = useState({
     nome_falecido: "",
@@ -61,7 +65,31 @@ export default function NovoCaso() {
     retry: false,
   });
 
-  const criarCasoMutation = useMutation({
+  // Fetch data for editing
+  useQuery({
+    queryKey: ['caso', casoId],
+    queryFn: async () => {
+        if (!casoId) return null;
+        const caso = (await base44.entities.Caso.list()).find(c => c.id === casoId);
+        // Note: Herdeiros and Bens need to be fetched separately ideally, or assuming we have them
+        // For simplicity in this structure, we'd need to fetch related entities too to populate formData fully
+        const herdeiros = (await base44.entities.Herdeiro.list()).filter(h => h.caso_id === casoId);
+        const bens = (await base44.entities.Bem.list()).filter(b => b.caso_id === casoId);
+        const inventariante = (await base44.entities.Inventariante.list()).find(i => i.caso_id === casoId);
+
+        setFormData({
+            ...caso,
+            herdeiros,
+            bens,
+            inventariante: inventariante || formData.inventariante
+        });
+        return caso;
+    },
+    enabled: !!casoId,
+    retry: false
+  });
+
+  const mutation = useMutation({
     mutationFn: async (data) => {
       const caso = await base44.entities.Caso.create({
         numero_caso: `PROC-${Date.now()}`,
@@ -181,7 +209,7 @@ export default function NovoCaso() {
   };
 
   const salvar = () => {
-    criarCasoMutation.mutate(formData);
+    mutation.mutate(formData);
   };
 
   const EtapaComponente = ETAPAS[etapaAtual - 1].componente;
@@ -198,8 +226,8 @@ export default function NovoCaso() {
             <ArrowLeft className="w-4 h-4" />
           </Button>
           <div>
-            <h1 className="text-3xl font-bold text-blue-900">Novo Caso de Inventário</h1>
-            <p className="text-slate-600 mt-1">Preencha as informações do processo</p>
+            <h1 className="text-3xl font-bold text-blue-900">{isEditing ? "Editar Inventário" : "Novo Caso de Inventário"}</h1>
+            <p className="text-slate-600 mt-1">{isEditing ? "Atualize as informações do processo" : "Preencha as informações do processo"}</p>
           </div>
         </div>
 
@@ -269,11 +297,11 @@ export default function NovoCaso() {
           ) : (
             <Button
               onClick={salvar}
-              disabled={criarCasoMutation.isPending}
+              disabled={mutation.isPending}
               className="bg-green-600 hover:bg-green-700 text-white"
             >
               <Save className="w-4 h-4 mr-2" />
-              {criarCasoMutation.isPending ? "Salvando..." : "Salvar Caso"}
+              {mutation.isPending ? "Salvando..." : (isEditing ? "Atualizar Caso" : "Salvar Caso")}
             </Button>
           )}
         </div>

@@ -19,7 +19,9 @@ import {
   DollarSign,
   User,
   Eye,
-  Scale
+  Scale,
+  Trash2,
+  Edit
 } from "lucide-react";
 import { masks } from "@/components/Masks";
 
@@ -37,10 +39,26 @@ const regimeLabels = {
   participacao_final: "Part. Final Aquestos"
 };
 
+import { useQueryClient, useMutation } from "@tanstack/react-query";
+
 export default function Divorcios() {
+  const queryClient = useQueryClient();
   const [filtroStatus, setFiltroStatus] = useState("todos");
   const [filtroBusca, setFiltroBusca] = useState("");
   const [ordenacao, setOrdenacao] = useState("-created_date");
+
+  const deleteMutation = useMutation({
+    mutationFn: (id) => base44.entities.Divorcio.delete(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['divorcios'] });
+    }
+  });
+
+  const handleDelete = (id) => {
+    if (window.confirm("Tem certeza que deseja excluir este divórcio?")) {
+      deleteMutation.mutate(id);
+    }
+  };
 
   const { data: divorcios, isLoading } = useQuery({
     queryKey: ['divorcios', ordenacao],
@@ -283,11 +301,29 @@ export default function Divorcios() {
                               </p>
                             </div>
                           </div>
-                        </div>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
+                          </div>
+
+                          <div className="flex justify-end gap-2 mt-4 pt-4 border-t border-slate-100">
+                            <Link to={createPageUrl(`NovoDivorcio?id=${divorcio.id}`)}>
+                                <Button variant="ghost" size="sm" className="text-blue-600 hover:text-blue-700 hover:bg-blue-50">
+                                    <Edit className="w-4 h-4 mr-2" />
+                                    Editar
+                                </Button>
+                            </Link>
+                            <Button 
+                                variant="ghost" 
+                                size="sm" 
+                                onClick={() => handleDelete(divorcio.id)}
+                                className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                            >
+                                <Trash2 className="w-4 h-4 mr-2" />
+                                Excluir
+                            </Button>
+                          </div>
+                          </div>
+                          </div>
+                          </CardContent>
+                          </Card>
               );
             })}
           </div>

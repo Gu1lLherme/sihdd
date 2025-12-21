@@ -12,16 +12,39 @@ import { masks } from "@/components/Masks";
 
 export default function NovoDivorcio() {
   const navigate = useNavigate();
+  const urlParams = new URLSearchParams(window.location.search);
+  const divorcioId = urlParams.get("id");
+  const isEditing = !!divorcioId;
+
   const [formData, setFormData] = useState({});
 
-  const createMutation = useMutation({
+  // Fetch for Edit
+  useQuery({
+    queryKey: ['divorcio', divorcioId],
+    queryFn: async () => {
+        if (!divorcioId) return null;
+        const div = (await base44.entities.Divorcio.list()).find(d => d.id === divorcioId);
+        setFormData(div);
+        return div;
+    },
+    enabled: !!divorcioId,
+    retry: false
+  });
+
+  const mutation = useMutation({
     mutationFn: async (data) => {
       const cleanData = {
         ...data,
         valor_excesso_meacao: masks.currencyToNumber(data.valor_excesso_meacao),
-        status: "aguardando_pagamento"
+        // Keep status if editing, else default
+        status: data.status || "aguardando_pagamento"
       };
-      return await base44.entities.Divorcio.create(cleanData);
+
+      if (isEditing) {
+        return await base44.entities.Divorcio.update(divorcioId, cleanData);
+      } else {
+        return await base44.entities.Divorcio.create(cleanData);
+      }
     },
     onSuccess: () => {
       navigate(createPageUrl("Divorcios"));
@@ -39,7 +62,7 @@ export default function NovoDivorcio() {
           <Link to={createPageUrl("Divorcios")}>
             <Button variant="outline" size="icon"><ArrowLeft className="w-4 h-4" /></Button>
           </Link>
-          <h1 className="text-2xl font-bold text-[#333333]">Novo Divórcio (Excesso de Meação)</h1>
+          <h1 className="text-2xl font-bold text-[#333333]">{isEditing ? "Editar Divórcio" : "Novo Divórcio"}</h1>
         </div>
 
         <FormConjuges
@@ -58,12 +81,12 @@ export default function NovoDivorcio() {
             Gerar Guia ITCMD (SEFAZ-SE)
           </Button>
           <Button 
-            onClick={() => createMutation.mutate(formData)} 
+            onClick={() => mutation.mutate(formData)} 
             className="bg-[#4169E1] hover:bg-[#3151c7] text-white"
-            disabled={createMutation.isPending}
+            disabled={mutation.isPending}
           >
             <Save className="w-4 h-4 mr-2" />
-            {createMutation.isPending ? "Salvando..." : "Salvar Divórcio"}
+            {mutation.isPending ? "Salvando..." : (isEditing ? "Atualizar Divórcio" : "Salvar Divórcio")}
           </Button>
         </div>
       </div>

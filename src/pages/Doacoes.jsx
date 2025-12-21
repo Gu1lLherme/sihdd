@@ -20,7 +20,9 @@ import {
   Calendar,
   User,
   Eye,
-  TrendingUp
+  TrendingUp,
+  Trash2,
+  Edit
 } from "lucide-react";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
@@ -32,10 +34,26 @@ const statusConfig = {
   concluido: { label: "Concluído", color: "bg-emerald-100 text-emerald-700", icon: CheckCircle2 },
 };
 
+import { useQueryClient, useMutation } from "@tanstack/react-query";
+
 export default function Doacoes() {
+  const queryClient = useQueryClient();
   const [filtroStatus, setFiltroStatus] = useState("todos");
   const [filtroBusca, setFiltroBusca] = useState("");
   const [ordenacao, setOrdenacao] = useState("-created_date");
+
+  const deleteMutation = useMutation({
+    mutationFn: (id) => base44.entities.Doacao.delete(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['doacoes'] });
+    }
+  });
+
+  const handleDelete = (id) => {
+    if (window.confirm("Tem certeza que deseja excluir esta doação?")) {
+      deleteMutation.mutate(id);
+    }
+  };
 
   const { data: doacoes, isLoading } = useQuery({
     queryKey: ['doacoes', ordenacao],
@@ -279,11 +297,29 @@ export default function Doacoes() {
                               </p>
                             </div>
                           </div>
-                        </div>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
+                          </div>
+
+                          <div className="flex justify-end gap-2 mt-4 pt-4 border-t border-slate-100">
+                            <Link to={createPageUrl(`NovaDoacao?id=${doacao.id}`)}>
+                                <Button variant="ghost" size="sm" className="text-blue-600 hover:text-blue-700 hover:bg-blue-50">
+                                    <Edit className="w-4 h-4 mr-2" />
+                                    Editar
+                                </Button>
+                            </Link>
+                            <Button 
+                                variant="ghost" 
+                                size="sm" 
+                                onClick={() => handleDelete(doacao.id)}
+                                className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                            >
+                                <Trash2 className="w-4 h-4 mr-2" />
+                                Excluir
+                            </Button>
+                          </div>
+                          </div>
+                          </div>
+                          </CardContent>
+                          </Card>
               );
             })}
           </div>
