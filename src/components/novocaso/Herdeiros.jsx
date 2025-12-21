@@ -16,6 +16,7 @@ export default function Herdeiros({ formData, setFormData }) {
           nome: "",
           cpf: "",
           parentesco: "filho",
+          condicao_especial: "nenhuma",
           percentual_partilha: 0,
           email: "",
           telefone: "",
@@ -117,6 +118,29 @@ export default function Herdeiros({ formData, setFormData }) {
                         <SelectItem value="irmao">Irmão/Irmã</SelectItem>
                         <SelectItem value="neto">Neto(a)</SelectItem>
                         <SelectItem value="outro">Outro</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label>Condição Especial</Label>
+                    <Select
+                      value={herdeiro.condicao_especial || "nenhuma"}
+                      onValueChange={(value) => updateHerdeiro(index, "condicao_especial", value)}
+                    >
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="nenhuma">Nenhuma</SelectItem>
+                        <SelectItem value="menor">Menor</SelectItem>
+                        <SelectItem value="menor_emancipado">Menor Emancipado</SelectItem>
+                        <SelectItem value="incapacidade_temporaria">Incapacidade Temporária</SelectItem>
+                        <SelectItem value="interditado">Interditado</SelectItem>
+                        <SelectItem value="curatela">Curatela</SelectItem>
+                        <SelectItem value="ausente">Ausente</SelectItem>
+                        <SelectItem value="nascituro">Nascituro</SelectItem>
+                        <SelectItem value="herdeiro_excluido">Herdeiro Excluído</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>

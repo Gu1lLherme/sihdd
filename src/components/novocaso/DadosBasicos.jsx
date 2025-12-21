@@ -202,14 +202,25 @@ export default function DadosBasicos({ formData, setFormData }) {
           <h3 className="font-bold text-xl text-slate-900">Dados do Cônjuge Sobrevivente</h3>
         </div>
 
-        <div className="space-y-2">
-          <Label htmlFor="conjuge_nome">Nome Completo</Label>
-          <Input
-            id="conjuge_nome"
-            value={formData.conjuge_nome}
-            onChange={(e) => handleChange('conjuge_nome', e.target.value)}
-            placeholder="Nome completo do viúvo(a)" />
-
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="space-y-2">
+            <Label htmlFor="conjuge_nome">Nome Completo</Label>
+            <Input
+              id="conjuge_nome"
+              value={formData.conjuge_nome}
+              onChange={(e) => handleChange('conjuge_nome', e.target.value)}
+              placeholder="Nome completo do viúvo(a)"
+            />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="conjuge_cpf">CPF do Viúvo(a)</Label>
+            <Input
+              id="conjuge_cpf"
+              value={formData.conjuge_cpf || ''}
+              onChange={(e) => handleChange('conjuge_cpf', masks.cpf(e.target.value))}
+              placeholder="000.000.000-00"
+            />
+          </div>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
