@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { base44 } from "@/api/base44Client";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -46,7 +46,7 @@ const statusConfig = {
   pago: { label: "Pago", color: "bg-blue-100 text-blue-700", icon: CheckCircle2 },
 };
 
-import { useQueryClient, useMutation } from "@tanstack/react-query";
+// Removed duplicate import
 
 export default function Inventarios() {
   const queryClient = useQueryClient();
