@@ -1,53 +1,55 @@
-import Dashboard from './pages/Dashboard';
-import NovoCaso from './pages/NovoCaso';
-import DetalheCaso from './pages/DetalheCaso';
-import Relatorios from './pages/Relatorios';
-import ChatAssistente from './pages/ChatAssistente';
-import Auditoria from './pages/Auditoria';
-import Integracoes from './pages/Integracoes';
-import DetalhesCaso from './pages/DetalhesCaso';
-import Inventarios from './pages/Inventarios';
-import Modulos from './pages/Modulos';
 import Administracao from './pages/Administracao';
-import PortalCliente from './pages/PortalCliente';
-import Configuracoes from './pages/Configuracoes';
-import Tasks from './pages/Tasks';
-import Calendar from './pages/Calendar';
-import Documentacao from './pages/Documentacao';
-import ModelagemPartilha from './pages/ModelagemPartilha';
-import SimuladorPlanejamento from './pages/SimuladorPlanejamento';
 import ArvoreGenealogica from './pages/ArvoreGenealogica';
-import Doacoes from './pages/Doacoes';
-import NovaDoacao from './pages/NovaDoacao';
+import Auditoria from './pages/Auditoria';
+import Calendar from './pages/Calendar';
+import ChatAssistente from './pages/ChatAssistente';
+import Configuracoes from './pages/Configuracoes';
+import Dashboard from './pages/Dashboard';
+import DetalheCaso from './pages/DetalheCaso';
+import DetalhesCaso from './pages/DetalhesCaso';
 import Divorcios from './pages/Divorcios';
+import Doacoes from './pages/Doacoes';
+import Documentacao from './pages/Documentacao';
+import Home from './pages/Home';
+import Integracoes from './pages/Integracoes';
+import Inventarios from './pages/Inventarios';
+import ModelagemPartilha from './pages/ModelagemPartilha';
+import Modulos from './pages/Modulos';
+import NovaDoacao from './pages/NovaDoacao';
+import NovoCaso from './pages/NovoCaso';
 import NovoDivorcio from './pages/NovoDivorcio';
+import PortalCliente from './pages/PortalCliente';
+import Relatorios from './pages/Relatorios';
+import SimuladorPlanejamento from './pages/SimuladorPlanejamento';
+import Tasks from './pages/Tasks';
 import __Layout from './Layout.jsx';
 
 
 export const PAGES = {
-    "Dashboard": Dashboard,
-    "NovoCaso": NovoCaso,
-    "DetalheCaso": DetalheCaso,
-    "Relatorios": Relatorios,
-    "ChatAssistente": ChatAssistente,
-    "Auditoria": Auditoria,
-    "Integracoes": Integracoes,
-    "DetalhesCaso": DetalhesCaso,
-    "Inventarios": Inventarios,
-    "Modulos": Modulos,
     "Administracao": Administracao,
-    "PortalCliente": PortalCliente,
-    "Configuracoes": Configuracoes,
-    "Tasks": Tasks,
-    "Calendar": Calendar,
-    "Documentacao": Documentacao,
-    "ModelagemPartilha": ModelagemPartilha,
-    "SimuladorPlanejamento": SimuladorPlanejamento,
     "ArvoreGenealogica": ArvoreGenealogica,
-    "Doacoes": Doacoes,
-    "NovaDoacao": NovaDoacao,
+    "Auditoria": Auditoria,
+    "Calendar": Calendar,
+    "ChatAssistente": ChatAssistente,
+    "Configuracoes": Configuracoes,
+    "Dashboard": Dashboard,
+    "DetalheCaso": DetalheCaso,
+    "DetalhesCaso": DetalhesCaso,
     "Divorcios": Divorcios,
+    "Doacoes": Doacoes,
+    "Documentacao": Documentacao,
+    "Home": Home,
+    "Integracoes": Integracoes,
+    "Inventarios": Inventarios,
+    "ModelagemPartilha": ModelagemPartilha,
+    "Modulos": Modulos,
+    "NovaDoacao": NovaDoacao,
+    "NovoCaso": NovoCaso,
     "NovoDivorcio": NovoDivorcio,
+    "PortalCliente": PortalCliente,
+    "Relatorios": Relatorios,
+    "SimuladorPlanejamento": SimuladorPlanejamento,
+    "Tasks": Tasks,
 }
 
 export const pagesConfig = {

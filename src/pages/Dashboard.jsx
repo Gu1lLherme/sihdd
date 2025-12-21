@@ -107,35 +107,30 @@ export default function Dashboard() {
             value={totalProcessos}
             icon={FileText}
             color="#4169E1"
-            isPremium={false}
           />
           <StatsCards 
             title="Processos Ativos" 
             value={processosAtivos}
             icon={Clock}
             color="#4169E1"
-            isPremium={false}
           />
           <StatsCards 
             title="Tarefas Pendentes" 
             value={tarefasPendentes}
             icon={ClipboardList}
             color="#F59E0B"
-            isPremium={false}
           />
           <StatsCards 
             title="Patrimônio Total" 
             value={`R$ ${(totalPatrimonio / 1000).toFixed(0)}k`}
             icon={DollarSign}
             color="#FFC107"
-            isPremium={true}
           />
           <StatsCards 
             title="ITCMD Total" 
             value={`R$ ${(totalITCMD / 1000).toFixed(0)}k`}
             icon={TrendingUp}
             color="#FFC107"
-            isPremium={true}
           />
         </div>
 
@@ -173,7 +168,7 @@ export default function Dashboard() {
                 <div className="flex flex-col items-center gap-2">
                   <FileText className="w-5 h-5 sm:w-6 sm:h-6" />
                   <span className="font-bold text-sm sm:text-base">Relatório Financeiro</span>
-                  <span className="text-[10px] sm:text-xs opacity-90">Analytics Premium</span>
+                  <span className="text-[10px] sm:text-xs opacity-90">Analytics Completo</span>
                 </div>
               </Button>
             </Link>
