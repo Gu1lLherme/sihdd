@@ -190,6 +190,9 @@ Machine Learning.
     title: "Páginas",
     icon: Layout,
     content: `
+# Rotas principais
+- Dashboard, Inventários, Doações, Divórcios, Tasks, Calendário, Chat, Portal, Relatórios, Administração, Auditoria, Configurações
+`
 # 📄 PÁGINAS DO SISTEMA
 
 ## 1. Dashboard (/Dashboard)
