@@ -1,23 +1,38 @@
 import React, { useState } from "react";
 import { base44 } from "@/api/base44Client";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, Save, FileCheck } from "lucide-react";
-import { Link, useNavigate } from "react-router-dom";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { ArrowLeft, Save, ChevronRight, ChevronLeft } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 
-import FormDoador from "@/components/doacao/FormDoador";
-import FormDonatario from "@/components/doacao/FormDonatario";
-import ListaBensDoacao from "@/components/doacao/ListaBensDoacao";
+import DadosIniciais from "@/components/doacao/DadosIniciais";
+import BensDoacao from "@/components/doacao/BensDoacao";
+import ResumoDoacao from "@/components/doacao/ResumoDoacao";
+
+const ETAPAS = [
+  { id: 1, titulo: "Dados Iniciais", componente: DadosIniciais },
+  { id: 2, titulo: "Bens", componente: BensDoacao },
+  { id: 3, titulo: "Resumo", componente: ResumoDoacao },
+];
 
 export default function NovaDoacao() {
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const urlParams = new URLSearchParams(window.location.search);
   const doacaoId = urlParams.get("id");
   const isEditing = !!doacaoId;
 
-  const [formData, setFormData] = useState({});
-  const [bens, setBens] = useState([]);
+  const [etapaAtual, setEtapaAtual] = useState(1);
+  const [formData, setFormData] = useState({
+    doador_nome: "",
+    doador_cpf: "",
+    donatario_nome: "",
+    donatario_cpf: "",
+    bens: [],
+    status: "rascunho"
+  });
 
   // Fetch for Edit
   useQuery({
@@ -26,8 +41,11 @@ export default function NovaDoacao() {
         if (!doacaoId) return null;
         const doacao = (await base44.entities.Doacao.list()).find(d => d.id === doacaoId);
         const bensList = (await base44.entities.Bem.list()).filter(b => b.doacao_id === doacaoId);
-        setFormData(doacao);
-        setBens(bensList);
+        
+        setFormData({
+            ...doacao,
+            bens: bensList
+        });
         return doacao;
     },
     enabled: !!doacaoId,
@@ -36,15 +54,27 @@ export default function NovaDoacao() {
 
   const mutation = useMutation({
     mutationFn: async (data) => {
+      const totalBens = (data.bens || []).reduce((acc, curr) => acc + (curr.valor || 0), 0);
+      const tax = totalBens * 0.04;
+
+      const doacaoData = {
+          doador_nome: data.doador_nome,
+          doador_cpf: data.doador_cpf,
+          donatario_nome: data.donatario_nome,
+          donatario_cpf: data.donatario_cpf,
+          valor_total_bens: totalBens,
+          valor_tributo: tax,
+          data_doacao: data.data_doacao || new Date().toISOString().split('T')[0],
+          status: data.status || "aguardando_pagamento"
+      };
+
       if (isEditing) {
-          // Update
-          await base44.entities.Doacao.update(doacaoId, data.doacao);
-          // Simplified Bens Update: Not deleting old ones in this simple version, just adding new ones if they lack ID?
-          // or we can implement more complex logic. For "Create/Update/Delete all info" request, ideally we handle sub-entities.
-          // For now, assuming standard edit of main entity.
+          await base44.entities.Doacao.update(doacaoId, doacaoData);
+          // Simplified update for bens: ideally we should sync (add/remove/update)
+          // For now we just create new ones that don't have IDs if any (in this simplified flow we just assume create new bens if added)
+          // A proper sync would require diffing.
       } else {
-          // Create
-          const doacao = await base44.entities.Doacao.create(data.doacao);
+          const doacao = await base44.entities.Doacao.create(doacaoData);
           if (data.bens.length > 0) {
             const bensToCreate = data.bens.map(b => ({ ...b, doacao_id: doacao.id, documento_url: "simulated_url.pdf" }));
             await base44.entities.Bem.bulkCreate(bensToCreate);
@@ -52,69 +82,119 @@ export default function NovaDoacao() {
       }
     },
     onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['doacoes'] });
       navigate(createPageUrl("Doacoes"));
     }
   });
 
-  const handleSubmit = () => {
-    // Calc total and tax (mock logic)
-    const totalBens = bens.reduce((acc, curr) => acc + curr.valor, 0);
-    const tax = totalBens * 0.04; // 4% mock ITCMD
-
-    const doacaoData = {
-      ...formData,
-      valor_total_bens: totalBens,
-      valor_tributo: tax,
-      data_doacao: new Date().toISOString().split('T')[0], // Default to today if not set
-      status: "aguardando_pagamento"
-    };
-
-    mutation.mutate({ doacao: doacaoData, bens });
+  const avancar = () => {
+    if (etapaAtual < ETAPAS.length) {
+      setEtapaAtual(etapaAtual + 1);
+    }
   };
 
-  const handleGenerateGuia = () => {
-    alert("Integração SEFAZ-SE: Guia ITCMD gerada com sucesso!");
+  const voltar = () => {
+    if (etapaAtual > 1) {
+      setEtapaAtual(etapaAtual - 1);
+    }
   };
+
+  const salvar = () => {
+    mutation.mutate(formData);
+  };
+
+  const EtapaComponente = ETAPAS[etapaAtual - 1].componente;
 
   return (
-    <div className="p-3 sm:p-4 md:p-6 lg:p-8 bg-white min-h-screen">
-      <div className="max-w-5xl mx-auto space-y-6">
-        <div className="flex items-center gap-4 mb-6">
-          <Link to={createPageUrl("Doacoes")}>
-            <Button variant="outline" size="icon"><ArrowLeft className="w-4 h-4" /></Button>
-          </Link>
-          <h1 className="text-2xl font-bold text-[#333333]">{isEditing ? "Editar Doação" : "Nova Doação"}</h1>
+    <div className="p-4 md:p-8 min-h-screen">
+      <div className="max-w-4xl mx-auto">
+        <div className="flex items-center gap-4 mb-8">
+          <Button
+            variant="outline"
+            size="icon"
+            onClick={() => navigate(createPageUrl("Doacoes"))}
+          >
+            <ArrowLeft className="w-4 h-4" />
+          </Button>
+          <div>
+            <h1 className="text-3xl font-bold text-blue-900">{isEditing ? "Editar Doação" : "Nova Doação"}</h1>
+            <p className="text-slate-600 mt-1">{isEditing ? "Atualize as informações" : "Preencha as etapas da doação"}</p>
+          </div>
         </div>
 
-        <FormDoador 
-          data={formData} 
-          onChange={(key, val) => setFormData({...formData, [key]: val})} 
-        />
-        
-        <FormDonatario 
-          data={formData} 
-          onChange={(key, val) => setFormData({...formData, [key]: val})} 
-        />
+        <div className="mb-8">
+          <div className="flex justify-between items-center">
+            {ETAPAS.map((etapa, index) => (
+              <div key={etapa.id} className="flex items-center flex-1">
+                <div className="flex flex-col items-center flex-1">
+                  <div
+                    className={`w-10 h-10 rounded-full flex items-center justify-center font-semibold transition-colors ${
+                      etapaAtual >= etapa.id
+                        ? "bg-blue-900 text-white"
+                        : "bg-slate-200 text-slate-500"
+                    }`}
+                  >
+                    {etapa.id}
+                  </div>
+                  <p
+                    className={`text-sm mt-2 font-medium ${
+                      etapaAtual >= etapa.id ? "text-blue-900" : "text-slate-500"
+                    }`}
+                  >
+                    {etapa.titulo}
+                  </p>
+                </div>
+                {index < ETAPAS.length - 1 && (
+                  <div
+                    className={`h-1 flex-1 mx-2 rounded transition-colors ${
+                      etapaAtual > etapa.id ? "bg-blue-900" : "bg-slate-200"
+                    }`}
+                  />
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
 
-        <ListaBensDoacao 
-          bens={bens}
-          onAddBem={(bem) => setBens([...bens, bem])}
-          onRemoveBem={(idx) => setBens(bens.filter((_, i) => i !== idx))}
-        />
+        <Card className="border-slate-200 shadow-lg mb-6">
+          <CardHeader className="border-b border-slate-200">
+            <CardTitle className="text-xl text-blue-900">
+              {ETAPAS[etapaAtual - 1].titulo}
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="p-6">
+            <EtapaComponente formData={formData} setFormData={setFormData} />
+          </CardContent>
+        </Card>
 
-        <div className="flex justify-end gap-4 pt-4">
-          <Button variant="outline" className="border-blue-600 text-blue-600" onClick={handleGenerateGuia}>
-            <FileCheck className="w-4 h-4 mr-2" />
-            Gerar Guia ITCMD (SEFAZ-SE)
-          </Button>
-          <Button 
-            onClick={handleSubmit} 
-            className="bg-[#4169E1] hover:bg-[#3151c7] text-white"
-            disabled={mutation.isPending}
+        <div className="flex justify-between">
+          <Button
+            variant="outline"
+            onClick={voltar}
+            disabled={etapaAtual === 1}
           >
-            <Save className="w-4 h-4 mr-2" />
-            {mutation.isPending ? "Salvando..." : (isEditing ? "Atualizar Doação" : "Salvar Doação")}
+            <ChevronLeft className="w-4 h-4 mr-2" />
+            Voltar
           </Button>
+
+          {etapaAtual < ETAPAS.length ? (
+            <Button
+              onClick={avancar}
+              className="bg-blue-900 hover:bg-blue-800 text-white"
+            >
+              Próximo
+              <ChevronRight className="w-4 h-4 ml-2" />
+            </Button>
+          ) : (
+            <Button
+              onClick={salvar}
+              disabled={mutation.isPending}
+              className="bg-green-600 hover:bg-green-700 text-white"
+            >
+              <Save className="w-4 h-4 mr-2" />
+              {mutation.isPending ? "Salvando..." : (isEditing ? "Atualizar Doação" : "Salvar Doação")}
+            </Button>
+          )}
         </div>
       </div>
     </div>
