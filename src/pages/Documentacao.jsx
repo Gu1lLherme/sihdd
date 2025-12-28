@@ -5,6 +5,51 @@ import { BookOpen, Palette, Database, Layout, Code, Zap } from "lucide-react";
 
 const sections = [
   {
+    id: "overview",
+    title: "Ideia e Funcionamento",
+    icon: BookOpen,
+    content: `
+# Visão Geral do SIHDD
+
+O SIHDD (Sistema Inteligente de Herança e Direito Sucessório) centraliza a gestão de inventários, doações e divórcios, com automações, cálculos tributários e portal do cliente.
+
+## O que o sistema representa
+- Uma plataforma de gestão de processos sucessórios e afins
+- Padronização de rotinas, prazos e documentos
+- Transparência: trilha de auditoria e portal para clientes
+
+## Como funciona
+- Entidades principais: Caso, Herdeiro, Bem, Divida, Inventariante, Task, CalendarEvent
+- Fluxo guiado de Inventário: Dados Iniciais → Herdeiros → Inventariante → Bens → Dívidas → Resumo
+- Cálculos automáticos: ITCMD total e por herdeiro
+- Automação de tarefas e eventos de calendário ao nomear inventariante
+- Integrações oficiais (catálogo) e registros em Auditoria
+- Multi-tenant por Escritório (Office) e white‑label
+    `
+  },
+  {
+    id: "quickstart",
+    title: "Guia Rápido (Caso de Uso)",
+    icon: Zap,
+    content: `
+# Passo a passo – Novo Inventário
+
+1. Dashboard → Novo Caso de Inventário
+2. Dados Iniciais: informe falecido, óbito, cônjuge, endereço e regime de bens
+3. Herdeiros: cadastre todos e defina os percentuais (devem somar 100%)
+4. Inventariante: informe nome, CPF/CNPJ, e data de nomeação
+5. Bens e Dívidas: adicione itens com valores e documentos (se houver)
+6. Resumo: revise valores de patrimônio e ITCMD, então Salvar Caso
+7. Tarefas/Calendário: acompanhe prazos gerados automaticamente
+8. Guias: gere/registre a guia do ITCMD quando aplicável
+9. Detalhe do Caso: monitore status até a conclusão
+
+Dicas:
+- Use o Calendário para prazos críticos (ITCMD em destaque)
+- Utilize o Portal do Cliente para troca de documentos e atualizações
+    `
+  },
+  {
     id: "design",
     title: "Design System",
     icon: Palette,
