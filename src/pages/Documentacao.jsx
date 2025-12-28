@@ -11,20 +11,25 @@ const sections = [
     content: `
 # Visão Geral do SIHDD
 
-O SIHDD (Sistema Inteligente de Herança e Direito Sucessório) centraliza a gestão de inventários, doações e divórcios, com automações, cálculos tributários e portal do cliente.
+O SIHDD (Sistema Inteligente de Herança e Direito Sucessório) é uma plataforma integrada de gestão jurídica e tributária, desenvolvida para modernizar e simplificar processos de inventário, divórcios e doações.
 
-## O que o sistema representa
-- Uma plataforma de gestão de processos sucessórios e afins
-- Padronização de rotinas, prazos e documentos
-- Transparência: trilha de auditoria e portal para clientes
+## O que é o SIHDD?
+É um ecossistema digital completo que centraliza todas as etapas de processos sucessórios e de direito de família. Ele atua como um hub inteligente que conecta advogados, escritórios e clientes, oferecendo ferramentas avançadas para automação de documentos, cálculos complexos e gestão de prazos.
 
-## Como funciona
-- Entidades principais: Caso, Herdeiro, Bem, Divida, Inventariante, Task, CalendarEvent
-- Fluxo guiado de Inventário: Dados Iniciais → Herdeiros → Inventariante → Bens → Dívidas → Resumo
-- Cálculos automáticos: ITCMD total e por herdeiro
-- Automação de tarefas e eventos de calendário ao nomear inventariante
-- Integrações oficiais (catálogo) e registros em Auditoria
-- Multi-tenant por Escritório (Office) e white‑label
+## Qual problema ele resolve?
+O processo tradicional de inventário é burocrático, lento e propenso a erros de cálculo, especialmente no que tange ao ITCMD (Imposto sobre Transmissão Causa Mortis e Doação). Advogados perdem horas preenchendo guias manuais, conferindo alíquotas e buscando documentos em diferentes órgãos. O SIHDD elimina essa ineficiência, reduzindo o tempo de tramitação e minimizando riscos de multas por atraso ou erros de declaração.
+
+## Resolução Tributária e Integrações (SEFAZ, Cartórios, DETRAN)
+O grande diferencial do SIHDD é sua capacidade de integração direta para resolver a questão do imposto e validação de bens:
+
+### 1. SEFAZ (Secretaria da Fazenda)
+O sistema realiza o cálculo automático do ITCMD com base nas alíquotas atualizadas e regras específicas do estado (ex: Sergipe). Ele pré-preenche as declarações e gera as guias de pagamento (DAE) diretamente, agilizando a homologação fiscal sem que o advogado precise navegar pelos portais complexos da fazenda.
+
+### 2. Cartórios
+Conexão para consulta de matrículas e solicitação de certidões de óbito ou casamento. O sistema prepara as minutas de escrituras públicas e petições já formatadas conforme os padrões cartorários, prontas para protocolo.
+
+### 3. DETRAN
+Consulta automática de veículos em nome do falecido ou das partes, recuperando valores de mercado (Tabela FIPE) e verificando a existência de débitos ou restrições que possam impactar a partilha.
     `
   },
   {
