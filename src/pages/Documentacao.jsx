@@ -30,6 +30,25 @@ Conexão para consulta de matrículas e solicitação de certidões de óbito ou
 
 ### 3. DETRAN
 Consulta automática de veículos em nome do falecido ou das partes, recuperando valores de mercado (Tabela FIPE) e verificando a existência de débitos ou restrições que possam impactar a partilha.
+
+## Benefícios para os Parceiros Integrados
+
+### 🏛️ SEFAZ (Governo do Estado)
+**Ganho Principal: Aumento na Arrecadação e Conformidade**
+Ao facilitar o acesso e automatizar a geração do DAE, o SIHDD reduz drasticamente a barreira burocrática para o pagamento do imposto.
+- **Arrecadação Acelerada:** A desburocratização incentiva o pagamento voluntário e rápido do ITCMD.
+- **Menos Sonegação:** O cálculo automatizado e transparente diminui erros e tentativas de evasão fiscal.
+- **Eficiência:** Auditores recebem processos mais organizados, reduzindo o custo operacional do Estado.
+
+### 📜 Cartórios
+**Ganho Principal: Celeridade e Volume de Atos**
+- **Produtividade:** Minutas e documentos chegam padronizados e pré-validados, reduzindo o tempo de conferência e "notas devolutivas".
+- **Faturamento:** Processos mais rápidos significam mais escrituras lavradas no mesmo período de tempo.
+
+### 🚗 DETRAN
+**Ganho Principal: Atualização Cadastral e Segurança**
+- **Base de Dados Limpa:** Garante que a transferência de propriedade ocorra imediatamente após a partilha, evitando "carros fantasmas" em nome de falecidos.
+- **Segurança Jurídica:** Bloqueios e transferências automatizadas reduzem riscos de fraudes e vendas indevidas de bens do espólio.
     `
   },
   {
