@@ -267,7 +267,7 @@ Trilha completa + Export CSV
 
 ## 13. Configurações (/Configuracoes)
 Conta, Módulos, Notificações
-    `}
+    `
   },
   {
     id: "components",
