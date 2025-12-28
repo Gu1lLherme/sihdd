@@ -305,17 +305,22 @@ export default function Divorcios() {
                       </div>
 
                       <div className="flex flex-col gap-2">
-                         <div className="flex gap-2">
-                           <Link to={createPageUrl(`NovoDivorcio?id=${divorcio.id}`)} className="flex-1">
-                             <Button className="w-full bg-purple-600 hover:bg-purple-500">
-                               <Edit className="w-4 h-4 mr-2" />
-                               Editar
-                             </Button>
-                           </Link>
-                           <Button variant="outline" size="icon" onClick={() => handleDelete(divorcio.id)} className="text-red-600 hover:text-red-700 hover:bg-red-50">
-                             <Trash2 className="w-4 h-4" />
-                           </Button>
-                         </div>
+                        <div className="flex gap-2">
+                          <Link to={createPageUrl(`DetalheDivorcio?id=${divorcio.id}`)} className="flex-1">
+                            <Button className="w-full bg-purple-600 hover:bg-purple-500">
+                              <Eye className="w-4 h-4 mr-2" />
+                              Ver
+                            </Button>
+                          </Link>
+                          <Link to={createPageUrl(`NovoDivorcio?id=${divorcio.id}`)}>
+                            <Button variant="outline" size="icon">
+                              <Edit className="w-4 h-4 text-purple-600" />
+                            </Button>
+                          </Link>
+                          <Button variant="outline" size="icon" onClick={() => handleDelete(divorcio.id)} className="text-red-600 hover:text-red-700 hover:bg-red-50">
+                            <Trash2 className="w-4 h-4" />
+                          </Button>
+                        </div>
                       </div>
                     </div>
                   </CardContent>

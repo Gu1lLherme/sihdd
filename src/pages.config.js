@@ -21,6 +21,8 @@ import NovoDivorcio from './pages/NovoDivorcio';
 import PortalCliente from './pages/PortalCliente';
 import Relatorios from './pages/Relatorios';
 import Tasks from './pages/Tasks';
+import DetalheDoacao from './pages/DetalheDoacao';
+import DetalheDivorcio from './pages/DetalheDivorcio';
 import __Layout from './Layout.jsx';
 
 
@@ -48,6 +50,8 @@ export const PAGES = {
     "PortalCliente": PortalCliente,
     "Relatorios": Relatorios,
     "Tasks": Tasks,
+    "DetalheDoacao": DetalheDoacao,
+    "DetalheDivorcio": DetalheDivorcio,
 }
 
 export const pagesConfig = {

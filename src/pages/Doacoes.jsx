@@ -301,17 +301,22 @@ export default function Doacoes() {
                       </div>
 
                       <div className="flex flex-col gap-2">
-                         <div className="flex gap-2">
-                           <Link to={createPageUrl(`NovaDoacao?id=${doacao.id}`)} className="flex-1">
-                             <Button className="w-full bg-blue-900 hover:bg-blue-800">
-                               <Edit className="w-4 h-4 mr-2" />
-                               Editar
-                             </Button>
-                           </Link>
-                           <Button variant="outline" size="icon" onClick={() => handleDelete(doacao.id)} className="text-red-600 hover:text-red-700 hover:bg-red-50">
-                             <Trash2 className="w-4 h-4" />
-                           </Button>
-                         </div>
+                        <div className="flex gap-2">
+                          <Link to={createPageUrl(`DetalheDoacao?id=${doacao.id}`)} className="flex-1">
+                            <Button className="w-full bg-blue-900 hover:bg-blue-800">
+                              <Eye className="w-4 h-4 mr-2" />
+                              Ver
+                            </Button>
+                          </Link>
+                          <Link to={createPageUrl(`NovaDoacao?id=${doacao.id}`)}>
+                            <Button variant="outline" size="icon">
+                              <Edit className="w-4 h-4 text-blue-600" />
+                            </Button>
+                          </Link>
+                          <Button variant="outline" size="icon" onClick={() => handleDelete(doacao.id)} className="text-red-600 hover:text-red-700 hover:bg-red-50">
+                            <Trash2 className="w-4 h-4" />
+                          </Button>
+                        </div>
                       </div>
                     </div>
                   </CardContent>
