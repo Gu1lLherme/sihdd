@@ -259,8 +259,8 @@ export default function Divorcios() {
                     <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                       <div className="flex-1">
                         <div className="flex items-start gap-4 mb-4">
-                          <div className="w-12 h-12 rounded-lg bg-purple-100 flex items-center justify-center shadow-md flex-shrink-0">
-                            <HeartCrack className="w-6 h-6 text-purple-600" />
+                          <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-purple-600 to-purple-400 flex items-center justify-center shadow-md flex-shrink-0">
+                            <HeartCrack className="w-6 h-6 text-white" />
                           </div>
                           <div className="flex-1">
                             <h3 className="text-xl font-bold text-slate-900 mb-2">
@@ -281,7 +281,7 @@ export default function Divorcios() {
                           </div>
                         </div>
 
-                        <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                           <div className="flex items-center gap-2">
                             <DollarSign className="w-4 h-4 text-slate-500" />
                             <div>
@@ -301,29 +301,25 @@ export default function Divorcios() {
                               </p>
                             </div>
                           </div>
-                          </div>
+                        </div>
+                      </div>
 
-                          <div className="flex justify-end gap-2 mt-4 pt-4 border-t border-slate-100">
-                            <Link to={createPageUrl(`NovoDivorcio?id=${divorcio.id}`)}>
-                                <Button variant="ghost" size="sm" className="text-blue-600 hover:text-blue-700 hover:bg-blue-50">
-                                    <Edit className="w-4 h-4 mr-2" />
-                                    Editar
-                                </Button>
-                            </Link>
-                            <Button 
-                                variant="ghost" 
-                                size="sm" 
-                                onClick={() => handleDelete(divorcio.id)}
-                                className="text-red-600 hover:text-red-700 hover:bg-red-50"
-                            >
-                                <Trash2 className="w-4 h-4 mr-2" />
-                                Excluir
-                            </Button>
-                          </div>
-                          </div>
-                          </div>
-                          </CardContent>
-                          </Card>
+                      <div className="flex flex-col gap-2">
+                         <div className="flex gap-2">
+                           <Link to={createPageUrl(`NovoDivorcio?id=${divorcio.id}`)} className="flex-1">
+                             <Button className="w-full bg-purple-600 hover:bg-purple-500">
+                               <Edit className="w-4 h-4 mr-2" />
+                               Editar
+                             </Button>
+                           </Link>
+                           <Button variant="outline" size="icon" onClick={() => handleDelete(divorcio.id)} className="text-red-600 hover:text-red-700 hover:bg-red-50">
+                             <Trash2 className="w-4 h-4" />
+                           </Button>
+                         </div>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
               );
             })}
           </div>
