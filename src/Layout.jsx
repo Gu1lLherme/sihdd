@@ -18,6 +18,13 @@ import {
   SidebarProvider,
   SidebarTrigger,
 } from "@/components/ui/sidebar";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+  DropdownMenuSeparator,
+} from "@/components/ui/dropdown-menu";
 
 const ALL_NAVIGATION_ITEMS = [
   {
@@ -27,88 +34,39 @@ const ALL_NAVIGATION_ITEMS = [
     icon: BarChart3,
   },
   {
-    key: "inventarios",
-    title: "Inventários",
-    url: createPageUrl("Inventarios"),
-    icon: FolderOpen,
-  },
-  {
-    key: "doacoes",
-    title: "Doações",
-    url: createPageUrl("Doacoes"),
-    icon: Gift,
-  },
-  {
-    key: "divorcios",
-    title: "Divórcios",
-    url: createPageUrl("Divorcios"),
-    icon: HeartCrack,
-  },
-  {
-    key: "tasks",
-    title: "Tarefas",
-    url: createPageUrl("Tasks"),
-    icon: CheckCircle2,
-  },
-  {
-    key: "calendar",
-    title: "Calendário",
-    url: createPageUrl("Calendar"),
-    icon: Calendar,
-  },
-  {
-    key: "chat",
-    title: "IA Jurídica RAG",
-    url: createPageUrl("ChatAssistente"),
-    icon: Brain,
-  },
-  {
-    key: "portal",
-    title: "Portal do Cliente",
-    url: createPageUrl("PortalCliente"),
-    icon: Shield,
-  },
-  {
-    key: "modelagem_partilha",
-    title: "Modelagem de Partilha",
-    url: createPageUrl("ModelagemPartilha"),
+    key: "fato_juridico",
+    title: "Fato Jurídico",
+    url: createPageUrl("FatoJuridico"),
     icon: Scale,
   },
   {
-    key: "arvore_genealogica",
-    title: "Árvore Genealógica",
-    url: createPageUrl("ArvoreGenealogica"),
-    icon: Users,
+    key: "gestao_prazos",
+    title: "Gestão & Prazos",
+    icon: Calendar,
+    subItems: [
+        { key: "tasks", title: "Tarefas", url: createPageUrl("Tasks"), icon: CheckCircle2 },
+        { key: "calendar", title: "Calendário", url: createPageUrl("Calendar"), icon: Calendar },
+        { key: "portal", title: "Portal do Cliente", url: createPageUrl("PortalCliente"), icon: Shield },
+    ]
   },
   {
-    key: "integracoes",
-    title: "Integrações",
-    url: createPageUrl("Integracoes"),
-    icon: Link2,
+    key: "inteligencia",
+    title: "Inteligência & Ferramentas",
+    icon: Brain,
+    subItems: [
+        { key: "chat", title: "IA Jurídica RAG", url: createPageUrl("ChatAssistente"), icon: Brain },
+        { key: "modelagem_partilha", title: "Modelagem", url: createPageUrl("ModelagemPartilha"), icon: Scale },
+        { key: "arvore_genealogica", title: "Árvore Genealógica", url: createPageUrl("ArvoreGenealogica"), icon: Users },
+    ]
   },
   {
-    key: "administracao",
-    title: "Administração",
-    url: createPageUrl("Administracao"),
-    icon: Users,
-  },
-  {
-    key: "auditoria",
-    title: "Auditoria",
-    url: createPageUrl("Auditoria"),
-    icon: History,
-  },
-  {
-    key: "relatorios",
-    title: "Relatórios",
-    url: createPageUrl("Relatorios"),
+    key: "relatorios_auditoria",
+    title: "Relatórios & Auditoria",
     icon: BarChart3,
-  },
-  {
-    key: "documentacao",
-    title: "Documentação",
-    url: createPageUrl("Documentacao"),
-    icon: BookOpen,
+    subItems: [
+        { key: "relatorios", title: "Relatórios", url: createPageUrl("Relatorios"), icon: BarChart3 },
+        { key: "auditoria", title: "Auditoria", url: createPageUrl("Auditoria"), icon: History },
+    ]
   },
 ];
 
@@ -409,22 +367,51 @@ export default function Layout({ children, currentPageName }) {
           </SidebarContent>
 
           <SidebarFooter className="border-t-2 border-slate-200 p-3 lg:p-4 bg-white">
-            <Link to={createPageUrl("Configuracoes")} className="block">
-              <div className="flex items-center gap-2 lg:gap-3 p-2 lg:p-3 rounded-lg lg:rounded-xl bg-slate-100 hover:bg-slate-200 transition-colors cursor-pointer group min-w-0">
-                <div className="w-8 h-8 lg:w-10 lg:h-10 bg-[#4169E1] rounded-full flex items-center justify-center shadow-lg flex-shrink-0">
-                  <span className="text-white font-bold text-xs lg:text-sm">
-                    {user?.full_name?.charAt(0)?.toUpperCase() || 'U'}
-                  </span>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <div className="flex items-center gap-2 lg:gap-3 p-2 lg:p-3 rounded-lg lg:rounded-xl bg-slate-100 hover:bg-slate-200 transition-colors cursor-pointer group min-w-0 w-full">
+                  <div className="w-8 h-8 lg:w-10 lg:h-10 bg-[#4169E1] rounded-full flex items-center justify-center shadow-lg flex-shrink-0">
+                    <span className="text-white font-bold text-xs lg:text-sm">
+                      {user?.full_name?.charAt(0)?.toUpperCase() || 'U'}
+                    </span>
+                  </div>
+                  <div className="flex-1 min-w-0 overflow-hidden text-left">
+                    <p className="font-semibold text-[#333333] text-xs lg:text-sm truncate">
+                      {user?.full_name?.split(' ')[0] || 'Usuário'}
+                    </p>
+                    <p className="text-[10px] lg:text-xs text-[#AAAAAA] truncate">Conta & Sistema</p>
+                  </div>
+                  <Settings className="w-3 h-3 lg:w-4 lg:h-4 text-[#AAAAAA] group-hover:text-[#4169E1] transition-colors flex-shrink-0" />
                 </div>
-                <div className="flex-1 min-w-0 overflow-hidden">
-                  <p className="font-semibold text-[#333333] text-xs lg:text-sm truncate">
-                    {user?.full_name?.split(' ')[0] || 'Usuário'}
-                  </p>
-                  <p className="text-[10px] lg:text-xs text-[#AAAAAA] truncate">Configurações</p>
-                </div>
-                <Settings className="w-3 h-3 lg:w-4 lg:h-4 text-[#AAAAAA] opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0" />
-              </div>
-            </Link>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-56 mb-2">
+                <DropdownMenuItem asChild>
+                  <Link to={createPageUrl("Configuracoes")} className="cursor-pointer flex items-center">
+                     <Settings className="w-4 h-4 mr-2" />
+                     Configurações
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem asChild>
+                  <Link to={createPageUrl("Administracao")} className="cursor-pointer flex items-center">
+                     <Users className="w-4 h-4 mr-2" />
+                     Administração
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link to={createPageUrl("Integracoes")} className="cursor-pointer flex items-center">
+                     <Link2 className="w-4 h-4 mr-2" />
+                     Integrações
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link to={createPageUrl("Documentacao")} className="cursor-pointer flex items-center">
+                     <BookOpen className="w-4 h-4 mr-2" />
+                     Documentação
+                  </Link>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </SidebarFooter>
         </Sidebar>
 
