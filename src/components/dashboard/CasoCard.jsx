@@ -13,7 +13,7 @@ const statusConfig = {
   'aguardando_pagamento': { label: 'Aguardando Pagamento', color: 'bg-orange-100 text-orange-700 border-orange-700' },
   'em_analise_sefaz': { label: 'Análise SEFAZ', color: 'bg-indigo-100 text-[#4169E1] border-[#4169E1]' },
   'certidao_emitida': { label: 'Certidão Emitida', color: 'bg-emerald-100 text-[#28A745] border-[#28A745]' },
-  'finalizado': { label: 'Finalizado', color: 'bg-green-100 text-green-700 border-green-700' }
+  'finalizado': { label: 'Finalizado', color: 'bg-green-100 text-green-700 border-green-700' },
 };
 
 export default function CasoCard({ caso }) {
@@ -57,22 +57,22 @@ export default function CasoCard({ caso }) {
           </div>
         </div>
 
-        {caso.prazo_dias &&
-        <div className="flex items-center gap-2 p-2 sm:p-3 bg-blue-50 border-2 border-[#4169E1] rounded-lg sm:rounded-xl">
+        {caso.prazo_dias && (
+          <div className="flex items-center gap-2 p-2 sm:p-3 bg-blue-50 border-2 border-[#4169E1] rounded-lg sm:rounded-xl">
             <Clock className="w-3 h-3 sm:w-4 sm:h-4 text-[#4169E1] flex-shrink-0" />
             <p className="text-xs sm:text-sm font-bold text-[#333333]">
               {caso.prazo_dias} dias restantes
             </p>
           </div>
-        }
+        )}
 
         <Link to={createPageUrl(`DetalheCaso?id=${caso.id}`)}>
-          <Button className="bg-[#4169E1] text-white my-4 px-4 py-5 text-xs font-bold rounded-md inline-flex items-center justify-center gap-2 whitespace-nowrap focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 w-full hover:bg-[#3151c7] shadow-lg hover:shadow-xl transition-all duration-300 group-hover:scale-105 sm:text-sm h-10 sm:h-11">
+          <Button className="w-full bg-[#4169E1] hover:bg-[#3151c7] text-white shadow-lg hover:shadow-xl transition-all duration-300 group-hover:scale-105 font-bold text-xs sm:text-sm h-10 sm:h-11">
             Acompanhar Processo
             <ArrowRight className="w-3 h-3 sm:w-4 sm:h-4 ml-2 group-hover:translate-x-1 transition-transform" />
           </Button>
         </Link>
       </CardContent>
-    </Card>);
-
+    </Card>
+  );
 }

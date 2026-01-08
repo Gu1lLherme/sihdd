@@ -6,8 +6,6 @@ import ChatAssistente from './pages/ChatAssistente';
 import Configuracoes from './pages/Configuracoes';
 import Dashboard from './pages/Dashboard';
 import DetalheCaso from './pages/DetalheCaso';
-import DetalheDivorcio from './pages/DetalheDivorcio';
-import DetalheDoacao from './pages/DetalheDoacao';
 import DetalhesCaso from './pages/DetalhesCaso';
 import Divorcios from './pages/Divorcios';
 import Doacoes from './pages/Doacoes';
@@ -23,7 +21,8 @@ import NovoDivorcio from './pages/NovoDivorcio';
 import PortalCliente from './pages/PortalCliente';
 import Relatorios from './pages/Relatorios';
 import Tasks from './pages/Tasks';
-import FatoJuridico from './pages/FatoJuridico';
+import DetalheDoacao from './pages/DetalheDoacao';
+import DetalheDivorcio from './pages/DetalheDivorcio';
 import __Layout from './Layout.jsx';
 
 
@@ -36,8 +35,6 @@ export const PAGES = {
     "Configuracoes": Configuracoes,
     "Dashboard": Dashboard,
     "DetalheCaso": DetalheCaso,
-    "DetalheDivorcio": DetalheDivorcio,
-    "DetalheDoacao": DetalheDoacao,
     "DetalhesCaso": DetalhesCaso,
     "Divorcios": Divorcios,
     "Doacoes": Doacoes,
@@ -53,7 +50,8 @@ export const PAGES = {
     "PortalCliente": PortalCliente,
     "Relatorios": Relatorios,
     "Tasks": Tasks,
-    "FatoJuridico": FatoJuridico,
+    "DetalheDoacao": DetalheDoacao,
+    "DetalheDivorcio": DetalheDivorcio,
 }
 
 export const pagesConfig = {
