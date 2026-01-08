@@ -418,7 +418,7 @@ export default function Layout({ children, currentPageName }) {
                 </div>
                 <div className="flex-1 min-w-0 overflow-hidden">
                   <p className="font-semibold text-[#333333] text-xs lg:text-sm truncate">
-                    {user?.full_name?.split(' ')[0] || 'Usuário'}
+                    wellinton
                   </p>
                   <p className="text-[10px] lg:text-xs text-[#AAAAAA] truncate">Configurações</p>
                 </div>
