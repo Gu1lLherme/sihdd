@@ -74,6 +74,8 @@ import PortalCliente from './pages/PortalCliente';
 import Relatorios from './pages/Relatorios';
 import Tasks from './pages/Tasks';
 import RelatoriosAuditoria from './pages/RelatoriosAuditoria';
+import GestaoPrazos from './pages/GestaoPrazos';
+import InteligenciaFerramentas from './pages/InteligenciaFerramentas';
 import __Layout from './Layout.jsx';
 
 
@@ -105,6 +107,8 @@ export const PAGES = {
     "Relatorios": Relatorios,
     "Tasks": Tasks,
     "RelatoriosAuditoria": RelatoriosAuditoria,
+    "GestaoPrazos": GestaoPrazos,
+    "InteligenciaFerramentas": InteligenciaFerramentas,
 }
 
 export const pagesConfig = {

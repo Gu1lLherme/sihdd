@@ -48,22 +48,14 @@ const ALL_NAVIGATION_ITEMS = [
   {
     key: "gestao_prazos",
     title: "Gestão & Prazos",
+    url: createPageUrl("GestaoPrazos"),
     icon: Calendar,
-    subItems: [
-        { key: "tasks", title: "Tarefas", url: createPageUrl("Tasks"), icon: CheckCircle2 },
-        { key: "calendar", title: "Calendário", url: createPageUrl("Calendar"), icon: Calendar },
-        { key: "portal", title: "Portal do Cliente", url: createPageUrl("PortalCliente"), icon: Shield },
-    ]
   },
   {
     key: "inteligencia",
     title: "Inteligência & Ferramentas",
+    url: createPageUrl("InteligenciaFerramentas"),
     icon: Brain,
-    subItems: [
-        { key: "chat", title: "IA Jurídica RAG", url: createPageUrl("ChatAssistente"), icon: Brain },
-        { key: "modelagem_partilha", title: "Modelagem", url: createPageUrl("ModelagemPartilha"), icon: Scale },
-        { key: "arvore_genealogica", title: "Árvore Genealógica", url: createPageUrl("ArvoreGenealogica"), icon: Users },
-    ]
   },
   {
     key: "relatorios_auditoria",
