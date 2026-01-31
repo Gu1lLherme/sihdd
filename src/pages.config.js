@@ -23,6 +23,7 @@ import NovoDivorcio from './pages/NovoDivorcio';
 import PortalCliente from './pages/PortalCliente';
 import Relatorios from './pages/Relatorios';
 import Tasks from './pages/Tasks';
+import FatoJuridico from './pages/FatoJuridico';
 import __Layout from './Layout.jsx';
 
 
@@ -52,6 +53,7 @@ export const PAGES = {
     "PortalCliente": PortalCliente,
     "Relatorios": Relatorios,
     "Tasks": Tasks,
+    "FatoJuridico": FatoJuridico,
 }
 
 export const pagesConfig = {
