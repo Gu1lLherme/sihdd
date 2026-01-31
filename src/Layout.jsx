@@ -44,7 +44,7 @@ const ALL_NAVIGATION_ITEMS = [
     title: "Integrações",
     url: createPageUrl("Integracoes"),
     icon: Link2,
-  }
+  },
   {
     key: "gestao_prazos",
     title: "Gestão & Prazos",
