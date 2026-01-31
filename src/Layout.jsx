@@ -40,6 +40,12 @@ const ALL_NAVIGATION_ITEMS = [
     icon: Scale,
   },
   {
+    key: "integracoes",
+    title: "Integrações",
+    url: createPageUrl("Integracoes"),
+    icon: Link2,
+  }
+  {
     key: "gestao_prazos",
     title: "Gestão & Prazos",
     icon: Calendar,
@@ -62,12 +68,9 @@ const ALL_NAVIGATION_ITEMS = [
   {
     key: "relatorios_auditoria",
     title: "Relatórios & Auditoria",
+    url: createPageUrl("RelatoriosAuditoria"),
     icon: BarChart3,
-    subItems: [
-        { key: "relatorios", title: "Relatórios", url: createPageUrl("Relatorios"), icon: BarChart3 },
-        { key: "auditoria", title: "Auditoria", url: createPageUrl("Auditoria"), icon: History },
-    ]
-  },
+  }
 ];
 
 export default function Layout({ children, currentPageName }) {

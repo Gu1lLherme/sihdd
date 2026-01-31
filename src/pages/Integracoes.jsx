@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { base44 } from "@/api/base44Client";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -36,6 +36,20 @@ export default function Integracoes() {
     { id: "detran", label: "DETRAN", icon: Car, component: ConsultaDetran },
     { id: "historico", label: "Histórico", icon: FileCheck, component: HistoricoIntegracoes },
   ];
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const t = params.get('tab');
+    const ids = tabs.map(tab => tab.id);
+    if (t && ids.includes(t)) setActiveTab(t);
+  }, []);
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    params.set('tab', activeTab);
+    const newUrl = `${window.location.pathname}?${params.toString()}`;
+    window.history.replaceState({}, '', newUrl);
+  }, [activeTab]);
 
   const ActiveComponent = tabs.find(t => t.id === activeTab)?.component;
 
