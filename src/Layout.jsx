@@ -42,31 +42,20 @@ const ALL_NAVIGATION_ITEMS = [
   {
     key: "gestao_prazos",
     title: "Gestão & Prazos",
-    icon: Calendar,
-    subItems: [
-        { key: "tasks", title: "Tarefas", url: createPageUrl("Tasks"), icon: CheckCircle2 },
-        { key: "calendar", title: "Calendário", url: createPageUrl("Calendar"), icon: Calendar },
-        { key: "portal", title: "Portal do Cliente", url: createPageUrl("PortalCliente"), icon: Shield },
-    ]
+    url: createPageUrl("Tasks"),
+    icon: Calendar
   },
   {
     key: "inteligencia",
     title: "Inteligência & Ferramentas",
-    icon: Brain,
-    subItems: [
-        { key: "chat", title: "IA Jurídica RAG", url: createPageUrl("ChatAssistente"), icon: Brain },
-        { key: "modelagem_partilha", title: "Modelagem", url: createPageUrl("ModelagemPartilha"), icon: Scale },
-        { key: "arvore_genealogica", title: "Árvore Genealógica", url: createPageUrl("ArvoreGenealogica"), icon: Users },
-    ]
+    url: createPageUrl("ChatAssistente"),
+    icon: Brain
   },
   {
     key: "relatorios_auditoria",
     title: "Relatórios & Auditoria",
-    icon: BarChart3,
-    subItems: [
-        { key: "relatorios", title: "Relatórios", url: createPageUrl("Relatorios"), icon: BarChart3 },
-        { key: "auditoria", title: "Auditoria", url: createPageUrl("Auditoria"), icon: History },
-    ]
+    url: createPageUrl("Relatorios"),
+    icon: BarChart3
   },
 ];
 
@@ -474,7 +463,7 @@ export default function Layout({ children, currentPageName }) {
                     <Brain className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
                   </div>
                   <div className="min-w-0 overflow-hidden">
-                    <h3 className="font-semibold text-white text-sm sm:text-base truncate">RAG Tributário</h3>
+                    <h3 className="font-semibold text-white text-sm sm:text-base truncate">Assistente IA</h3>
                     <div className="flex items-center gap-2">
                       <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-[#28A745] rounded-full animate-pulse flex-shrink-0" />
                       <p className="text-[10px] sm:text-xs text-white/80 truncate">IA Online</p>
@@ -492,7 +481,7 @@ export default function Layout({ children, currentPageName }) {
               <iframe
                 src={createPageUrl("ChatAssistente")}
                 className="flex-1 w-full border-0"
-                title="RAG Tributário"
+                title="Assistente IA"
               />
             </div>
           )}
