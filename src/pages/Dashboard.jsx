@@ -44,17 +44,47 @@ export default function Dashboard() {
   const totalPatrimonio = casos.reduce((sum, c) => sum + (c.valor_patrimonio || 0), 0);
   const totalITCMD = casos.reduce((sum, c) => sum + (c.valor_itcmd || 0), 0);
   const processosAtivos = casos.filter(c => c.status !== 'finalizado').length;
-  const prazosCriticos = 3; // Mocked for design
+  
+  // Calculate critical deadlines (tasks due in next 3 days or overdue)
+  const today = new Date();
+  const threeDaysFromNow = new Date();
+  threeDaysFromNow.setDate(today.getDate() + 3);
+  
+  const prazosCriticos = tasks.filter(t => {
+    if (t.status === 'concluida' || t.status === 'cancelada' || !t.data_vencimento) return false;
+    const dueDate = new Date(t.data_vencimento);
+    return dueDate <= threeDaysFromNow;
+  }).length;
 
-  // Chart Data
-  const chartData = [
-    { name: 'Jan', value: 300 },
-    { name: 'Fev', value: 450 },
-    { name: 'Mar', value: 350 },
-    { name: 'Abr', value: 600 },
-    { name: 'Mai', value: 800 },
-    { name: 'Jun', value: 500, active: true },
-  ];
+  // Generate Chart Data from real Casos
+  const last6Months = Array.from({ length: 6 }, (_, i) => {
+    const d = new Date();
+    d.setMonth(d.getMonth() - i);
+    return d;
+  }).reverse();
+
+  const chartData = last6Months.map(date => {
+    const monthName = date.toLocaleString('pt-BR', { month: 'short' });
+    const monthKey = date.getMonth();
+    const yearKey = date.getFullYear();
+    
+    // Filter cases created in this month/year
+    const casesInMonth = casos.filter(c => {
+      const cDate = new Date(c.created_date);
+      return cDate.getMonth() === monthKey && cDate.getFullYear() === yearKey;
+    });
+
+    // Sum patrimonio or count cases? Design shows bars, likely value or count. 
+    // Given "Distribuição Patrimonial", let's sum patrimonio.
+    const totalValue = casesInMonth.reduce((sum, c) => sum + (c.valor_patrimonio || 0), 0);
+    
+    return {
+      name: monthName.charAt(0).toUpperCase() + monthName.slice(1),
+      value: totalValue,
+      // Highlight current month
+      active: monthKey === new Date().getMonth()
+    };
+  });
 
   return (
     <div className="space-y-6">

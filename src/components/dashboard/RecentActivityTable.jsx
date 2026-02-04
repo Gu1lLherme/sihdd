@@ -73,31 +73,7 @@ export default function RecentActivityTable({ casos }) {
               })
             )}
             
-            {/* Adding fake row for visual match to image if needed */}
-            {recentCasos.length > 0 && (
-                <TableRow className="border-b border-slate-50 hover:bg-slate-50/50">
-                    <TableCell className="pl-6 py-4">
-                      <div className="flex flex-col">
-                        <span className="font-bold text-slate-900 text-sm">Holding Patrimonial G.R.</span>
-                        <span className="text-xs text-slate-400">Ref: 5510/2023</span>
-                      </div>
-                    </TableCell>
-                    <TableCell className="text-sm text-slate-600">Planejamento Sucessório</TableCell>
-                    <TableCell>
-                      <Badge className="bg-yellow-100 text-yellow-700 font-medium rounded-full px-3 py-0.5 shadow-none border-none">
-                        Aguardando Docs
-                      </Badge>
-                    </TableCell>
-                    <TableCell className="text-sm text-red-500 font-bold">
-                      Hoje
-                    </TableCell>
-                    <TableCell className="text-right pr-6">
-                      <Button variant="ghost" size="icon" className="h-8 w-8 text-slate-400">
-                        <MoreVertical className="w-4 h-4" />
-                      </Button>
-                    </TableCell>
-                  </TableRow>
-            )}
+            {/* Removed fake row */}
           </TableBody>
         </Table>
       </CardContent>

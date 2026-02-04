@@ -4,11 +4,10 @@ import { MoreVertical } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
 
 export default function PendingTasksWidget({ tasks = [] }) {
-  // Use mock data if no tasks provided for visual accuracy with design
-  const displayTasks = tasks.length > 0 ? tasks : [
-    { id: 1, title: "Revisar minuta de testamento", subtitle: "Cliente: Ana Souza" },
-    { id: 2, title: "Enviar guia ITCMD", subtitle: "Vence amanhã" },
-  ];
+  // Filter pending tasks and sort by priority/date
+  const pendingTasks = tasks
+    .filter(t => t.status !== 'concluida' && t.status !== 'cancelada')
+    .slice(0, 5);
 
   return (
     <Card className="bg-white border-none shadow-sm">
@@ -18,19 +17,28 @@ export default function PendingTasksWidget({ tasks = [] }) {
         </div>
 
         <div className="space-y-4">
-          {displayTasks.slice(0, 3).map((task) => (
-            <div key={task.id} className="flex items-start gap-3">
-              <Checkbox id={`task-${task.id}`} className="mt-1 rounded-full data-[state=checked]:bg-blue-600 data-[state=checked]:text-white border-slate-300" />
-              <div className="flex-1">
-                <label htmlFor={`task-${task.id}`} className="text-sm font-medium text-slate-900 block cursor-pointer">
-                  {task.title || task.titulo}
-                </label>
-                <p className="text-xs text-slate-500">
-                  {task.subtitle || task.descricao || "Sem detalhes"}
-                </p>
+          {pendingTasks.length === 0 ? (
+            <p className="text-sm text-slate-500 text-center py-4">Nenhuma tarefa pendente.</p>
+          ) : (
+            pendingTasks.map((task) => (
+              <div key={task.id} className="flex items-start gap-3">
+                <Checkbox id={`task-${task.id}`} className="mt-1 rounded-full data-[state=checked]:bg-blue-600 data-[state=checked]:text-white border-slate-300" />
+                <div className="flex-1">
+                  <label htmlFor={`task-${task.id}`} className="text-sm font-medium text-slate-900 block cursor-pointer">
+                    {task.titulo}
+                  </label>
+                  <p className="text-xs text-slate-500 line-clamp-1">
+                    {task.descricao || "Sem descrição"}
+                  </p>
+                  {task.data_vencimento && (
+                     <p className="text-[10px] text-red-500 mt-0.5">
+                       Vence: {new Date(task.data_vencimento).toLocaleDateString()}
+                     </p>
+                  )}
+                </div>
               </div>
-            </div>
-          ))}
+            ))
+          )}
         </div>
       </CardContent>
     </Card>
