@@ -62,8 +62,10 @@ import Divorcios from './pages/Divorcios';
 import Doacoes from './pages/Doacoes';
 import Documentacao from './pages/Documentacao';
 import FatoJuridico from './pages/FatoJuridico';
+import GestaoPrazos from './pages/GestaoPrazos';
 import Home from './pages/Home';
 import Integracoes from './pages/Integracoes';
+import InteligenciaFerramentas from './pages/InteligenciaFerramentas';
 import Inventarios from './pages/Inventarios';
 import ModelagemPartilha from './pages/ModelagemPartilha';
 import Modulos from './pages/Modulos';
@@ -72,10 +74,8 @@ import NovoCaso from './pages/NovoCaso';
 import NovoDivorcio from './pages/NovoDivorcio';
 import PortalCliente from './pages/PortalCliente';
 import Relatorios from './pages/Relatorios';
-import Tasks from './pages/Tasks';
 import RelatoriosAuditoria from './pages/RelatoriosAuditoria';
-import GestaoPrazos from './pages/GestaoPrazos';
-import InteligenciaFerramentas from './pages/InteligenciaFerramentas';
+import Tasks from './pages/Tasks';
 import __Layout from './Layout.jsx';
 
 
@@ -95,8 +95,10 @@ export const PAGES = {
     "Doacoes": Doacoes,
     "Documentacao": Documentacao,
     "FatoJuridico": FatoJuridico,
+    "GestaoPrazos": GestaoPrazos,
     "Home": Home,
     "Integracoes": Integracoes,
+    "InteligenciaFerramentas": InteligenciaFerramentas,
     "Inventarios": Inventarios,
     "ModelagemPartilha": ModelagemPartilha,
     "Modulos": Modulos,
@@ -105,10 +107,8 @@ export const PAGES = {
     "NovoDivorcio": NovoDivorcio,
     "PortalCliente": PortalCliente,
     "Relatorios": Relatorios,
-    "Tasks": Tasks,
     "RelatoriosAuditoria": RelatoriosAuditoria,
-    "GestaoPrazos": GestaoPrazos,
-    "InteligenciaFerramentas": InteligenciaFerramentas,
+    "Tasks": Tasks,
 }
 
 export const pagesConfig = {
