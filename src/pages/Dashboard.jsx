@@ -12,8 +12,19 @@ import {
   Gavel, 
   Calendar, 
   Plus, 
-  Download
+  Download,
+  FileText,
+  HeartCrack,
+  Gift
 } from "lucide-react";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import { BarChart, Bar, ResponsiveContainer, XAxis, Tooltip, Cell } from "recharts";
 import { Card, CardContent } from "@/components/ui/card";
 
@@ -152,12 +163,65 @@ export default function Dashboard() {
             <Download className="w-4 h-4 mr-2" />
             Exportar Relatório
           </Button>
-          <Link to={createPageUrl("NovoCaso")}>
-            <Button className="bg-[#1a237e] hover:bg-[#283593] text-white">
-              <Plus className="w-4 h-4 mr-2" />
-              Novo Fato Jurídico
-            </Button>
-          </Link>
+          <Dialog>
+            <DialogTrigger asChild>
+              <Button className="bg-[#1a237e] hover:bg-[#283593] text-white">
+                <Plus className="w-4 h-4 mr-2" />
+                Novo Fato Jurídico
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="sm:max-w-3xl bg-white">
+              <DialogHeader>
+                <DialogTitle className="text-xl font-bold text-slate-900">Selecione o Tipo de Fato Jurídico</DialogTitle>
+                <DialogDescription className="text-slate-500">
+                  Escolha qual tipo de processo deseja iniciar no sistema para prosseguir.
+                </DialogDescription>
+              </DialogHeader>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 py-6">
+                <Link to={createPageUrl("NovoCaso")}>
+                  <Card className="hover:border-blue-500 hover:bg-blue-50 hover:shadow-md transition-all cursor-pointer h-full border-2 border-slate-100">
+                    <CardContent className="flex flex-col items-center justify-center p-6 gap-4 text-center">
+                      <div className="w-16 h-16 rounded-2xl bg-blue-100 flex items-center justify-center shadow-inner">
+                        <FileText className="w-8 h-8 text-blue-600" />
+                      </div>
+                      <div>
+                        <h3 className="font-bold text-slate-900 text-lg">Inventário</h3>
+                        <p className="text-xs text-slate-500 mt-1 font-medium">Judicial ou Extrajudicial</p>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </Link>
+                
+                <Link to={createPageUrl("NovoDivorcio")}>
+                  <Card className="hover:border-purple-500 hover:bg-purple-50 hover:shadow-md transition-all cursor-pointer h-full border-2 border-slate-100">
+                    <CardContent className="flex flex-col items-center justify-center p-6 gap-4 text-center">
+                      <div className="w-16 h-16 rounded-2xl bg-purple-100 flex items-center justify-center shadow-inner">
+                        <HeartCrack className="w-8 h-8 text-purple-600" />
+                      </div>
+                      <div>
+                        <h3 className="font-bold text-slate-900 text-lg">Divórcio</h3>
+                        <p className="text-xs text-slate-500 mt-1 font-medium">Consensual ou Litigioso</p>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </Link>
+
+                <Link to={createPageUrl("NovaDoacao")}>
+                  <Card className="hover:border-emerald-500 hover:bg-emerald-50 hover:shadow-md transition-all cursor-pointer h-full border-2 border-slate-100">
+                    <CardContent className="flex flex-col items-center justify-center p-6 gap-4 text-center">
+                      <div className="w-16 h-16 rounded-2xl bg-emerald-100 flex items-center justify-center shadow-inner">
+                        <Gift className="w-8 h-8 text-emerald-600" />
+                      </div>
+                      <div>
+                        <h3 className="font-bold text-slate-900 text-lg">Doação</h3>
+                        <p className="text-xs text-slate-500 mt-1 font-medium">Adiantamento de Legítima</p>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </Link>
+              </div>
+            </DialogContent>
+          </Dialog>
         </div>
       </div>
 
