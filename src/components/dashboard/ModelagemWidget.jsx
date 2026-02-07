@@ -2,6 +2,8 @@ import React from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Building2, DollarSign, Plus } from "lucide-react";
+import { Link } from "react-router-dom";
+import { createPageUrl } from "@/utils";
 
 export default function ModelagemWidget() {
   return (
@@ -18,19 +20,25 @@ export default function ModelagemWidget() {
         </div>
 
         <div className="grid grid-cols-2 gap-3 mb-4">
-          <div className="bg-slate-50 p-3 rounded-lg flex flex-col items-center justify-center text-center hover:bg-slate-100 transition-colors cursor-pointer">
-            <Building2 className="w-5 h-5 text-slate-400 mb-1" />
-            <span className="text-xs font-medium text-slate-700">Holdings</span>
-          </div>
-          <div className="bg-slate-50 p-3 rounded-lg flex flex-col items-center justify-center text-center hover:bg-slate-100 transition-colors cursor-pointer">
-            <DollarSign className="w-5 h-5 text-slate-400 mb-1" />
-            <span className="text-xs font-medium text-slate-700">Fundos</span>
-          </div>
+          <Link to={createPageUrl("ModelagemPartilha")}>
+            <div className="bg-slate-50 p-3 rounded-lg flex flex-col items-center justify-center text-center hover:bg-slate-100 transition-colors cursor-pointer h-full">
+              <Building2 className="w-5 h-5 text-slate-400 mb-1" />
+              <span className="text-xs font-medium text-slate-700">Holdings</span>
+            </div>
+          </Link>
+          <Link to={createPageUrl("ModelagemPartilha")}>
+            <div className="bg-slate-50 p-3 rounded-lg flex flex-col items-center justify-center text-center hover:bg-slate-100 transition-colors cursor-pointer h-full">
+              <DollarSign className="w-5 h-5 text-slate-400 mb-1" />
+              <span className="text-xs font-medium text-slate-700">Fundos</span>
+            </div>
+          </Link>
         </div>
 
-        <Button variant="outline" className="w-full border-blue-600 text-blue-600 hover:bg-blue-50">
-          Nova Simulação
-        </Button>
+        <Link to={createPageUrl("ModelagemPartilha")}>
+          <Button variant="outline" className="w-full border-blue-600 text-blue-600 hover:bg-blue-50">
+            Nova Simulação
+          </Button>
+        </Link>
       </CardContent>
     </Card>
   );

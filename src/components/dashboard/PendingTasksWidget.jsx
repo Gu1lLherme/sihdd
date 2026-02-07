@@ -3,7 +3,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { MoreVertical } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
 
-export default function PendingTasksWidget({ tasks = [] }) {
+export default function PendingTasksWidget({ tasks = [], onToggleTask }) {
   // Filter pending tasks and sort by priority/date
   const pendingTasks = tasks
     .filter(t => t.status !== 'concluida' && t.status !== 'cancelada')
@@ -22,9 +22,17 @@ export default function PendingTasksWidget({ tasks = [] }) {
           ) : (
             pendingTasks.map((task) => (
               <div key={task.id} className="flex items-start gap-3">
-                <Checkbox id={`task-${task.id}`} className="mt-1 rounded-full data-[state=checked]:bg-blue-600 data-[state=checked]:text-white border-slate-300" />
+                <Checkbox 
+                  id={`task-${task.id}`} 
+                  checked={task.status === 'concluida'}
+                  onCheckedChange={() => onToggleTask && onToggleTask(task)}
+                  className="mt-1 rounded-full data-[state=checked]:bg-blue-600 data-[state=checked]:text-white border-slate-300" 
+                />
                 <div className="flex-1">
-                  <label htmlFor={`task-${task.id}`} className="text-sm font-medium text-slate-900 block cursor-pointer">
+                  <label 
+                    htmlFor={`task-${task.id}`} 
+                    className={`text-sm font-medium block cursor-pointer ${task.status === 'concluida' ? 'text-slate-400 line-through' : 'text-slate-900'}`}
+                  >
                     {task.titulo}
                   </label>
                   <p className="text-xs text-slate-500 line-clamp-1">

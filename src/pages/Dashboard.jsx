@@ -1,7 +1,9 @@
 import React from "react";
 import { base44 } from "@/api/base44Client";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
+import jsPDF from "jspdf";
 import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { 
@@ -39,6 +41,53 @@ export default function Dashboard() {
     queryFn: () => base44.entities.Task.list("-created_date"),
     initialData: [],
   });
+
+  const queryClient = useQueryClient();
+
+  const updateTaskMutation = useMutation({
+    mutationFn: async ({ id, status }) => {
+      await base44.entities.Task.update(id, { status });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['tasks'] });
+      toast.success("Tarefa atualizada com sucesso!");
+    },
+    onError: () => {
+      toast.error("Erro ao atualizar tarefa.");
+    }
+  });
+
+  const handleTaskToggle = (task) => {
+    const newStatus = task.status === 'concluida' ? 'pendente' : 'concluida';
+    updateTaskMutation.mutate({ id: task.id, status: newStatus });
+  };
+
+  const handleExportReport = () => {
+    try {
+      const doc = new jsPDF();
+      doc.setFontSize(20);
+      doc.text("Relatório Geral do Escritório", 20, 20);
+      
+      doc.setFontSize(12);
+      doc.text(`Data: ${new Date().toLocaleDateString()}`, 20, 30);
+      doc.text(`Patrimônio sob Gestão: R$ ${(totalPatrimonio || 0).toLocaleString('pt-BR')}`, 20, 40);
+      doc.text(`ITCMD Calculado: R$ ${(totalITCMD || 0).toLocaleString('pt-BR')}`, 20, 50);
+      doc.text(`Processos Ativos: ${processosAtivos}`, 20, 60);
+      
+      doc.text("Últimos Casos:", 20, 80);
+      let y = 90;
+      casos.slice(0, 5).forEach((caso) => {
+        doc.text(`- ${caso.nome_falecido} (${caso.status})`, 20, y);
+        y += 10;
+      });
+      
+      doc.save("relatorio-geral.pdf");
+      toast.success("Relatório exportado com sucesso!");
+    } catch (error) {
+      console.error(error);
+      toast.error("Erro ao gerar relatório.");
+    }
+  };
 
   // Calculate stats
   const totalPatrimonio = casos.reduce((sum, c) => sum + (c.valor_patrimonio || 0), 0);
@@ -95,7 +144,11 @@ export default function Dashboard() {
           <h1 className="text-3xl font-serif font-bold text-slate-900">Visão Geral do Escritório</h1>
         </div>
         <div className="flex gap-3">
-          <Button variant="outline" className="text-blue-600 border-blue-200 bg-white hover:bg-blue-50">
+          <Button 
+            variant="outline" 
+            className="text-blue-600 border-blue-200 bg-white hover:bg-blue-50"
+            onClick={handleExportReport}
+          >
             <Download className="w-4 h-4 mr-2" />
             Exportar Relatório
           </Button>
@@ -195,7 +248,7 @@ export default function Dashboard() {
         <div className="space-y-6">
           <IAWidget />
           <ModelagemWidget />
-          <PendingTasksWidget tasks={tasks} />
+          <PendingTasksWidget tasks={tasks} onToggleTask={handleTaskToggle} />
         </div>
 
       </div>
