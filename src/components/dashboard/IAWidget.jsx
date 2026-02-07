@@ -24,7 +24,7 @@ export default function IAWidget() {
   };
 
   return (
-    <Card className="bg-[#0f172a] text-white border-none shadow-lg overflow-hidden relative">
+    <Card className="bg-[#1a237e] text-white border-none shadow-lg overflow-hidden relative">
       <div className="absolute top-0 right-0 w-32 h-32 bg-blue-500/20 rounded-full blur-3xl -mr-10 -mt-10" />
       <div className="absolute bottom-0 left-0 w-24 h-24 bg-indigo-500/20 rounded-full blur-2xl -ml-6 -mb-6" />
       

@@ -13,7 +13,7 @@ export default function PendingTasksWidget({ tasks = [], onToggleTask }) {
     <Card className="bg-white border-none shadow-sm">
       <CardContent className="p-6">
         <div className="flex justify-between items-center mb-4">
-          <h3 className="font-bold text-slate-900 text-sm uppercase tracking-wide">Tarefas Pendentes</h3>
+          <h3 className="font-bold text-[#1a237e] text-sm uppercase tracking-wide">Tarefas Pendentes</h3>
         </div>
 
         <div className="space-y-4">
@@ -31,7 +31,7 @@ export default function PendingTasksWidget({ tasks = [], onToggleTask }) {
                 <div className="flex-1">
                   <label 
                     htmlFor={`task-${task.id}`} 
-                    className={`text-sm font-medium block cursor-pointer ${task.status === 'concluida' ? 'text-slate-400 line-through' : 'text-slate-900'}`}
+                    className={`text-sm font-medium block cursor-pointer ${task.status === 'concluida' ? 'text-slate-400 line-through' : 'text-[#1a237e]'}`}
                   >
                     {task.titulo}
                   </label>

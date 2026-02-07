@@ -20,7 +20,7 @@ export default function RecentActivityTable({ casos }) {
   return (
     <Card className="bg-white border-none shadow-sm">
       <CardHeader className="flex flex-row items-center justify-between pb-2">
-        <CardTitle className="text-lg font-bold text-slate-900">Últimos Andamentos</CardTitle>
+        <CardTitle className="text-lg font-bold text-[#1a237e]">Últimos Andamentos</CardTitle>
         <Button variant="link" className="text-blue-600 font-semibold text-sm">Ver tudo</Button>
       </CardHeader>
       <CardContent className="p-0">

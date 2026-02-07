@@ -152,7 +152,7 @@ export default function Dashboard() {
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
         <div>
           <p className="text-slate-500 text-sm mb-1">Bem-vindo de volta, {user?.full_name ? `Dr. ${user.full_name.split(' ')[0]}` : 'Dr. Ricardo'}</p>
-          <h1 className="text-3xl font-serif font-bold text-slate-900">Visão Geral do Escritório</h1>
+          <h1 className="text-3xl font-serif font-bold text-[#1a237e]">Visão Geral do Escritório</h1>
         </div>
         <div className="flex gap-3">
           <Button 
@@ -275,7 +275,7 @@ export default function Dashboard() {
           <Card className="border-none shadow-sm bg-white">
             <CardContent className="p-6">
               <div className="flex justify-between items-center mb-6">
-                <h3 className="font-bold text-slate-900 text-lg">Distribuição Patrimonial e Evolução</h3>
+                <h3 className="font-bold text-[#1a237e] text-lg">Distribuição Patrimonial e Evolução</h3>
                 <Button variant="outline" size="sm" className="text-xs h-8">Últimos 6 Meses</Button>
               </div>
               

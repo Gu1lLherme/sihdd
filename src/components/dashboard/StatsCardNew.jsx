@@ -28,7 +28,7 @@ export default function StatsCardNew({
 
         <h3 className="text-sm font-medium text-slate-500 mb-1">{title}</h3>
         <div className="flex items-baseline gap-2 mb-2">
-          <span className="text-2xl font-bold text-slate-900">{value}</span>
+          <span className="text-2xl font-bold text-[#1a237e]">{value}</span>
           {urgent && <span className="text-red-500 font-bold text-sm">Urgentes</span>}
         </div>
 

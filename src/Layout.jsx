@@ -48,7 +48,7 @@ export default function Layout({ children }) {
   return (
     <div className="min-h-screen bg-[#F8F9FA] font-sans">
       {/* Top Navbar */}
-      <nav className="bg-[#0f172a] text-white h-16 px-4 md:px-6 flex items-center justify-between sticky top-0 z-50 shadow-md">
+      <nav className="bg-[#1a237e] text-white h-16 px-4 md:px-6 flex items-center justify-between sticky top-0 z-50 shadow-md">
         {/* Logo & Nav Links */}
         <div className="flex items-center gap-8">
           <Link to={createPageUrl("Dashboard")} className="flex items-center gap-2 group">

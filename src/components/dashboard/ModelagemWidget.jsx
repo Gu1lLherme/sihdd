@@ -11,7 +11,7 @@ export default function ModelagemWidget() {
       <CardContent className="p-6">
         <div className="flex justify-between items-start mb-4">
           <div>
-            <h3 className="font-bold text-slate-900">Modelagem Patrimonial</h3>
+            <h3 className="font-bold text-[#1a237e]">Modelagem Patrimonial</h3>
             <p className="text-xs text-slate-500">Simule cenários de sucessão.</p>
           </div>
           <div className="p-2 bg-blue-50 text-blue-600 rounded-lg">
