@@ -179,8 +179,23 @@ Forneça uma resposta clara, profissional e precisa. Use markdown para formatar.
                     </span>
                   </div>
                 )}
-                <div className="prose prose-sm max-w-none text-xs sm:text-sm">
-                  <ReactMarkdown>{message.content}</ReactMarkdown>
+                <div className="text-xs sm:text-sm leading-relaxed text-slate-700">
+                  <ReactMarkdown
+                    components={{
+                      p: ({children}) => <p className="mb-3 last:mb-0">{children}</p>,
+                      ul: ({children}) => <ul className="list-disc pl-4 mb-3 space-y-1">{children}</ul>,
+                      ol: ({children}) => <ol className="list-decimal pl-4 mb-3 space-y-1">{children}</ol>,
+                      li: ({children}) => <li className="pl-1">{children}</li>,
+                      h1: ({children}) => <h1 className="text-lg font-bold text-slate-900 mt-4 mb-2">{children}</h1>,
+                      h2: ({children}) => <h2 className="text-base font-bold text-slate-900 mt-3 mb-2">{children}</h2>,
+                      h3: ({children}) => <h3 className="text-sm font-bold text-slate-900 mt-2 mb-1">{children}</h3>,
+                      strong: ({children}) => <strong className="font-semibold text-slate-900">{children}</strong>,
+                      blockquote: ({children}) => <blockquote className="border-l-4 border-blue-200 pl-3 py-1 my-3 bg-blue-50/50 rounded-r text-slate-600 italic">{children}</blockquote>,
+                      code: ({children}) => <code className="bg-slate-100 px-1.5 py-0.5 rounded text-slate-800 font-mono text-xs border border-slate-200">{children}</code>,
+                    }}
+                  >
+                    {message.content}
+                  </ReactMarkdown>
                 </div>
               </div>
             </div>
