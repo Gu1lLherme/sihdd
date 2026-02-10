@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
+import ReactMarkdown from "react-markdown";
 import { base44 } from "@/api/base44Client";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useSearchParams } from "react-router-dom";
@@ -18,7 +19,7 @@ export default function ChatAssistente() {
   const [messages, setMessages] = useState([
     {
       role: "assistant",
-      content: "👋 Olá! Sou o **RAG Tributário SIHDD**, especializado em ITCMD de Sergipe.\n\nPosso ajudá-lo com:\n- 📊 Cálculos de ITCMD\n- 📋 Procedimentos\n- ⚖️ Legislação\n\nComo posso ajudar?"
+      content: "👋 Olá! Sou o **SID.ai Assistente Tributário**, especializado em ITCMD de Sergipe.\n\nPosso ajudá-lo com:\n- 📊 Cálculos de ITCMD\n- 📋 Procedimentos\n- ⚖️ Legislação\n\nComo posso ajudar?"
     }
   ]);
   const [input, setInput] = useState("");
@@ -117,7 +118,7 @@ Forneça uma resposta clara, profissional e precisa. Use markdown para formatar.
             <div className="flex-1 min-w-0">
               <h1 className="text-base sm:text-lg lg:text-2xl font-bold text-white flex items-center gap-2 truncate">
                 <Sparkles className="w-4 h-4 sm:w-5 sm:h-5 flex-shrink-0" />
-                RAG Tributário
+                SID.ai Assistente Tributário
               </h1>
               <p className="text-blue-100 text-[10px] sm:text-xs lg:text-sm mt-0.5 sm:mt-1 truncate">
                 ITCMD/SE 2020-2025
@@ -174,32 +175,12 @@ Forneça uma resposta clara, profissional e precisa. Use markdown para formatar.
                   <div className="flex items-center gap-2 mb-2 pb-2 border-b border-slate-200">
                     <Brain className="w-3 h-3 sm:w-4 sm:h-4 text-[#1E40AF]" />
                     <span className="text-[10px] sm:text-xs font-bold text-[#1E40AF] uppercase tracking-wider">
-                      RAG
+                      SID.ai
                     </span>
                   </div>
                 )}
                 <div className="prose prose-sm max-w-none text-xs sm:text-sm">
-                  {message.content.split('\n').map((line, i) => {
-                    if (line.startsWith('- ')) {
-                      return (
-                        <div key={i} className="flex items-start gap-2 my-1">
-                          <span className="text-[#3B82F6] mt-0.5">•</span>
-                          <span>{line.substring(2)}</span>
-                        </div>
-                      );
-                    }
-                    if (line.includes('**')) {
-                      const parts = line.split('**');
-                      return (
-                        <p key={i} className="my-1.5 sm:my-2">
-                          {parts.map((part, j) => 
-                            j % 2 === 1 ? <strong key={j}>{part}</strong> : part
-                          )}
-                        </p>
-                      );
-                    }
-                    return line ? <p key={i} className="my-1.5 sm:my-2">{line}</p> : <br key={i} />;
-                  })}
+                  <ReactMarkdown>{message.content}</ReactMarkdown>
                 </div>
               </div>
             </div>
