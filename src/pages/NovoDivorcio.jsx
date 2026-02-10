@@ -82,20 +82,28 @@ export default function NovoDivorcio() {
   });
 
   const validateStep = (step) => {
+    const missing = [];
+
     switch(step) {
       case 1: // Dados Iniciais
-        if (!formData.conjuge_doador_nome || !formData.conjuge_doador_cpf) {
-          toast.error("Preencha os dados do Cônjuge Doador.");
-          return false;
-        }
-        if (!formData.conjuge_donatario_nome || !formData.conjuge_donatario_cpf) {
-          toast.error("Preencha os dados do Cônjuge Donatário.");
+        if (!formData.conjuge_doador_nome) missing.push("Nome do Cônjuge Doador");
+        if (!formData.conjuge_doador_cpf) missing.push("CPF do Cônjuge Doador");
+        if (!formData.conjuge_donatario_nome) missing.push("Nome do Cônjuge Donatário");
+        if (!formData.conjuge_donatario_cpf) missing.push("CPF do Cônjuge Donatário");
+        if (!formData.regime_bens) missing.push("Regime de Bens");
+
+        if (missing.length > 0) {
+          toast.error(`Por favor, preencha: ${missing.join(", ")}`);
           return false;
         }
         return true;
+
       case 2: // Financeiro
-        // Basic validation if needed
+        if (!formData.valor_excesso_meacao && formData.valor_excesso_meacao !== 0) {
+             toast.warning("Verifique se há Excesso de Meação a declarar.");
+        }
         return true;
+        
       default:
         return true;
     }

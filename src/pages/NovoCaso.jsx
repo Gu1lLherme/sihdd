@@ -206,46 +206,66 @@ export default function NovoCaso() {
   });
 
   const validateStep = (step) => {
+    const missing = [];
+
     switch (step) {
       case 1: // Dados Iniciais
-        if (!formData.nome_falecido || !formData.cpf_falecido || !formData.data_obito) {
-          toast.error("Preencha os campos obrigatórios: Nome, CPF e Data de Óbito.");
+        if (!formData.nome_falecido) missing.push("Nome do Falecido");
+        if (!formData.cpf_falecido) missing.push("CPF do Falecido");
+        if (!formData.data_obito) missing.push("Data do Óbito");
+        
+        if (missing.length > 0) {
+          toast.error(`Campos obrigatórios: ${missing.join(", ")}`);
           return false;
         }
         return true;
+
       case 2: // Herdeiros
         if (formData.herdeiros.length === 0) {
-          toast.error("Adicione pelo menos um herdeiro.");
+          toast.error("Adicione pelo menos um herdeiro para prosseguir.");
           return false;
         }
+        
+        // Validar dados dos herdeiros
+        const herdeirosIncompletos = formData.herdeiros.some(h => !h.nome || !h.parentesco || !h.percentual_partilha);
+        if (herdeirosIncompletos) {
+             toast.error("Verifique os dados dos herdeiros (Nome, Parentesco e % são obrigatórios).");
+             return false;
+        }
+
         // Validar percentual total
         const totalPercentual = formData.herdeiros.reduce((sum, h) => sum + (parseFloat(h.percentual_partilha) || 0), 0);
         if (Math.abs(totalPercentual - 100) > 0.1) {
-            toast.error(`O total da partilha deve ser 100%. Atual: ${totalPercentual.toFixed(2)}%`);
+            toast.error(`A soma das partilhas deve ser 100%. Total atual: ${totalPercentual.toFixed(2)}%`);
             return false;
         }
         return true;
+
       case 3: // Inventariante
-        if (!formData.inventariante?.nome || !formData.inventariante?.cpf_cnpj || !formData.inventariante?.data_nomeacao) {
-            toast.error("Preencha os dados obrigatórios do Inventariante.");
+        if (!formData.inventariante?.nome) missing.push("Nome do Inventariante");
+        if (!formData.inventariante?.cpf_cnpj) missing.push("CPF/CNPJ do Inventariante");
+        if (!formData.inventariante?.data_nomeacao) missing.push("Data de Nomeação");
+
+        if (missing.length > 0) {
+            toast.error(`Campos obrigatórios do Inventariante: ${missing.join(", ")}`);
             return false;
         }
         return true;
+
       case 4: // Bens
         if (formData.bens.length === 0) {
-            toast.warning("Nenhum bem adicionado. Tem certeza que deseja prosseguir?");
-            // Allow proceed with warning if needed, but for strict validation maybe return false
-            // For now let's allow but maybe validate individual bens fields if any exist
+            toast.warning("Atenção: Nenhum bem foi adicionado ao espólio.");
         }
-        const invalidBem = formData.bens.find(b => !b.descricao || !b.valor);
+        const invalidBem = formData.bens.find(b => !b.descricao || !b.valor || b.valor <= 0);
         if (invalidBem) {
-            toast.error("Todos os bens devem ter descrição e valor.");
+            toast.error("Existem bens com dados incompletos. Verifique Descrição e Valor (deve ser maior que zero).");
             return false;
         }
         return true;
+
       case 5: // Dívidas
-        // Optional
         return true;
+
       default:
         return true;
     }
