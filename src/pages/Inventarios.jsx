@@ -128,7 +128,7 @@ export default function Inventarios() {
               </div>
             </div>
             <Link to={createPageUrl("NovoCaso")}>
-              <Button className="bg-gradient-to-r from-blue-900 to-blue-700 hover:from-blue-800 hover:to-blue-600 shadow-lg">
+              <Button className="bg-[#1a237e] hover:bg-[#151b60] text-white shadow-lg">
                 <Plus className="w-5 h-5 mr-2" />
                 Novo Inventário
               </Button>
@@ -299,7 +299,7 @@ export default function Inventarios() {
               </p>
               {!filtroBusca && filtroStatus === "todos" && (
                 <Link to={createPageUrl("NovoCaso")}>
-                  <Button className="bg-gradient-to-r from-blue-900 to-blue-700">
+                  <Button className="bg-[#1a237e] hover:bg-[#151b60] text-white">
                     <Plus className="w-4 h-4 mr-2" />
                     Criar Inventário
                   </Button>

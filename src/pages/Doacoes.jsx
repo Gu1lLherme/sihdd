@@ -95,7 +95,7 @@ export default function Doacoes() {
               </div>
             </div>
             <Link to={createPageUrl("NovaDoacao")}>
-              <Button className="bg-[#4169E1] hover:bg-[#3151c7] text-white shadow-lg">
+              <Button className="bg-[#1a237e] hover:bg-[#151b60] text-white shadow-lg">
                 <Plus className="w-5 h-5 mr-2" />
                 Nova Doação
               </Button>
@@ -235,7 +235,7 @@ export default function Doacoes() {
               </p>
               {!filtroBusca && filtroStatus === "todos" && (
                 <Link to={createPageUrl("NovaDoacao")}>
-                  <Button className="bg-[#4169E1] hover:bg-[#3151c7]">
+                  <Button className="bg-[#1a237e] hover:bg-[#151b60] text-white">
                     <Plus className="w-4 h-4 mr-2" />
                     Nova Doação
                   </Button>
