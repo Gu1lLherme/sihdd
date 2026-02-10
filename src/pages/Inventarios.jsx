@@ -144,7 +144,7 @@ export default function Inventarios() {
             </TabsTrigger>
             <TabsTrigger value="inventariantes" className="data-[state=active]:bg-emerald-100 data-[state=active]:text-emerald-900">
                 <UserCheck className="w-4 h-4 mr-2" />
-                Gestão de Inventariantes
+                Cadastro de Inventariantes
             </TabsTrigger>
           </TabsList>
 
