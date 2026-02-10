@@ -106,9 +106,9 @@ Forneça uma resposta clara, profissional e precisa. Use markdown para formatar.
   };
 
   return (
-    <div className="flex flex-col h-screen bg-[#F9FAFB]">
+    <div className="flex flex-col h-[75vh] min-h-[600px] bg-white rounded-2xl shadow-2xl border border-slate-200 overflow-hidden mx-auto max-w-5xl">
       {/* Header - Mobile Optimized */}
-      <div className="bg-gradient-to-r from-[#0B1A2E] via-[#1E40AF] to-[#3B82F6] p-3 sm:p-4 lg:p-6 shadow-xl">
+      <div className="bg-gradient-to-r from-[#0B1A2E] via-[#1E40AF] to-[#3B82F6] p-3 sm:p-4 lg:p-6 shadow-md">
         <div className="max-w-4xl mx-auto">
           <div className="flex items-center gap-2 sm:gap-3 lg:gap-4">
             <div className="w-10 h-10 sm:w-12 sm:h-12 lg:w-14 lg:h-14 bg-white/20 backdrop-blur-sm rounded-xl sm:rounded-2xl flex items-center justify-center">
