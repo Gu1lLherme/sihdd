@@ -1,9 +1,53 @@
-import React from "react";
+import React, { useState } from "react";
+import { base44 } from "@/api/base44Client";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Card, CardContent } from "@/components/ui/card";
-import { MoreVertical } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Plus, Trash2, X } from "lucide-react";
+import { toast } from "sonner";
 
 export default function PendingTasksWidget({ tasks = [], onToggleTask }) {
+  const [isAdding, setIsAdding] = useState(false);
+  const [newTaskTitle, setNewTaskTitle] = useState("");
+  const queryClient = useQueryClient();
+
+  const createMutation = useMutation({
+    mutationFn: (data) => base44.entities.Task.create(data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['tasks'] });
+      setNewTaskTitle("");
+      setIsAdding(false);
+      toast.success("Tarefa criada!");
+    },
+  });
+
+  const deleteMutation = useMutation({
+    mutationFn: (id) => base44.entities.Task.delete(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['tasks'] });
+      toast.success("Tarefa excluída!");
+    },
+  });
+
+  const handleCreate = (e) => {
+    e.preventDefault();
+    if (!newTaskTitle.trim()) return;
+    createMutation.mutate({
+      titulo: newTaskTitle,
+      status: "pendente",
+      prioridade: "media",
+      tipo: "outro"
+    });
+  };
+
+  const handleDelete = (id) => {
+    if (confirm("Excluir tarefa?")) {
+      deleteMutation.mutate(id);
+    }
+  };
+
   // Filter pending tasks and sort by priority/date
   const pendingTasks = tasks
     .filter(t => t.status !== 'concluida' && t.status !== 'cancelada')
@@ -14,14 +58,35 @@ export default function PendingTasksWidget({ tasks = [], onToggleTask }) {
       <CardContent className="p-6">
         <div className="flex justify-between items-center mb-4">
           <h3 className="font-bold text-[#1a237e] text-sm uppercase tracking-wide">Tarefas Pendentes</h3>
+          <Button 
+            variant="ghost" 
+            size="icon" 
+            onClick={() => setIsAdding(!isAdding)}
+            className="h-6 w-6"
+          >
+            {isAdding ? <X className="w-4 h-4" /> : <Plus className="w-4 h-4" />}
+          </Button>
         </div>
 
+        {isAdding && (
+          <form onSubmit={handleCreate} className="mb-4 flex gap-2">
+            <Input 
+              value={newTaskTitle}
+              onChange={(e) => setNewTaskTitle(e.target.value)}
+              placeholder="Nova tarefa..."
+              className="h-8 text-sm"
+              autoFocus
+            />
+            <Button type="submit" size="sm" className="h-8 bg-[#1a237e] text-white">Add</Button>
+          </form>
+        )}
+
         <div className="space-y-4">
-          {pendingTasks.length === 0 ? (
+          {pendingTasks.length === 0 && !isAdding ? (
             <p className="text-sm text-slate-500 text-center py-4">Nenhuma tarefa pendente.</p>
           ) : (
             pendingTasks.map((task) => (
-              <div key={task.id} className="flex items-start gap-3">
+              <div key={task.id} className="flex items-start gap-3 group">
                 <Checkbox 
                   id={`task-${task.id}`} 
                   checked={task.status === 'concluida'}
@@ -44,6 +109,14 @@ export default function PendingTasksWidget({ tasks = [], onToggleTask }) {
                      </p>
                   )}
                 </div>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-6 w-6 opacity-0 group-hover:opacity-100 transition-opacity text-slate-400 hover:text-red-600"
+                  onClick={() => handleDelete(task.id)}
+                >
+                  <Trash2 className="w-3 h-3" />
+                </Button>
               </div>
             ))
           )}

@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { UserCheck, Search, Edit, FileText } from "lucide-react";
+import { UserCheck, Search, Edit, FileText, Trash2, Plus } from "lucide-react";
 import FormInventariante from "./FormInventariante";
 
 export default function ListaInventariantes() {
@@ -28,23 +28,38 @@ export default function ListaInventariantes() {
     initialData: [],
   });
 
+  const createMutation = useMutation({
+    mutationFn: (data) => base44.entities.Inventariante.create(data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['inventariantes'] });
+      setIsDialogOpen(false);
+      setEditingInv(null);
+    }
+  });
+
   const updateMutation = useMutation({
     mutationFn: (data) => base44.entities.Inventariante.update(data.id, data),
     onSuccess: async (data, variables) => {
-      // Audit Log for status change handled implicitly or we can add explicit logic here
-      if (variables.status !== editingInv.status) {
+      if (editingInv && variables.status !== editingInv.status) {
         await base44.entities.AuditLog.create({
           action_type: "update",
           entity_type: "Inventariante",
           entity_id: data.id,
           action_description: `Status do inventariante ${data.nome} alterado para ${data.status}`,
-          user_email: "system", // Ideally current user
+          user_email: "system",
           new_data: { status: data.status }
         });
       }
       queryClient.invalidateQueries({ queryKey: ['inventariantes'] });
       setIsDialogOpen(false);
       setEditingInv(null);
+    }
+  });
+
+  const deleteMutation = useMutation({
+    mutationFn: (id) => base44.entities.Inventariante.delete(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['inventariantes'] });
     }
   });
 
@@ -59,9 +74,31 @@ export default function ListaInventariantes() {
   };
 
   const handleSave = () => {
-    if (editingInv) {
+    if (editingInv?.id) {
       updateMutation.mutate(editingInv);
+    } else {
+      createMutation.mutate(editingInv);
     }
+  };
+
+  const handleDelete = (id) => {
+    if (confirm("Tem certeza que deseja excluir este inventariante?")) {
+      deleteMutation.mutate(id);
+    }
+  };
+
+  const handleCreate = () => {
+    setEditingInv({
+        nome: "",
+        cpf_cnpj: "",
+        email: "",
+        telefone: "",
+        data_nomeacao: new Date().toISOString().split('T')[0],
+        vinculo: "herdeiro",
+        status: "ativo",
+        observacoes: ""
+    });
+    setIsDialogOpen(true);
   };
 
   return (
@@ -76,6 +113,10 @@ export default function ListaInventariantes() {
             className="pl-10"
           />
         </div>
+        <Button onClick={handleCreate} className="bg-[#1a237e] hover:bg-[#151b60] text-white">
+            <Plus className="w-4 h-4 mr-2" />
+            Novo Inventariante
+        </Button>
       </div>
 
       <Card>
@@ -125,33 +166,15 @@ export default function ListaInventariantes() {
                         }}>
                             <FileText className="w-4 h-4 text-slate-500" />
                         </Button>
-                        <Dialog open={isDialogOpen && editingInv?.id === inv.id} onOpenChange={(open) => {
-                            setIsDialogOpen(open);
-                            if(open) setEditingInv(inv);
-                            else setEditingInv(null);
+                        <Button variant="ghost" size="sm" onClick={() => {
+                            setEditingInv(inv);
+                            setIsDialogOpen(true);
                         }}>
-                            <DialogTrigger asChild>
-                                <Button variant="ghost" size="sm">
-                                    <Edit className="w-4 h-4 text-blue-600" />
-                                </Button>
-                            </DialogTrigger>
-                            <DialogContent>
-                                <DialogHeader>
-                                    <DialogTitle>Editar Inventariante</DialogTitle>
-                                </DialogHeader>
-                                {editingInv && (
-                                    <div className="space-y-4">
-                                        <FormInventariante 
-                                            data={editingInv} 
-                                            onChange={setEditingInv} 
-                                        />
-                                        <Button onClick={handleSave} className="w-full bg-blue-600 text-white">
-                                            Salvar Alterações
-                                        </Button>
-                                    </div>
-                                )}
-                            </DialogContent>
-                        </Dialog>
+                            <Edit className="w-4 h-4 text-blue-600" />
+                        </Button>
+                        <Button variant="ghost" size="sm" onClick={() => handleDelete(inv.id)}>
+                            <Trash2 className="w-4 h-4 text-red-600" />
+                        </Button>
                       </div>
                     </TableCell>
                   </TableRow>
@@ -161,6 +184,25 @@ export default function ListaInventariantes() {
           </Table>
         </CardContent>
       </Card>
+
+      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+        <DialogContent>
+            <DialogHeader>
+                <DialogTitle>{editingInv?.id ? "Editar Inventariante" : "Novo Inventariante"}</DialogTitle>
+            </DialogHeader>
+            {editingInv && (
+                <div className="space-y-4">
+                    <FormInventariante 
+                        data={editingInv} 
+                        onChange={setEditingInv} 
+                    />
+                    <Button onClick={handleSave} className="w-full bg-blue-600 text-white">
+                        {editingInv?.id ? "Salvar Alterações" : "Criar Inventariante"}
+                    </Button>
+                </div>
+            )}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
