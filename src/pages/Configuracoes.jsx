@@ -7,7 +7,9 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Settings, User, Bell, Eye, EyeOff, Save, Shield, Mail, Phone, MapPin, Briefcase } from "lucide-react";
+import { Settings, User, Bell, Eye, EyeOff, Save, Shield, Mail, Phone, MapPin, Briefcase, Palette, Type, History, Filter, Briefcase as CaseIcon, Check, X } from "lucide-react";
+import { format } from "date-fns";
+import { ptBR } from "date-fns/locale";
 import { motion } from "framer-motion";
 
 const MODULE_LABELS = {
@@ -39,20 +41,22 @@ export default function Configuracoes() {
       if (!userSettings) {
         // Criar configurações padrão
         return await base44.entities.UserSettings.create({
-          user_email: user?.email,
-          sidebar_modules: {
-            dashboard: true,
-            inventarios: true,
-            chat: true,
-            portal: true,
-            modulos: true,
-            integracoes: true,
-            administracao: true,
-            auditoria: true,
-            relatorios: true,
-          },
-          theme: "light",
-          notifications_enabled: true,
+        user_email: user?.email,
+        sidebar_modules: {
+          dashboard: true,
+          inventarios: true,
+          chat: true,
+          portal: true,
+          modulos: true,
+          integracoes: true,
+          administracao: true,
+          auditoria: true,
+          relatorios: true,
+        },
+        theme: "light",
+        color_scheme: "blue",
+        font_family: "inter",
+        notifications_enabled: true,
         });
       }
       
@@ -141,6 +145,27 @@ export default function Configuracoes() {
             >
               <Bell className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
               Notificações
+            </TabsTrigger>
+            <TabsTrigger 
+              value="aparencia" 
+              className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-600 data-[state=active]:to-purple-700 data-[state=active]:text-white font-semibold px-3 sm:px-6 py-2 sm:py-3 text-xs sm:text-sm whitespace-nowrap"
+            >
+              <Palette className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
+              Aparência
+            </TabsTrigger>
+            <TabsTrigger 
+              value="casos" 
+              className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-slate-700 data-[state=active]:to-slate-800 data-[state=active]:text-white font-semibold px-3 sm:px-6 py-2 sm:py-3 text-xs sm:text-sm whitespace-nowrap"
+            >
+              <CaseIcon className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
+              Gestão de Casos
+            </TabsTrigger>
+            <TabsTrigger 
+              value="auditoria" 
+              className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-red-600 data-[state=active]:to-red-700 data-[state=active]:text-white font-semibold px-3 sm:px-6 py-2 sm:py-3 text-xs sm:text-sm whitespace-nowrap"
+            >
+              <History className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
+              Auditoria
             </TabsTrigger>
           </TabsList>
 
@@ -357,6 +382,293 @@ export default function Configuracoes() {
                 </div>
               </CardContent>
             </Card>
+          </TabsContent>
+
+          {/* Aparência */}
+          <TabsContent value="aparencia" className="space-y-4 sm:space-y-6">
+             <Card className="glassmorphism border border-slate-200 card-shadow">
+               <CardHeader className="border-b border-slate-200 bg-gradient-to-r from-purple-50 to-pink-50">
+                 <CardTitle className="text-lg sm:text-xl flex items-center gap-2 sm:gap-3 text-[#0B1A2E]">
+                   <Palette className="w-5 h-5 sm:w-6 sm:h-6 text-purple-600" />
+                   Personalização Visual
+                 </CardTitle>
+                 <p className="text-xs sm:text-sm text-[#6B7280] mt-2">
+                   Escolha o esquema de cores e a tipografia que mais lhe agrada
+                 </p>
+               </CardHeader>
+               <CardContent className="p-4 sm:p-6 space-y-8">
+                 
+                 {/* Cores */}
+                 <div className="space-y-4">
+                    <h3 className="font-semibold text-slate-900 flex items-center gap-2">
+                        <div className="w-8 h-8 rounded-lg bg-slate-100 flex items-center justify-center">
+                            <Palette className="w-4 h-4 text-slate-600" />
+                        </div>
+                        Esquema de Cores
+                    </h3>
+                    <div className="grid grid-cols-2 sm:grid-cols-5 gap-4">
+                        {[
+                            { id: 'blue', label: 'Azul Royal', color: '#1a237e' },
+                            { id: 'gold', label: 'Ouro', color: '#D4AF37' },
+                            { id: 'green', label: 'Esmeralda', color: '#10B981' },
+                            { id: 'purple', label: 'Roxo', color: '#8B5CF6' },
+                            { id: 'slate', label: 'Cinza', color: '#475569' },
+                        ].map((scheme) => (
+                            <button
+                                key={scheme.id}
+                                onClick={() => updateSettingsMutation.mutate({ color_scheme: scheme.id })}
+                                className={`relative p-4 rounded-xl border-2 transition-all flex flex-col items-center gap-2 group ${
+                                    settings?.color_scheme === scheme.id 
+                                    ? 'border-blue-600 bg-blue-50 ring-2 ring-blue-200 ring-offset-2' 
+                                    : 'border-slate-200 hover:border-slate-300 hover:bg-slate-50'
+                                }`}
+                            >
+                                <div 
+                                    className="w-12 h-12 rounded-full shadow-lg mb-2" 
+                                    style={{ backgroundColor: scheme.color }}
+                                />
+                                <span className="text-sm font-medium text-slate-700">{scheme.label}</span>
+                                {settings?.color_scheme === scheme.id && (
+                                    <div className="absolute top-2 right-2 w-5 h-5 bg-blue-600 rounded-full flex items-center justify-center text-white">
+                                        <Check className="w-3 h-3" />
+                                    </div>
+                                )}
+                            </button>
+                        ))}
+                    </div>
+                 </div>
+
+                 <div className="w-full h-px bg-slate-200" />
+
+                 {/* Fontes */}
+                 <div className="space-y-4">
+                    <h3 className="font-semibold text-slate-900 flex items-center gap-2">
+                        <div className="w-8 h-8 rounded-lg bg-slate-100 flex items-center justify-center">
+                            <Type className="w-4 h-4 text-slate-600" />
+                        </div>
+                        Tipografia
+                    </h3>
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                        {[
+                            { id: 'inter', label: 'Inter (Padrão)', font: 'Inter, sans-serif' },
+                            { id: 'merriweather', label: 'Merriweather (Serif)', font: 'Merriweather, serif' },
+                            { id: 'roboto', label: 'Roboto', font: 'Roboto, sans-serif' },
+                            { id: 'lato', label: 'Lato', font: 'Lato, sans-serif' },
+                            { id: 'system', label: 'Sistema', font: 'system-ui' },
+                        ].map((font) => (
+                             <button
+                                key={font.id}
+                                onClick={() => updateSettingsMutation.mutate({ font_family: font.id })}
+                                className={`flex items-center justify-between p-4 rounded-xl border-2 transition-all ${
+                                    settings?.font_family === font.id
+                                    ? 'border-blue-600 bg-blue-50'
+                                    : 'border-slate-200 hover:border-slate-300 hover:bg-slate-50'
+                                }`}
+                            >
+                                <span className="text-lg text-slate-800" style={{ fontFamily: font.font }}>
+                                    Abc
+                                    <span className="text-sm text-slate-500 ml-2 font-normal font-sans">
+                                        - {font.label}
+                                    </span>
+                                </span>
+                                {settings?.font_family === font.id && (
+                                    <Check className="w-5 h-5 text-blue-600" />
+                                )}
+                            </button>
+                        ))}
+                    </div>
+                 </div>
+
+               </CardContent>
+             </Card>
+          </TabsContent>
+
+          {/* Gestão de Casos */}
+          <TabsContent value="casos" className="space-y-4 sm:space-y-6">
+             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <Card className="glassmorphism border border-slate-200 lg:col-span-1 h-[600px] flex flex-col">
+                    <CardHeader className="border-b border-slate-200 bg-slate-50">
+                         <CardTitle className="text-lg flex items-center gap-2">
+                             <CaseIcon className="w-5 h-5 text-slate-600" />
+                             Selecione o Caso
+                         </CardTitle>
+                         <Input 
+                             placeholder="Buscar caso..." 
+                             className="mt-2 bg-white" 
+                         />
+                    </CardHeader>
+                    <div className="flex-1 overflow-y-auto p-2 space-y-2">
+                        {casos.map(caso => (
+                            <button
+                                key={caso.id}
+                                onClick={() => setSelectedCase(caso.id)}
+                                className={`w-full text-left p-3 rounded-lg border transition-all ${
+                                    selectedCase === caso.id
+                                    ? 'bg-slate-800 text-white border-slate-800'
+                                    : 'bg-white hover:bg-slate-50 border-slate-200'
+                                }`}
+                            >
+                                <div className="font-semibold truncate">{caso.nome_falecido}</div>
+                                <div className={`text-xs mt-1 truncate ${selectedCase === caso.id ? 'text-slate-300' : 'text-slate-500'}`}>
+                                    {caso.numero_caso || 'Sem número'}
+                                </div>
+                            </button>
+                        ))}
+                    </div>
+                </Card>
+
+                <Card className="glassmorphism border border-slate-200 lg:col-span-2">
+                    <CardHeader className="border-b border-slate-200 bg-slate-50">
+                        <CardTitle className="text-lg">
+                            {selectedCase 
+                                ? `Configurações de: ${casos.find(c => c.id === selectedCase)?.nome_falecido}`
+                                : 'Selecione um caso ao lado'
+                            }
+                        </CardTitle>
+                    </CardHeader>
+                    <CardContent className="p-6">
+                        {!selectedCase ? (
+                            <div className="flex flex-col items-center justify-center h-64 text-slate-400">
+                                <CaseIcon className="w-16 h-16 mb-4 opacity-20" />
+                                <p>Selecione um caso para personalizar as configurações</p>
+                            </div>
+                        ) : (
+                            <div className="space-y-6">
+                                <div className="p-4 bg-amber-50 border border-amber-200 rounded-lg flex gap-3">
+                                    <Shield className="w-5 h-5 text-amber-600 shrink-0 mt-0.5" />
+                                    <div>
+                                        <h4 className="font-semibold text-amber-900 text-sm">Personalização Local</h4>
+                                        <p className="text-amber-700 text-xs mt-1">
+                                            As alterações feitas aqui afetam apenas a visualização deste caso específico, sobrepondo as configurações globais.
+                                        </p>
+                                    </div>
+                                </div>
+
+                                <div className="space-y-4">
+                                    <h3 className="font-semibold text-slate-900 border-b pb-2">Visibilidade de Módulos (Neste Caso)</h3>
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                                        {Object.entries(MODULE_LABELS).map(([key, label]) => {
+                                            const isGlobalEnabled = settings?.sidebar_modules?.[key] ?? true;
+                                            const override = activeCaseSetting?.module_overrides?.[key];
+                                            const isEnabled = override !== undefined ? override : isGlobalEnabled;
+
+                                            return (
+                                                <div key={key} className="flex items-center justify-between p-3 border rounded-lg bg-white">
+                                                    <div className="flex items-center gap-2">
+                                                        {isEnabled 
+                                                            ? <Eye className="w-4 h-4 text-green-500" />
+                                                            : <EyeOff className="w-4 h-4 text-slate-400" />
+                                                        }
+                                                        <span className="text-sm font-medium text-slate-700">{label}</span>
+                                                    </div>
+                                                    <Switch 
+                                                        checked={isEnabled}
+                                                        onCheckedChange={() => handleCaseModuleToggle(key)}
+                                                    />
+                                                </div>
+                                            );
+                                        })}
+                                    </div>
+                                </div>
+
+                                <div className="space-y-4 pt-4 border-t">
+                                     <h3 className="font-semibold text-slate-900 flex items-center justify-between">
+                                         <span>Notificações Específicas</span>
+                                         <Badge variant="outline" className="font-normal text-xs">Em breve</Badge>
+                                     </h3>
+                                     <div className="p-4 bg-slate-50 rounded-lg text-sm text-slate-500 text-center italic">
+                                         Funcionalidade de notificações granulares por caso será liberada na próxima atualização.
+                                     </div>
+                                </div>
+                            </div>
+                        )}
+                    </CardContent>
+                </Card>
+             </div>
+          </TabsContent>
+
+          {/* Auditoria */}
+          <TabsContent value="auditoria" className="space-y-4 sm:space-y-6">
+             <Card className="glassmorphism border border-slate-200 card-shadow">
+               <CardHeader className="border-b border-slate-200 bg-gradient-to-r from-red-50 to-orange-50">
+                 <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                     <div>
+                        <CardTitle className="text-lg sm:text-xl flex items-center gap-2 sm:gap-3 text-[#0B1A2E]">
+                        <History className="w-5 h-5 sm:w-6 sm:h-6 text-red-600" />
+                        Histórico de Auditoria
+                        </CardTitle>
+                        <p className="text-xs sm:text-sm text-[#6B7280] mt-1">
+                        Rastreabilidade completa de todas as ações no sistema
+                        </p>
+                     </div>
+                     <div className="flex items-center gap-2 bg-white p-1 rounded-lg border shadow-sm">
+                        <Filter className="w-4 h-4 text-slate-400 ml-2" />
+                        <select 
+                            className="text-sm border-none focus:ring-0 bg-transparent text-slate-600 outline-none"
+                            value={auditFilter}
+                            onChange={(e) => setAuditFilter(e.target.value)}
+                        >
+                            <option value="all">Todas as ações</option>
+                            <option value="create">Criações</option>
+                            <option value="update">Edições</option>
+                            <option value="delete">Exclusões</option>
+                            <option value="view">Visualizações</option>
+                        </select>
+                     </div>
+                 </div>
+               </CardHeader>
+               <CardContent className="p-0">
+                  <div className="overflow-x-auto">
+                      <table className="w-full text-sm text-left">
+                          <thead className="bg-slate-50 text-slate-500 font-medium border-b">
+                              <tr>
+                                  <th className="px-6 py-3">Data/Hora</th>
+                                  <th className="px-6 py-3">Ação</th>
+                                  <th className="px-6 py-3">Entidade</th>
+                                  <th className="px-6 py-3">Usuário</th>
+                                  <th className="px-6 py-3">Detalhes</th>
+                              </tr>
+                          </thead>
+                          <tbody className="divide-y divide-slate-100">
+                              {filteredAuditLogs.length === 0 ? (
+                                  <tr>
+                                      <td colSpan={5} className="px-6 py-12 text-center text-slate-500">
+                                          Nenhum registro de auditoria encontrado.
+                                      </td>
+                                  </tr>
+                              ) : (
+                                  filteredAuditLogs.map((log) => (
+                                      <tr key={log.id} className="hover:bg-slate-50/50 transition-colors">
+                                          <td className="px-6 py-3 text-slate-600 whitespace-nowrap">
+                                              {format(new Date(log.created_date), "dd/MM/yyyy HH:mm", { locale: ptBR })}
+                                          </td>
+                                          <td className="px-6 py-3">
+                                              <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
+                                                  log.action_type === 'create' ? 'bg-green-100 text-green-800' :
+                                                  log.action_type === 'delete' ? 'bg-red-100 text-red-800' :
+                                                  log.action_type === 'update' ? 'bg-blue-100 text-blue-800' :
+                                                  'bg-slate-100 text-slate-800'
+                                              }`}>
+                                                  {log.action_type.toUpperCase()}
+                                              </span>
+                                          </td>
+                                          <td className="px-6 py-3 text-slate-900 font-medium">
+                                              {log.entity_type}
+                                          </td>
+                                          <td className="px-6 py-3 text-slate-600">
+                                              {log.user_email}
+                                          </td>
+                                          <td className="px-6 py-3 text-slate-500 max-w-xs truncate" title={log.action_description}>
+                                              {log.action_description}
+                                          </td>
+                                      </tr>
+                                  ))
+                              )}
+                          </tbody>
+                      </table>
+                  </div>
+               </CardContent>
+             </Card>
           </TabsContent>
         </Tabs>
       </div>

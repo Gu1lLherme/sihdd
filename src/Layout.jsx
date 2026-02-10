@@ -43,6 +43,16 @@ export default function Layout({ children }) {
     retry: false,
   });
 
+  const { data: settings } = useQuery({
+    queryKey: ['user-settings-layout', user?.email],
+    queryFn: async () => {
+      if (!user?.email) return null;
+      const all = await base44.entities.UserSettings.list();
+      return all.find(s => s.user_email === user.email) || null;
+    },
+    enabled: !!user?.email
+  });
+
   const { data: notifications = [] } = useQuery({
     queryKey: ['notifications'],
     queryFn: () => base44.entities.AuditLog.list("-created_date", 20),
@@ -73,11 +83,34 @@ export default function Layout({ children }) {
   return (
     <div className="min-h-screen bg-[#F8F9FA] font-sans">
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Merriweather:ital,wght@0,300;0,400;0,700;0,900;1,300;1,400;1,700;1,900&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Merriweather:ital,wght@0,300;0,400;0,700;0,900;1,300;1,400;1,700;1,900&family=Roboto:wght@300;400;500;700&family=Lato:wght@300;400;700&display=swap');
         
         :root {
-          --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+          --font-sans: ${
+            settings?.font_family === 'roboto' ? "'Roboto', sans-serif" : 
+            settings?.font_family === 'lato' ? "'Lato', sans-serif" : 
+            settings?.font_family === 'merriweather' ? "'Merriweather', serif" :
+            settings?.font_family === 'system' ? "system-ui, -apple-system, sans-serif" :
+            "'Inter', system-ui, -apple-system, sans-serif"
+          };
           --font-serif: 'Merriweather', Georgia, serif;
+          
+          /* Dynamic Theme Colors */
+          --theme-primary: ${
+            settings?.color_scheme === 'gold' ? '#D4AF37' :
+            settings?.color_scheme === 'green' ? '#10B981' :
+            settings?.color_scheme === 'purple' ? '#8B5CF6' :
+            settings?.color_scheme === 'slate' ? '#475569' :
+            '#1a237e' /* Default Blue */
+          };
+          
+          --theme-accent: ${
+             settings?.color_scheme === 'gold' ? '#1a237e' :
+             settings?.color_scheme === 'green' ? '#064E3B' :
+             settings?.color_scheme === 'purple' ? '#4C1D95' :
+             settings?.color_scheme === 'slate' ? '#0F172A' :
+             '#D4AF37' /* Default Gold Accent */
+          };
         }
 
         body {
@@ -93,9 +126,23 @@ export default function Layout({ children }) {
         .font-sans {
           font-family: var(--font-sans);
         }
+        
+        /* Apply dynamic colors to navbar if needed via utility classes or specific overrides */
+        .bg-theme-primary {
+           background-color: var(--theme-primary) !important;
+        }
+        .text-theme-primary {
+           color: var(--theme-primary) !important;
+        }
+        .bg-theme-accent {
+           background-color: var(--theme-accent) !important;
+        }
+        .text-theme-accent {
+           color: var(--theme-accent) !important;
+        }
       `}</style>
       {/* Top Navbar */}
-      <nav className="bg-[#1a237e] text-white h-16 px-4 md:px-6 flex items-center justify-between sticky top-0 z-50 shadow-md">
+      <nav className="bg-theme-primary text-white h-16 px-4 md:px-6 flex items-center justify-between sticky top-0 z-50 shadow-md transition-colors duration-500">
         {/* Logo & Nav Links */}
         <div className="flex items-center gap-8">
           <Link to={createPageUrl("Dashboard")} className="flex items-center gap-2 group">
