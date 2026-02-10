@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ArrowLeft, Save, ChevronRight, ChevronLeft, FileCheck } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
 import { createPageUrl } from "@/utils";
 import { masks } from "@/components/Masks";
 
@@ -71,13 +72,40 @@ export default function NovoDivorcio() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['divorcios'] });
+      toast.success("Divórcio salvo com sucesso!");
       navigate(createPageUrl("Divorcios"));
+    },
+    onError: (error) => {
+      console.error(error);
+      toast.error("Erro ao salvar divórcio.");
     }
   });
 
+  const validateStep = (step) => {
+    switch(step) {
+      case 1: // Dados Iniciais
+        if (!formData.conjuge_doador_nome || !formData.conjuge_doador_cpf) {
+          toast.error("Preencha os dados do Cônjuge Doador.");
+          return false;
+        }
+        if (!formData.conjuge_donatario_nome || !formData.conjuge_donatario_cpf) {
+          toast.error("Preencha os dados do Cônjuge Donatário.");
+          return false;
+        }
+        return true;
+      case 2: // Financeiro
+        // Basic validation if needed
+        return true;
+      default:
+        return true;
+    }
+  };
+
   const avancar = () => {
-    if (etapaAtual < ETAPAS.length) {
-      setEtapaAtual(etapaAtual + 1);
+    if (validateStep(etapaAtual)) {
+      if (etapaAtual < ETAPAS.length) {
+        setEtapaAtual(etapaAtual + 1);
+      }
     }
   };
 

@@ -121,12 +121,9 @@ export default function Bens({ formData, setFormData }) {
                     <div className="space-y-2">
                       <Label>Valor (R$) *</Label>
                       <Input
-                        type="number"
-                        value={bem.valor}
-                        onChange={(e) => updateBem(index, "valor", parseFloat(e.target.value))}
-                        placeholder="0.00"
-                        min="0"
-                        step="0.01"
+                        value={masks.currency(bem.valor * 100)}
+                        onChange={(e) => updateBem(index, "valor", masks.currencyToNumber(e.target.value))}
+                        placeholder="0,00"
                       />
                     </div>
 

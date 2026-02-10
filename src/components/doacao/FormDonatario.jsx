@@ -29,6 +29,7 @@ export default function FormDonatario({ data, onChange }) {
             value={data.donatario_cpf || ""} 
             onChange={(e) => onChange("donatario_cpf", masks.cpf(e.target.value))}
             placeholder="000.000.000-00"
+            maxLength={14}
           />
         </div>
       </CardContent>

@@ -29,6 +29,7 @@ export default function FormDoador({ data, onChange }) {
             value={data.doador_cpf || ""} 
             onChange={(e) => onChange("doador_cpf", masks.cpf(e.target.value))}
             placeholder="000.000.000-00"
+            maxLength={14}
           />
         </div>
       </CardContent>

@@ -31,6 +31,7 @@ export default function FormConjuges({ data, onChange }) {
               value={data.conjuge_doador_cpf || ""} 
               onChange={(e) => onChange("conjuge_doador_cpf", masks.cpf(e.target.value))}
               placeholder="000.000.000-00"
+              maxLength={14}
             />
           </div>
         </CardContent>
@@ -59,6 +60,7 @@ export default function FormConjuges({ data, onChange }) {
               value={data.conjuge_donatario_cpf || ""} 
               onChange={(e) => onChange("conjuge_donatario_cpf", masks.cpf(e.target.value))}
               placeholder="000.000.000-00"
+              maxLength={14}
             />
           </div>
         </CardContent>

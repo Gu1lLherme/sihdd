@@ -4,6 +4,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ArrowLeft, Save, ChevronRight, ChevronLeft } from "lucide-react";
+import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 
@@ -195,21 +196,66 @@ export default function NovoCaso() {
     },
     onSuccess: (caso) => {
       queryClient.invalidateQueries({ queryKey: ['casos'] });
+      toast.success("Caso salvo com sucesso!");
       navigate(createPageUrl(`DetalheCaso?id=${caso.id}`));
     },
+    onError: (error) => {
+      console.error("Erro ao salvar caso:", error);
+      toast.error("Erro ao salvar o caso. Verifique os dados e tente novamente.");
+    }
   });
 
-  const avancar = () => {
-    // Validação Inventariante (agora etapa 3)
-    if (etapaAtual === 3) {
-        if (!formData.inventariante?.nome || !formData.inventariante?.cpf_cnpj || !formData.inventariante?.data_nomeacao) {
-            alert("Por favor, preencha os dados obrigatórios do Inventariante.");
-            return;
+  const validateStep = (step) => {
+    switch (step) {
+      case 1: // Dados Iniciais
+        if (!formData.nome_falecido || !formData.cpf_falecido || !formData.data_obito) {
+          toast.error("Preencha os campos obrigatórios: Nome, CPF e Data de Óbito.");
+          return false;
         }
+        return true;
+      case 2: // Herdeiros
+        if (formData.herdeiros.length === 0) {
+          toast.error("Adicione pelo menos um herdeiro.");
+          return false;
+        }
+        // Validar percentual total
+        const totalPercentual = formData.herdeiros.reduce((sum, h) => sum + (parseFloat(h.percentual_partilha) || 0), 0);
+        if (Math.abs(totalPercentual - 100) > 0.1) {
+            toast.error(`O total da partilha deve ser 100%. Atual: ${totalPercentual.toFixed(2)}%`);
+            return false;
+        }
+        return true;
+      case 3: // Inventariante
+        if (!formData.inventariante?.nome || !formData.inventariante?.cpf_cnpj || !formData.inventariante?.data_nomeacao) {
+            toast.error("Preencha os dados obrigatórios do Inventariante.");
+            return false;
+        }
+        return true;
+      case 4: // Bens
+        if (formData.bens.length === 0) {
+            toast.warning("Nenhum bem adicionado. Tem certeza que deseja prosseguir?");
+            // Allow proceed with warning if needed, but for strict validation maybe return false
+            // For now let's allow but maybe validate individual bens fields if any exist
+        }
+        const invalidBem = formData.bens.find(b => !b.descricao || !b.valor);
+        if (invalidBem) {
+            toast.error("Todos os bens devem ter descrição e valor.");
+            return false;
+        }
+        return true;
+      case 5: // Dívidas
+        // Optional
+        return true;
+      default:
+        return true;
     }
+  };
 
-    if (etapaAtual < ETAPAS.length) {
-      setEtapaAtual(etapaAtual + 1);
+  const avancar = () => {
+    if (validateStep(etapaAtual)) {
+      if (etapaAtual < ETAPAS.length) {
+        setEtapaAtual(etapaAtual + 1);
+      }
     }
   };
 
