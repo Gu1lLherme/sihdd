@@ -105,7 +105,7 @@ export default function Administracao() {
 
           <Card className="glassmorphism border border-slate-200 card-shadow">
             <CardContent className="p-6">
-              <Button className="w-full h-full bg-gradient-to-r from-[#10B981] to-[#059669] hover:from-[#059669] hover:to-[#047857] text-white shadow-lg hover:shadow-xl transition-all duration-300">
+              <Button className="w-full h-full bg-[#1a237e] hover:bg-[#151b60] text-white shadow-lg hover:shadow-xl transition-all duration-300">
                 <UserPlus className="w-5 h-5 mr-2" />
                 Novo Usuário
               </Button>
