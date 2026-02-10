@@ -188,7 +188,7 @@ export default function Dashboard() {
           </Button>
           <Dialog>
             <DialogTrigger asChild>
-              <Button className="bg-[#1a237e] hover:bg-[#283593] text-white">
+              <Button className="bg-[#1a237e] hover:bg-[#151b60] text-white">
                 <Plus className="w-4 h-4 mr-2" />
                 Novo Fato Jurídico
               </Button>
