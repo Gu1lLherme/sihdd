@@ -43,7 +43,7 @@ export default function Dashboard() {
 
   const { data: casos = [] } = useQuery({
     queryKey: ['casos'],
-    queryFn: () => base44.entities.Caso.list("-created_date"),
+    queryFn: () => base44.entities.Caso.list("-created_date", 1000),
     initialData: [],
   });
 
@@ -105,16 +105,39 @@ export default function Dashboard() {
   const totalITCMD = casos.reduce((sum, c) => sum + (c.valor_itcmd || 0), 0);
   const processosAtivos = casos.filter(c => c.status !== 'finalizado').length;
   
+  // Stats calculations with trends
+  const now = new Date();
+  const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+  
+  const casosEsteMes = casos.filter(c => new Date(c.created_date) >= startOfMonth);
+  const patrimonioEsteMes = casosEsteMes.reduce((sum, c) => sum + (c.valor_patrimonio || 0), 0);
+  const itcmdEsteMes = casosEsteMes.reduce((sum, c) => sum + (c.valor_itcmd || 0), 0);
+  
+  const patrimonioAnterior = totalPatrimonio - patrimonioEsteMes;
+  const patrimonioTrend = patrimonioAnterior > 0 ? `+${((patrimonioEsteMes / patrimonioAnterior) * 100).toFixed(1)}%` : null;
+  
+  const itcmdAnterior = totalITCMD - itcmdEsteMes;
+  const itcmdTrend = itcmdAnterior > 0 ? `+${((itcmdEsteMes / itcmdAnterior) * 100).toFixed(1)}%` : null;
+  
+  const processosFaseFinal = casos.filter(c => ['em_analise_sefaz', 'certidao_emitida', 'aguardando_pagamento'].includes(c.status)).length;
+
   // Calculate critical deadlines (tasks due in next 3 days or overdue)
   const today = new Date();
   const threeDaysFromNow = new Date();
   threeDaysFromNow.setDate(today.getDate() + 3);
   
-  const prazosCriticos = tasks.filter(t => {
-    if (t.status === 'concluida' || t.status === 'cancelada' || !t.data_vencimento) return false;
+  const activeTasks = tasks.filter(t => t.status !== 'concluida' && t.status !== 'cancelada' && t.data_vencimento);
+  
+  const prazosCriticos = activeTasks.filter(t => {
     const dueDate = new Date(t.data_vencimento);
     return dueDate <= threeDaysFromNow;
   }).length;
+  
+  // Find next deadline
+  const nextTask = [...activeTasks].sort((a, b) => new Date(a.data_vencimento) - new Date(b.data_vencimento))[0];
+  const nextDeadlineText = nextTask 
+    ? `Próximo: ${new Date(nextTask.data_vencimento).toLocaleDateString()}` 
+    : "Sem prazos próximos";
 
   // Generate Chart Data from real Casos
   const last6Months = Array.from({ length: 6 }, (_, i) => {
@@ -229,28 +252,28 @@ export default function Dashboard() {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         <StatsCardNew 
           title="Patrimônio sob Gestão"
-          value={`R$ ${(totalPatrimonio || 45000000).toLocaleString('pt-BR', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}`}
-          trend="+5.2%"
+          value={`R$ ${(totalPatrimonio || 0).toLocaleString('pt-BR', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}`}
+          trend={patrimonioTrend}
           trendDirection="up"
-          subtext="vs mês anterior"
+          subtext={patrimonioTrend ? "vs mês anterior" : "Total acumulado"}
           icon={Building}
           iconBg="bg-[#FFF8E1]"
           iconColor="text-[#FFC107]"
         />
         <StatsCardNew 
           title="ITCMD Calculado"
-          value={`R$ ${(totalITCMD || 1200000).toLocaleString('pt-BR', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}`}
-          trend="+12%"
+          value={`R$ ${(totalITCMD || 0).toLocaleString('pt-BR', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}`}
+          trend={itcmdTrend}
           trendDirection="up"
-          subtext="crescimento YTD"
+          subtext={itcmdTrend ? "este mês" : "Total acumulado"}
           icon={Calculator}
           iconBg="bg-blue-50"
           iconColor="text-blue-600"
         />
         <StatsCardNew 
           title="Processos Ativos"
-          value={processosAtivos || 24}
-          subtext="8 em fase final"
+          value={processosAtivos}
+          subtext={`${processosFaseFinal} em fase final`}
           icon={Gavel}
           iconBg="bg-slate-100"
           iconColor="text-slate-600"
@@ -258,8 +281,8 @@ export default function Dashboard() {
         <StatsCardNew 
           title="Prazos Críticos"
           value={prazosCriticos}
-          urgent={true}
-          subtext="Próximo vencimento: Hoje, 18:00"
+          urgent={prazosCriticos > 0}
+          subtext={nextDeadlineText}
           icon={Calendar}
           iconBg="bg-red-50"
           iconColor="text-red-500"
