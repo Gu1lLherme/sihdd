@@ -22,21 +22,21 @@ export default function FatoJuridico() {
           <TabsList className="bg-white p-1 border border-slate-200 shadow-sm rounded-lg w-full md:w-auto grid grid-cols-3 md:inline-flex h-auto">
             <TabsTrigger 
                 value="inventarios" 
-                className="py-2.5 px-6 data-[state=active]:bg-blue-50 data-[state=active]:text-blue-700 data-[state=active]:border-blue-200 border border-transparent rounded-md transition-all duration-200 flex items-center justify-center gap-2"
+                className="py-2.5 px-6 data-[state=active]:bg-[#1a237e] data-[state=active]:text-[#D4AF37] data-[state=active]:border-[#D4AF37] border border-transparent rounded-md transition-all duration-200 flex items-center justify-center gap-2"
             >
                 <FolderOpen className="w-4 h-4" />
                 <span className="font-semibold">Inventários</span>
             </TabsTrigger>
             <TabsTrigger 
                 value="doacoes" 
-                className="py-2.5 px-6 data-[state=active]:bg-blue-50 data-[state=active]:text-blue-700 data-[state=active]:border-blue-200 border border-transparent rounded-md transition-all duration-200 flex items-center justify-center gap-2"
+                className="py-2.5 px-6 data-[state=active]:bg-[#1a237e] data-[state=active]:text-[#D4AF37] data-[state=active]:border-[#D4AF37] border border-transparent rounded-md transition-all duration-200 flex items-center justify-center gap-2"
             >
                 <Gift className="w-4 h-4" />
                 <span className="font-semibold">Doações</span>
             </TabsTrigger>
             <TabsTrigger 
                 value="divorcios" 
-                className="py-2.5 px-6 data-[state=active]:bg-purple-50 data-[state=active]:text-purple-700 data-[state=active]:border-purple-200 border border-transparent rounded-md transition-all duration-200 flex items-center justify-center gap-2"
+                className="py-2.5 px-6 data-[state=active]:bg-[#1a237e] data-[state=active]:text-[#D4AF37] data-[state=active]:border-[#D4AF37] border border-transparent rounded-md transition-all duration-200 flex items-center justify-center gap-2"
             >
                 <HeartCrack className="w-4 h-4" />
                 <span className="font-semibold">Divórcios</span>

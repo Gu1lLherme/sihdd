@@ -204,8 +204,8 @@ export default function Dashboard() {
                 <Link to={createPageUrl("NovoCaso")}>
                   <Card className="hover:border-blue-500 hover:bg-blue-50 hover:shadow-md transition-all cursor-pointer h-full border-2 border-slate-100">
                     <CardContent className="flex flex-col items-center justify-center p-6 gap-4 text-center">
-                      <div className="w-16 h-16 rounded-2xl bg-blue-100 flex items-center justify-center shadow-inner">
-                        <FileText className="w-8 h-8 text-blue-600" />
+                      <div className="w-16 h-16 rounded-2xl bg-[#1a237e] flex items-center justify-center shadow-inner">
+                        <FileText className="w-8 h-8 text-[#D4AF37]" />
                       </div>
                       <div>
                         <h3 className="font-bold text-slate-900 text-lg">Inventário</h3>
@@ -218,8 +218,8 @@ export default function Dashboard() {
                 <Link to={createPageUrl("NovoDivorcio")}>
                   <Card className="hover:border-purple-500 hover:bg-purple-50 hover:shadow-md transition-all cursor-pointer h-full border-2 border-slate-100">
                     <CardContent className="flex flex-col items-center justify-center p-6 gap-4 text-center">
-                      <div className="w-16 h-16 rounded-2xl bg-purple-100 flex items-center justify-center shadow-inner">
-                        <HeartCrack className="w-8 h-8 text-purple-600" />
+                      <div className="w-16 h-16 rounded-2xl bg-[#1a237e] flex items-center justify-center shadow-inner">
+                        <HeartCrack className="w-8 h-8 text-[#D4AF37]" />
                       </div>
                       <div>
                         <h3 className="font-bold text-slate-900 text-lg">Divórcio</h3>
@@ -232,8 +232,8 @@ export default function Dashboard() {
                 <Link to={createPageUrl("NovaDoacao")}>
                   <Card className="hover:border-emerald-500 hover:bg-emerald-50 hover:shadow-md transition-all cursor-pointer h-full border-2 border-slate-100">
                     <CardContent className="flex flex-col items-center justify-center p-6 gap-4 text-center">
-                      <div className="w-16 h-16 rounded-2xl bg-emerald-100 flex items-center justify-center shadow-inner">
-                        <Gift className="w-8 h-8 text-emerald-600" />
+                      <div className="w-16 h-16 rounded-2xl bg-[#1a237e] flex items-center justify-center shadow-inner">
+                        <Gift className="w-8 h-8 text-[#D4AF37]" />
                       </div>
                       <div>
                         <h3 className="font-bold text-slate-900 text-lg">Doação</h3>
