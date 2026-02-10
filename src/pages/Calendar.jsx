@@ -112,7 +112,7 @@ export default function Calendar() {
               setEditingEvent(null);
               setShowForm(true);
             }}
-            className="w-full sm:w-auto bg-[#4169E1] hover:bg-[#3151c7] text-white shadow-lg font-bold"
+            className="w-full sm:w-auto bg-[#1a237e] hover:bg-[#151b60] text-white shadow-lg font-bold"
           >
             <Plus className="w-4 h-4 mr-2" />
             Novo Evento
