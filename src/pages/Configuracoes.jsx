@@ -177,12 +177,21 @@ export default function Configuracoes() {
                     <Label htmlFor="name" className="text-xs sm:text-sm font-semibold text-[#111827]">
                       Nome Completo
                     </Label>
-                    <Input
-                      id="name"
-                      value={user?.full_name || ''}
-                      disabled
-                      className="border-2 border-slate-300 text-xs sm:text-sm"
-                    />
+                    <div className="flex gap-2">
+                      <Input
+                        id="name"
+                        value={user?.full_name || ''}
+                        onChange={(e) => base44.auth.updateMe({ full_name: e.target.value })}
+                        className="border-2 border-slate-300 text-xs sm:text-sm"
+                      />
+                      <Button 
+                         variant="outline"
+                         onClick={() => queryClient.invalidateQueries({ queryKey: ['user'] })}
+                         className="shrink-0"
+                      >
+                        <Save className="w-4 h-4" />
+                      </Button>
+                    </div>
                   </div>
 
                   <div className="space-y-2">

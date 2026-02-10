@@ -11,7 +11,10 @@ import {
   ChevronDown, 
   Menu,
   LogOut,
-  Settings
+  Settings,
+  Info,
+  CheckCircle2,
+  FileText
 } from "lucide-react";
 import {
   DropdownMenu,
@@ -21,9 +24,16 @@ import {
   DropdownMenuSeparator,
   DropdownMenuLabel,
 } from "@/components/ui/dropdown-menu";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Badge } from "@/components/ui/badge";
 
 export default function Layout({ children }) {
   const location = useLocation();
@@ -31,6 +41,12 @@ export default function Layout({ children }) {
     queryKey: ['user'],
     queryFn: () => base44.auth.me(),
     retry: false,
+  });
+
+  const { data: notifications = [] } = useQuery({
+    queryKey: ['notifications'],
+    queryFn: () => base44.entities.AuditLog.list("-created_date", 20),
+    initialData: [],
   });
 
   const navItems = [
@@ -43,6 +59,15 @@ export default function Layout({ children }) {
 
   const handleLogout = async () => {
     await base44.auth.logout();
+  };
+
+  const getNotificationIcon = (type) => {
+    switch (type) {
+        case 'create': return <CheckCircle2 className="w-4 h-4 text-green-500" />;
+        case 'update': return <Info className="w-4 h-4 text-blue-500" />;
+        case 'delete': return <Info className="w-4 h-4 text-red-500" />;
+        default: return <FileText className="w-4 h-4 text-slate-500" />;
+    }
   };
 
   return (
@@ -89,10 +114,58 @@ export default function Layout({ children }) {
             />
           </div>
 
-          <Button variant="ghost" size="icon" className="relative text-slate-300 hover:text-white hover:bg-slate-800 rounded-full">
-            <Bell className="w-5 h-5" />
-            <span className="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full border-2 border-[#0f172a]" />
-          </Button>
+          <Popover>
+            <PopoverTrigger asChild>
+              <Button variant="ghost" size="icon" className="relative text-slate-300 hover:text-white hover:bg-slate-800 rounded-full">
+                <Bell className="w-5 h-5" />
+                {notifications.length > 0 && (
+                  <span className="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full border-2 border-[#0f172a]" />
+                )}
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-80 p-0" align="end">
+              <div className="p-4 border-b border-slate-100 bg-slate-50/50">
+                <h4 className="font-semibold text-slate-900 leading-none">Notificações</h4>
+                <p className="text-xs text-slate-500 mt-1">Últimas atualizações do sistema</p>
+              </div>
+              <ScrollArea className="h-[300px]">
+                {notifications.length === 0 ? (
+                    <div className="p-8 text-center text-slate-500 text-sm">
+                        Nenhuma notificação recente
+                    </div>
+                ) : (
+                    <div className="divide-y divide-slate-100">
+                        {notifications.map((notif) => (
+                            <div key={notif.id} className="p-4 hover:bg-slate-50 transition-colors">
+                                <div className="flex gap-3">
+                                    <div className="mt-1 shrink-0">
+                                        {getNotificationIcon(notif.action_type)}
+                                    </div>
+                                    <div className="space-y-1">
+                                        <p className="text-sm font-medium text-slate-900 line-clamp-2">
+                                            {notif.action_description}
+                                        </p>
+                                        <div className="flex items-center gap-2 text-xs text-slate-500">
+                                            <span>{new Date(notif.created_date).toLocaleDateString()}</span>
+                                            <span>•</span>
+                                            <Badge variant="secondary" className="text-[10px] px-1 h-5">
+                                                {notif.entity_type}
+                                            </Badge>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                )}
+              </ScrollArea>
+              <div className="p-2 border-t border-slate-100 bg-slate-50/50 text-center">
+                <Link to={createPageUrl("Configuracoes")} className="text-xs text-blue-600 hover:text-blue-700 font-medium">
+                    Ver todas em Configurações
+                </Link>
+              </div>
+            </PopoverContent>
+          </Popover>
 
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -113,10 +186,12 @@ export default function Layout({ children }) {
                 </div>
               </DropdownMenuLabel>
               <DropdownMenuSeparator />
-              <DropdownMenuItem>
-                <Settings className="w-4 h-4 mr-2" />
-                Configurações
-              </DropdownMenuItem>
+              <Link to={createPageUrl("Configuracoes")}>
+                <DropdownMenuItem className="cursor-pointer">
+                    <Settings className="w-4 h-4 mr-2" />
+                    Configurações
+                </DropdownMenuItem>
+              </Link>
               <DropdownMenuItem className="text-red-600 cursor-pointer" onClick={handleLogout}>
                 <LogOut className="w-4 h-4 mr-2" />
                 Sair
