@@ -180,8 +180,17 @@ export default function Configuracoes() {
                     <div className="flex gap-2">
                       <Input
                         id="name"
-                        value={user?.full_name || ''}
-                        onChange={(e) => base44.auth.updateMe({ full_name: e.target.value })}
+                        defaultValue={user?.full_name || ''}
+                        onChange={(e) => {
+                           // Use a ref or state if needed, but for now let's just use onBlur or the button
+                           // Actually, let's use a simple approach: update on blur
+                        }}
+                        onBlur={(e) => {
+                            if (e.target.value !== user?.full_name) {
+                                base44.auth.updateMe({ full_name: e.target.value });
+                                queryClient.invalidateQueries({ queryKey: ['user'] });
+                            }
+                        }}
                         className="border-2 border-slate-300 text-xs sm:text-sm"
                       />
                       <Button 
@@ -189,7 +198,7 @@ export default function Configuracoes() {
                          onClick={() => queryClient.invalidateQueries({ queryKey: ['user'] })}
                          className="shrink-0"
                       >
-                        <Save className="w-4 h-4" />
+                         <Save className="w-4 h-4" />
                       </Button>
                     </div>
                   </div>
