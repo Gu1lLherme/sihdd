@@ -91,8 +91,8 @@ export default function Divorcios() {
         <div className="mb-8">
           <div className="flex items-center justify-between mb-2">
             <div className="flex items-center gap-3">
-              <div className="w-12 h-12 bg-gradient-to-br from-purple-600 to-purple-400 rounded-xl flex items-center justify-center shadow-lg">
-                <HeartCrack className="w-6 h-6 text-white" />
+              <div className="w-12 h-12 bg-[#1a237e] rounded-xl flex items-center justify-center shadow-lg">
+                <HeartCrack className="w-6 h-6 text-[#D4AF37]" />
               </div>
               <div>
                 <h1 className="text-3xl font-bold text-[#333333]">Divórcios</h1>
@@ -259,8 +259,8 @@ export default function Divorcios() {
                     <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                       <div className="flex-1">
                         <div className="flex items-start gap-4 mb-4">
-                          <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-purple-600 to-purple-400 flex items-center justify-center shadow-md flex-shrink-0">
-                            <HeartCrack className="w-6 h-6 text-white" />
+                          <div className="w-12 h-12 rounded-lg bg-[#1a237e] flex items-center justify-center shadow-md flex-shrink-0">
+                            <HeartCrack className="w-6 h-6 text-[#D4AF37]" />
                           </div>
                           <div className="flex-1">
                             <h3 className="text-xl font-bold text-slate-900 mb-2">
