@@ -94,23 +94,33 @@ export default function NovaDoacao() {
   });
 
   const validateStep = (step) => {
+    const missing = [];
+
     switch(step) {
       case 1: // Dados Iniciais
-        if (!formData.doador_nome || !formData.doador_cpf) {
-          toast.error("Preencha os dados do Doador.");
-          return false;
-        }
-        if (!formData.donatario_nome || !formData.donatario_cpf) {
-          toast.error("Preencha os dados do Donatário.");
+        if (!formData.doador_nome) missing.push("Nome do Doador");
+        if (!formData.doador_cpf) missing.push("CPF do Doador");
+        if (!formData.donatario_nome) missing.push("Nome do Donatário");
+        if (!formData.donatario_cpf) missing.push("CPF do Donatário");
+
+        if (missing.length > 0) {
+          toast.error(`Preencha os dados obrigatórios: ${missing.join(", ")}`);
           return false;
         }
         return true;
+
       case 2: // Bens
         if (!formData.bens || formData.bens.length === 0) {
-          toast.error("Adicione pelo menos um bem à doação.");
+          toast.error("É necessário adicionar pelo menos um bem objeto da doação.");
           return false;
         }
+        const invalidBem = formData.bens.find(b => !b.descricao || !b.valor || b.valor <= 0);
+        if (invalidBem) {
+            toast.error("Verifique os bens cadastrados: Descrição e Valor são obrigatórios.");
+            return false;
+        }
         return true;
+
       default:
         return true;
     }
