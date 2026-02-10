@@ -5,6 +5,7 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Plus, Trash2, Users } from "lucide-react";
+import { masks } from "@/components/Masks";
 
 export default function Herdeiros({ formData, setFormData }) {
   const addHerdeiro = () => {

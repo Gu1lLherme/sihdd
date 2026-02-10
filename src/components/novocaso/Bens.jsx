@@ -6,6 +6,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Plus, Trash2, Home, Car, Wallet, TrendingUp, Building2, Package } from "lucide-react";
+import { masks } from "@/components/Masks";
 
 const bemIcons = {
   imovel: Home,

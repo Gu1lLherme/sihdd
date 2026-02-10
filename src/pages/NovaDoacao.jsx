@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ArrowLeft, Save, ChevronRight, ChevronLeft } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
 import { createPageUrl } from "@/utils";
 
 import DadosIniciais from "@/components/doacao/DadosIniciais";
@@ -83,13 +84,43 @@ export default function NovaDoacao() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['doacoes'] });
+      toast.success("Doação salva com sucesso!");
       navigate(createPageUrl("Doacoes"));
+    },
+    onError: (error) => {
+      console.error(error);
+      toast.error("Erro ao salvar doação.");
     }
   });
 
+  const validateStep = (step) => {
+    switch(step) {
+      case 1: // Dados Iniciais
+        if (!formData.doador_nome || !formData.doador_cpf) {
+          toast.error("Preencha os dados do Doador.");
+          return false;
+        }
+        if (!formData.donatario_nome || !formData.donatario_cpf) {
+          toast.error("Preencha os dados do Donatário.");
+          return false;
+        }
+        return true;
+      case 2: // Bens
+        if (!formData.bens || formData.bens.length === 0) {
+          toast.error("Adicione pelo menos um bem à doação.");
+          return false;
+        }
+        return true;
+      default:
+        return true;
+    }
+  };
+
   const avancar = () => {
-    if (etapaAtual < ETAPAS.length) {
-      setEtapaAtual(etapaAtual + 1);
+    if (validateStep(etapaAtual)) {
+      if (etapaAtual < ETAPAS.length) {
+        setEtapaAtual(etapaAtual + 1);
+      }
     }
   };
 
