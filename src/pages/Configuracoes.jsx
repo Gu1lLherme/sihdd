@@ -5,6 +5,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Badge } from "@/components/ui/badge";
+import { toast } from "sonner";
 import { Switch } from "@/components/ui/switch";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Settings, User, Bell, Eye, EyeOff, Save, Shield, Mail, Phone, MapPin, Briefcase, Palette, Type, History, Filter, Briefcase as CaseIcon, Check, X } from "lucide-react";
@@ -81,6 +83,68 @@ export default function Configuracoes() {
       queryClient.invalidateQueries({ queryKey: ['user-settings'] });
     },
   });
+
+  // --- Audit Logic ---
+  const [auditFilter, setAuditFilter] = useState("all");
+  const { data: auditLogs = [] } = useQuery({
+    queryKey: ['audit-logs', user?.email],
+    queryFn: () => base44.entities.AuditLog.list("-created_date", 100),
+    enabled: !!user,
+  });
+
+  const filteredAuditLogs = auditLogs.filter(log => {
+    if (auditFilter === "all") return true;
+    return log.action_type === auditFilter;
+  });
+
+  // --- Case Settings Logic ---
+  const [selectedCase, setSelectedCase] = useState(null);
+  const { data: casos = [] } = useQuery({
+    queryKey: ['casos-config'],
+    queryFn: () => base44.entities.Caso.list("-created_date", 50),
+  });
+
+  const { data: caseSettingsList = [] } = useQuery({
+    queryKey: ['user-case-settings', user?.email],
+    queryFn: async () => {
+        const all = await base44.entities.UserCaseSettings.list();
+        return all.filter(s => s.user_email === user?.email);
+    },
+    enabled: !!user?.email
+  });
+
+  const activeCaseSetting = selectedCase ? caseSettingsList.find(s => s.case_id === selectedCase) : null;
+
+  const saveCaseSettingsMutation = useMutation({
+    mutationFn: async (data) => {
+       if (activeCaseSetting) {
+           return await base44.entities.UserCaseSettings.update(activeCaseSetting.id, data);
+       } else {
+           return await base44.entities.UserCaseSettings.create({
+               user_email: user.email,
+               case_id: selectedCase,
+               ...data
+           });
+       }
+    },
+    onSuccess: () => {
+        queryClient.invalidateQueries({ queryKey: ['user-case-settings'] });
+        toast.success("Configurações do caso salvas!");
+    }
+  });
+
+  const handleCaseModuleToggle = (moduleKey) => {
+      if (!selectedCase) return;
+      const currentOverrides = activeCaseSetting?.module_overrides || {};
+      const currentVal = currentOverrides[moduleKey] !== undefined ? currentOverrides[moduleKey] : (settings?.sidebar_modules?.[moduleKey] ?? true);
+      
+      saveCaseSettingsMutation.mutate({
+          module_overrides: {
+              ...currentOverrides,
+              [moduleKey]: !currentVal
+          }
+      });
+  };
 
   const handleModuleToggle = (moduleKey) => {
     setModuleSettings(prev => ({
