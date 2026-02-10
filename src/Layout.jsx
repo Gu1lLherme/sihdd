@@ -72,6 +72,28 @@ export default function Layout({ children }) {
 
   return (
     <div className="min-h-screen bg-[#F8F9FA] font-sans">
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Merriweather:ital,wght@0,300;0,400;0,700;0,900;1,300;1,400;1,700;1,900&display=swap');
+        
+        :root {
+          --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+          --font-serif: 'Merriweather', Georgia, serif;
+        }
+
+        body {
+          font-family: var(--font-sans);
+          -webkit-font-smoothing: antialiased;
+          -moz-osx-font-smoothing: grayscale;
+        }
+        
+        h1, h2, h3, h4, h5, h6, .font-serif {
+          font-family: var(--font-serif);
+        }
+        
+        .font-sans {
+          font-family: var(--font-sans);
+        }
+      `}</style>
       {/* Top Navbar */}
       <nav className="bg-[#1a237e] text-white h-16 px-4 md:px-6 flex items-center justify-between sticky top-0 z-50 shadow-md">
         {/* Logo & Nav Links */}
