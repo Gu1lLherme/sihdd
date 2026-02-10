@@ -68,8 +68,6 @@ export default function Layout({ children }) {
                     ${location.pathname.includes(item.path) ? 'text-[#D4AF37]' : 'text-slate-300'}
                   `}
                 >
-                  {item.label}
-                  {item.hasDropdown && <ChevronDown className="w-3 h-3" />}
                 </Link>
                 {location.pathname.includes(item.path) && (
                   <div className="absolute bottom-0 left-0 w-full h-0.5 bg-[#D4AF37]" />
