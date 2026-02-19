@@ -44,9 +44,40 @@ export default function LegislacaoAdmin() {
   });
 
   const handleProcessarPDFs = async () => {
-    // This button would ideally trigger the backend function if we had a UI for file selection or re-processing
-    // For now it's a placeholder or could trigger re-run if we store file URLs
-    alert("O processamento é feito automaticamente via IA ao enviar os arquivos.");
+    setIsProcessing(true);
+    try {
+        const fileUrls = [
+            "https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/690dfe3076922dca90cee92f/24ed1d390_lei9708-25.pdf",
+            "https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/690dfe3076922dca90cee92f/6b025aa15_lei9774-25.pdf",
+            "https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/690dfe3076922dca90cee92f/b7410f370_lei9500-24.pdf",
+            "https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/690dfe3076922dca90cee92f/1b3049cd6_lei9297-23.pdf",
+            "https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/690dfe3076922dca90cee92f/e5fddd77a_lei9113-22.pdf",
+            "https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/690dfe3076922dca90cee92f/0a12c50ee_lei8729-20.pdf",
+            "https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/690dfe3076922dca90cee92f/933319bb0_lei7943-14.pdf",
+            "https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/690dfe3076922dca90cee92f/e700afe9e_lei-8044-15.pdf",
+            "https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/690dfe3076922dca90cee92f/c85cc5c9e_lei-8070-15.pdf",
+            "https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/690dfe3076922dca90cee92f/130e2f747_lei8293-17.pdf",
+            "https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/690dfe3076922dca90cee92f/c74014262_lei8348-17.pdf",
+            "https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/690dfe3076922dca90cee92f/e4561c57c_lei8498-18.pdf",
+            "https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/690dfe3076922dca90cee92f/f54322b36_lei8520-19.pdf",
+            "https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/690dfe3076922dca90cee92f/43dbb6caa_lei8594-19.pdf",
+            "https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/690dfe3076922dca90cee92f/4dc1ba7da_lei7724-13.pdf",
+            "https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/690dfe3076922dca90cee92f/220349277_lei4433-011.pdf",
+            "https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/690dfe3076922dca90cee92f/54477a6da_lei7695-13.pdf",
+            "https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/690dfe3076922dca90cee92f/4b8ea9000_lei4433-01.pdf",
+            "https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/690dfe3076922dca90cee92f/9c24a5fe5_lei2704-89.pdf"
+        ];
+        await base44.functions.invoke('processarLegislacao', { file_urls: fileUrls });
+        queryClient.invalidateQueries(['legislacoes']);
+        queryClient.invalidateQueries(['regras_itcmd']);
+        queryClient.invalidateQueries(['historico_ufp']);
+        alert("Processamento concluído com sucesso!");
+    } catch (error) {
+        console.error(error);
+        alert("Erro ao processar: " + error.message);
+    } finally {
+        setIsProcessing(false);
+    }
   };
 
   return (
