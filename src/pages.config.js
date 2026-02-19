@@ -57,18 +57,14 @@ import Dashboard from './pages/Dashboard';
 import DetalheCaso from './pages/DetalheCaso';
 import DetalheDivorcio from './pages/DetalheDivorcio';
 import DetalheDoacao from './pages/DetalheDoacao';
-import DetalhesCaso from './pages/DetalhesCaso';
 import Divorcios from './pages/Divorcios';
 import Doacoes from './pages/Doacoes';
-import Documentacao from './pages/Documentacao';
 import FatoJuridico from './pages/FatoJuridico';
 import GestaoPrazos from './pages/GestaoPrazos';
-import Home from './pages/Home';
 import Integracoes from './pages/Integracoes';
 import InteligenciaFerramentas from './pages/InteligenciaFerramentas';
 import Inventarios from './pages/Inventarios';
 import ModelagemPartilha from './pages/ModelagemPartilha';
-import Modulos from './pages/Modulos';
 import NovaDoacao from './pages/NovaDoacao';
 import NovoCaso from './pages/NovoCaso';
 import NovoDivorcio from './pages/NovoDivorcio';
@@ -91,18 +87,14 @@ export const PAGES = {
     "DetalheCaso": DetalheCaso,
     "DetalheDivorcio": DetalheDivorcio,
     "DetalheDoacao": DetalheDoacao,
-    "DetalhesCaso": DetalhesCaso,
     "Divorcios": Divorcios,
     "Doacoes": Doacoes,
-    "Documentacao": Documentacao,
     "FatoJuridico": FatoJuridico,
     "GestaoPrazos": GestaoPrazos,
-    "Home": Home,
     "Integracoes": Integracoes,
     "InteligenciaFerramentas": InteligenciaFerramentas,
     "Inventarios": Inventarios,
     "ModelagemPartilha": ModelagemPartilha,
-    "Modulos": Modulos,
     "NovaDoacao": NovaDoacao,
     "NovoCaso": NovoCaso,
     "NovoDivorcio": NovoDivorcio,
