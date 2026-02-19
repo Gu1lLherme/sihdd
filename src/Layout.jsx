@@ -65,6 +65,7 @@ export default function Layout({ children }) {
     { label: "Gestão & Prazos", path: "GestaoPrazos" },
     { label: "Inteligência & Ferramentas", path: "InteligenciaFerramentas" },
     { label: "Relatórios", path: "Relatorios" },
+    { label: "Legislação", path: "LegislacaoAdmin" },
   ];
 
   const handleLogout = async () => {
