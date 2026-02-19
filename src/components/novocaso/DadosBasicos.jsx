@@ -223,6 +223,31 @@ export default function DadosBasicos({ formData, setFormData }) {
           </div>
         </div>
 
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="space-y-2">
+            <Label htmlFor="conjuge_percentual">Porcentagem da Partilha (Meação/Quinhão)</Label>
+            <div className="relative">
+              <Input
+                id="conjuge_percentual"
+                type="number"
+                value={formData.conjuge_percentual || ''}
+                onChange={(e) => handleChange('conjuge_percentual', e.target.value)}
+                placeholder="0"
+                min="0"
+                max="100"
+                step="0.01"
+                className="pr-8"
+              />
+              <span className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500">%</span>
+            </div>
+            <p className="text-xs text-slate-500">
+              Valor estimado: R$ {formData.valor_patrimonio && formData.conjuge_percentual 
+                ? ((parseFloat(formData.valor_patrimonio) * parseFloat(formData.conjuge_percentual)) / 100).toLocaleString('pt-BR', { minimumFractionDigits: 2 }) 
+                : '0,00'}
+            </p>
+          </div>
+        </div>
+
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div className="space-y-2 md:col-span-2">
             <Label htmlFor="conjuge_endereco">Endereço</Label>

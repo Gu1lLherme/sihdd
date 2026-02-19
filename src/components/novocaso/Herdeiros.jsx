@@ -104,6 +104,15 @@ export default function Herdeiros({ formData, setFormData }) {
                   </div>
 
                   <div className="space-y-2">
+                    <Label>RG</Label>
+                    <Input
+                      value={herdeiro.rg || ''}
+                      onChange={(e) => updateHerdeiro(index, "rg", e.target.value)}
+                      placeholder="RG"
+                    />
+                  </div>
+
+                  <div className="space-y-2">
                     <Label>Parentesco *</Label>
                     <Select
                       value={herdeiro.parentesco}
@@ -176,7 +185,7 @@ export default function Herdeiros({ formData, setFormData }) {
                     <Label>Telefone</Label>
                     <Input
                       value={herdeiro.telefone}
-                      onChange={(e) => updateHerdeiro(index, "telefone", e.target.value)}
+                      onChange={(e) => updateHerdeiro(index, "telefone", masks.phone(e.target.value))}
                       placeholder="(00) 00000-0000"
                     />
                   </div>

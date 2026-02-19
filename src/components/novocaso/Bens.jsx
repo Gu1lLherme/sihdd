@@ -137,6 +137,27 @@ export default function Bens({ formData, setFormData }) {
                       />
                     </div>
 
+                    {bem.tipo === 'imovel' && (
+                      <>
+                        <div className="space-y-2 md:col-span-2">
+                          <Label>Endereço do Imóvel</Label>
+                          <Input
+                            value={bem.endereco || ''}
+                            onChange={(e) => updateBem(index, "endereco", e.target.value)}
+                            placeholder="Rua, Número, Bairro, Cidade - UF"
+                          />
+                        </div>
+                        <div className="space-y-2 md:col-span-2">
+                          <Label>Cartório de Registro</Label>
+                          <Input
+                            value={bem.cartorio || ''}
+                            onChange={(e) => updateBem(index, "cartorio", e.target.value)}
+                            placeholder="Nome do Cartório e Comarca"
+                          />
+                        </div>
+                      </>
+                    )}
+
                     <div className="space-y-2 md:col-span-2">
                       <Label>Descrição *</Label>
                       <Textarea

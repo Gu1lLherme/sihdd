@@ -9,6 +9,7 @@ import { useNavigate } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 
 import DadosBasicos from "../components/novocaso/DadosBasicos";
+import AdministradorProvisorio from "../components/novocaso/AdministradorProvisorio";
 import Herdeiros from "../components/novocaso/Herdeiros";
 import Bens from "../components/novocaso/Bens";
 import Dividas from "../components/novocaso/Dividas";
@@ -26,11 +27,12 @@ const WrapperInventariante = ({ formData, setFormData }) => {
 
 const ETAPAS = [
   { id: 1, titulo: "Dados Iniciais", componente: DadosBasicos },
-  { id: 2, titulo: "Herdeiros", componente: Herdeiros },
-  { id: 3, titulo: "Inventariante", componente: WrapperInventariante },
-  { id: 4, titulo: "Bens", componente: Bens },
-  { id: 5, titulo: "Dívidas", componente: Dividas },
-  { id: 6, titulo: "Resumo", componente: Resumo },
+  { id: 2, titulo: "Administrador Provisório", componente: AdministradorProvisorio },
+  { id: 3, titulo: "Herdeiros", componente: Herdeiros },
+  { id: 4, titulo: "Inventariante", componente: WrapperInventariante },
+  { id: 5, titulo: "Bens", componente: Bens },
+  { id: 6, titulo: "Dívidas", componente: Dividas },
+  { id: 7, titulo: "Resumo", componente: Resumo },
 ];
 
 export default function NovoCaso() {
@@ -60,6 +62,16 @@ export default function NovoCaso() {
         data_nomeacao: "",
         vinculo: "herdeiro",
         status: "ativo"
+    },
+    administrador_provisorio: {
+        nome: "",
+        cpf: "",
+        endereco: "",
+        cep: "",
+        email: "",
+        telefone: "",
+        conjuge_nome: "",
+        conjuge_cpf: ""
     }
   });
 
@@ -220,7 +232,15 @@ export default function NovoCaso() {
         }
         return true;
 
-      case 2: // Herdeiros
+      case 2: // Administrador Provisório
+        // Validações opcionais ou obrigatórias? Assumindo opcionais por enquanto ou apenas nome
+        // if (!formData.administrador_provisorio?.nome) {
+        //    toast.error("Informe o nome do Administrador Provisório");
+        //    return false;
+        // }
+        return true;
+
+      case 3: // Herdeiros
         if (formData.herdeiros.length === 0) {
           toast.error("Adicione pelo menos um herdeiro para prosseguir.");
           return false;
@@ -241,7 +261,7 @@ export default function NovoCaso() {
         }
         return true;
 
-      case 3: // Inventariante
+      case 4: // Inventariante
         if (!formData.inventariante?.nome) missing.push("Nome do Inventariante");
         if (!formData.inventariante?.cpf_cnpj) missing.push("CPF/CNPJ do Inventariante");
         if (!formData.inventariante?.data_nomeacao) missing.push("Data de Nomeação");
@@ -252,7 +272,7 @@ export default function NovoCaso() {
         }
         return true;
 
-      case 4: // Bens
+      case 5: // Bens
         if (formData.bens.length === 0) {
             toast.warning("Atenção: Nenhum bem foi adicionado ao espólio.");
         }
@@ -263,7 +283,7 @@ export default function NovoCaso() {
         }
         return true;
 
-      case 5: // Dívidas
+      case 6: // Dívidas
         return true;
 
       default:
@@ -308,8 +328,8 @@ export default function NovoCaso() {
         const proximaEtapa = etapaAtual + 1;
         setEtapaAtual(proximaEtapa);
         
-        // Se for para o Resumo (Etapa 6), calcula o imposto
-        if (proximaEtapa === 6) {
+        // Se for para o Resumo (Etapa 7), calcula o imposto
+        if (proximaEtapa === 7) {
             await calcularImposto();
         }
       }
