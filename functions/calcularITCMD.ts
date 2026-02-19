@@ -21,13 +21,14 @@ Deno.serve(async (req) => {
 
     // 1. Buscar valor da UFP para o ano do fato gerador
     const ufps = await base44.entities.HistoricoUFP.filter({ ano: anoFato });
-    // Pegar o UFP correto (considerando mês se houver mais de um, simplificado aqui para o primeiro encotrado do ano)
     const ufpRecord = ufps[0]; 
     const valorUFP = ufpRecord ? ufpRecord.valor : null;
 
     if (!valorUFP) {
+        // Fallback temporário se não tiver UFP cadastrado (apenas para não quebrar)
+        // Idealmente deve retornar erro ou pedir cadastro
         return Response.json({ 
-            error: `Valor da UFP não encontrado para o ano ${anoFato}`,
+            error: `Valor da UFP não encontrado para o ano ${anoFato}. Cadastre em Legislação.`,
             calculo_parcial: true 
         }, { status: 404 });
     }
@@ -35,8 +36,7 @@ Deno.serve(async (req) => {
     // 2. Converter valor do bem para UFP
     const valorEmUFP = valor_bem / valorUFP;
 
-    // 3. Buscar regra aplicável
-    // Filtra todas as regras e processa no código para encontrar a vigente na data
+    // 3. Buscar regras
     const todasRegras = await base44.entities.RegraITCMD.filter({ 
         tipo_transmissao: tipo_transmissao // 'causa_mortis' ou 'doacao'
     });
@@ -44,32 +44,21 @@ Deno.serve(async (req) => {
     const regraAplicavel = todasRegras.find(r => {
         const inicio = new Date(r.data_inicio_vigencia);
         const fim = r.data_fim_vigencia ? new Date(r.data_fim_vigencia) : new Date('2100-01-01');
-        
         const dataValida = dataFato >= inicio && dataFato <= fim;
         
-        // Verifica tipo do bem se especificado na regra
         let bemValido = true;
         if (r.tipo_bem && r.tipo_bem.length > 0 && tipo_bem) {
             bemValido = r.tipo_bem.includes(tipo_bem);
         }
-
         return dataValida && bemValido;
     });
 
     if (!regraAplicavel) {
-        return Response.json({ error: 'Nenhuma regra legislativa encontrada para esta data/tipo.' }, { status: 404 });
+        return Response.json({ error: 'Nenhuma regra encontrada para esta data/tipo. Verifique o cadastro de Legislação.' }, { status: 404 });
     }
 
-    // 4. Calcular alíquota com base nas faixas
+    // 4. Calcular alíquota
     let aliquota = 0;
-    
-    // Assumindo faixas progressivas simples ou teto. 
-    // A lógica aqui depende se é progressiva (calcula por faixa) ou simples (encontra a faixa do total).
-    // A Lei 9.297/2023 Sergipe parece usar alíquota sobre o TOTAL ("cujo valor seja igual ou inferior a...").
-    // Art 14: "I - acima de X até Y, 3%". Isso geralmente indica alíquota sobre o montante que se enquadra, 
-    // mas em alguns estados é progressiva por faixas. 
-    // Vamos assumir a interpretação mais comum onde se enquadra o valor TOTAL na faixa.
-    
     const faixaEncontrada = regraAplicavel.faixas.find(f => {
         const min = f.min_ufp;
         const max = f.max_ufp || Infinity;
@@ -85,10 +74,10 @@ Deno.serve(async (req) => {
     return Response.json({
         ufp_utilizado: valorUFP,
         valor_em_ufp: valorEmUFP,
-        regra_utilizada: regraAplicavel.legislacao_id, // Pode melhorar buscando o titulo da lei
+        regra_utilizada: regraAplicavel.legislacao_referencia,
         aliquota_aplicada: aliquota,
         valor_imposto: valorImposto,
-        detalhes: `Cálculo base: ${aliquota}% sobre R$ ${valor_bem.toFixed(2)}`
+        detalhes: `Cálculo: ${aliquota}% sobre R$ ${valor_bem.toFixed(2)} (Ref: ${regraAplicavel.legislacao_referencia})`
     });
 
   } catch (error) {
