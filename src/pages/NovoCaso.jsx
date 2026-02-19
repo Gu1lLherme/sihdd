@@ -271,10 +271,47 @@ export default function NovoCaso() {
     }
   };
 
-  const avancar = () => {
+  const [isCalculating, setIsCalculating] = useState(false);
+
+  const calcularImposto = async () => {
+    setIsCalculating(true);
+    try {
+        const response = await base44.functions.invoke('calcularITCMD', {
+            data_fato_gerador: formData.data_obito,
+            tipo_transmissao: 'causa_mortis',
+            valor_bem: Number(formData.valor_patrimonio),
+            tipo_bem: 'outros' // Pode ser refinado se houver detalhe
+        });
+        
+        const { data } = response;
+        if (data && data.valor_imposto !== undefined) {
+            setFormData(prev => ({
+                ...prev,
+                valor_itcmd: data.valor_imposto,
+                aliquota: data.aliquota_aplicada,
+                detalhes_calculo: data.detalhes,
+                ufp_utilizado: data.ufp_utilizado
+            }));
+            toast.success("ITCMD calculado com sucesso conforme legislação vigente.");
+        }
+    } catch (error) {
+        console.error("Erro ao calcular ITCMD:", error);
+        toast.error("Erro ao calcular ITCMD. Verifique a data do óbito.");
+    } finally {
+        setIsCalculating(false);
+    }
+  };
+
+  const avancar = async () => {
     if (validateStep(etapaAtual)) {
       if (etapaAtual < ETAPAS.length) {
-        setEtapaAtual(etapaAtual + 1);
+        const proximaEtapa = etapaAtual + 1;
+        setEtapaAtual(proximaEtapa);
+        
+        // Se for para o Resumo (Etapa 6), calcula o imposto
+        if (proximaEtapa === 6) {
+            await calcularImposto();
+        }
       }
     }
   };
@@ -349,7 +386,7 @@ export default function NovoCaso() {
             </CardTitle>
           </CardHeader>
           <CardContent className="p-6">
-            <EtapaComponente formData={formData} setFormData={setFormData} />
+            <EtapaComponente formData={formData} setFormData={setFormData} isCalculating={isCalculating} />
           </CardContent>
         </Card>
 

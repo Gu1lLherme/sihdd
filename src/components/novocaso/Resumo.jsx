@@ -5,8 +5,8 @@ import { PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip } from 'recha
 
 const COLORS = ['#1e40af', '#3b82f6', '#60a5fa', '#93c5fd', '#dbeafe'];
 
-export default function Resumo({ formData }) {
-  const itcmdTotal = (formData.valor_patrimonio * formData.aliquota) / 100;
+export default function Resumo({ formData, isCalculating }) {
+  const itcmdTotal = formData.valor_itcmd || 0;
   
   const chartData = formData.herdeiros.map((h, index) => {
     const valorParte = (formData.valor_patrimonio * h.percentual_partilha) / 100;
@@ -82,9 +82,14 @@ export default function Resumo({ formData }) {
             <div className="flex justify-between pt-2 border-t border-slate-200">
               <span className="text-slate-900 font-semibold">ITCMD Total:</span>
               <span className="font-bold text-lg text-blue-900">
-                R$ {itcmdTotal.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                {isCalculating ? "Calculando..." : `R$ ${itcmdTotal.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`}
               </span>
             </div>
+            {formData.detalhes_calculo && (
+                <div className="mt-2 text-xs text-slate-500 bg-slate-50 p-2 rounded">
+                    {formData.detalhes_calculo}
+                </div>
+            )}
           </CardContent>
         </Card>
       </div>
