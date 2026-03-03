@@ -50,55 +50,57 @@ export default function CanvasArvore({ casoAtual, herdeiros, selectedPersonId, o
               )}
             </div>
 
-            {/* Connectors from couple to children */}
-            {herdeiros.length > 0 && (
-              <div className="flex flex-col items-center -mt-4">
-                {/* Vertical line from couple */}
-                <div className="w-px h-10 bg-slate-400" />
-                {/* Horizontal connector bar */}
-                <div 
-                  className="h-px bg-slate-400" 
-                  style={{ width: `${Math.max((herdeiros.length - 1) * 140 + 20, 20)}px` }} 
-                />
-              </div>
-            )}
-
-            {/* Heirs */}
-            <div className="flex justify-center gap-6 items-start -mt-4">
-              {herdeiros.map((herdeiro) => {
-                const isSelected = selectedPersonId === herdeiro.id;
-                const hasDocuments = herdeiro.id.length % 2 === 0; 
+            {/* Heirs Section */}
+            {herdeiros.length > 0 ? (
+              <div className="flex flex-col items-center">
+                {/* Vertical line from couple center */}
+                <div className="w-px h-12 bg-slate-400" />
                 
-                return (
-                  <div
-                    key={herdeiro.id}
-                    onClick={() => onSelectPerson(herdeiro)}
-                    className="flex flex-col items-center cursor-pointer group"
-                    style={{ width: '140px' }}
-                  >
-                    {/* Vertical connector to child */}
-                    <div className="h-8 w-px bg-slate-400" />
-                    <div className={`
-                      w-20 h-20 rounded-full flex items-center justify-center border-4 shadow-xl mb-2 transition-all
-                      ${isSelected ? 'ring-4 ring-blue-400 ring-opacity-50 scale-110' : 'hover:scale-105'}
-                      ${hasDocuments ? 'bg-green-500 border-white' : 'bg-amber-500 border-white'}
-                    `}>
-                      <User className="w-10 h-10 text-white" />
-                    </div>
-                    <div className={`
-                      bg-white rounded-xl p-3 shadow-lg text-center border-2 transition-colors w-full
-                      ${isSelected ? 'border-[#4169E1] bg-blue-50' : 'border-slate-200'}
-                    `}>
-                      <p className="font-bold text-sm text-[#333333] truncate w-full">{herdeiro.nome}</p>
-                      <Badge variant={isSelected ? "default" : "outline"} className={`mt-1 text-xs ${isSelected ? "bg-[#4169E1]" : ""}`}>
-                        {herdeiro.parentesco}
-                      </Badge>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-            {herdeiros.length === 0 && (
+                {/* Horizontal bar connecting all heirs */}
+                <div className="relative">
+                  <div 
+                    className="h-px bg-slate-400" 
+                    style={{ width: `${(herdeiros.length - 1) * 146}px` }} 
+                  />
+                </div>
+
+                {/* Heirs row */}
+                <div className="flex justify-center items-start">
+                  {herdeiros.map((herdeiro, index) => {
+                    const isSelected = selectedPersonId === herdeiro.id;
+                    const hasDocuments = herdeiro.id.length % 2 === 0; 
+                    
+                    return (
+                      <div
+                        key={herdeiro.id}
+                        onClick={() => onSelectPerson(herdeiro)}
+                        className="flex flex-col items-center cursor-pointer group"
+                        style={{ width: '146px' }}
+                      >
+                        {/* Vertical connector to each child */}
+                        <div className="h-8 w-px bg-slate-400" />
+                        <div className={`
+                          w-20 h-20 rounded-full flex items-center justify-center border-4 shadow-xl mb-2 transition-all
+                          ${isSelected ? 'ring-4 ring-blue-400 ring-opacity-50 scale-110' : 'hover:scale-105'}
+                          ${hasDocuments ? 'bg-green-500 border-white' : 'bg-amber-500 border-white'}
+                        `}>
+                          <User className="w-10 h-10 text-white" />
+                        </div>
+                        <div className={`
+                          bg-white rounded-xl p-3 shadow-lg text-center border-2 transition-colors w-[130px]
+                          ${isSelected ? 'border-[#4169E1] bg-blue-50' : 'border-slate-200'}
+                        `}>
+                          <p className="font-bold text-sm text-[#333333] truncate w-full">{herdeiro.nome}</p>
+                          <Badge variant={isSelected ? "default" : "outline"} className={`mt-1 text-xs ${isSelected ? "bg-[#4169E1]" : ""}`}>
+                            {herdeiro.parentesco}
+                          </Badge>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            ) : (
               <div className="text-center p-4 border-2 border-dashed border-slate-300 rounded-lg bg-white/50 mt-4">
                 <p className="text-slate-500 text-sm">Nenhum herdeiro cadastrado.</p>
                 <Button variant="link" onClick={onCreatePerson} className="text-[#4169E1]">
