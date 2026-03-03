@@ -50,16 +50,21 @@ export default function CanvasArvore({ casoAtual, herdeiros, selectedPersonId, o
               )}
             </div>
 
-            {/* Connectors */}
-            <div className="flex flex-col items-center">
-              <div className="w-px h-12 bg-slate-400" />
-              {herdeiros.length > 0 && (
-                <div className="h-px bg-slate-400" style={{ width: `${Math.max((herdeiros.length - 1) * 120, 0)}px` }} />
-              )}
-            </div>
+            {/* Connectors from couple to children */}
+            {herdeiros.length > 0 && (
+              <div className="flex flex-col items-center -mt-4">
+                {/* Vertical line from couple */}
+                <div className="w-px h-10 bg-slate-400" />
+                {/* Horizontal connector bar */}
+                <div 
+                  className="h-px bg-slate-400" 
+                  style={{ width: `${Math.max((herdeiros.length - 1) * 140 + 20, 20)}px` }} 
+                />
+              </div>
+            )}
 
             {/* Heirs */}
-            <div className="flex flex-wrap justify-center gap-8 items-start">
+            <div className="flex justify-center gap-6 items-start -mt-4">
               {herdeiros.map((herdeiro) => {
                 const isSelected = selectedPersonId === herdeiro.id;
                 const hasDocuments = herdeiro.id.length % 2 === 0; 
@@ -68,9 +73,11 @@ export default function CanvasArvore({ casoAtual, herdeiros, selectedPersonId, o
                   <div
                     key={herdeiro.id}
                     onClick={() => onSelectPerson(herdeiro)}
-                    className="flex flex-col items-center cursor-pointer group relative"
+                    className="flex flex-col items-center cursor-pointer group"
+                    style={{ width: '140px' }}
                   >
-                     <div className="h-8 w-px bg-slate-400 absolute -top-8" />
+                    {/* Vertical connector to child */}
+                    <div className="h-8 w-px bg-slate-400" />
                     <div className={`
                       w-20 h-20 rounded-full flex items-center justify-center border-4 shadow-xl mb-2 transition-all
                       ${isSelected ? 'ring-4 ring-blue-400 ring-opacity-50 scale-110' : 'hover:scale-105'}
@@ -79,7 +86,7 @@ export default function CanvasArvore({ casoAtual, herdeiros, selectedPersonId, o
                       <User className="w-10 h-10 text-white" />
                     </div>
                     <div className={`
-                      bg-white rounded-xl p-3 shadow-lg text-center border-2 transition-colors max-w-[140px]
+                      bg-white rounded-xl p-3 shadow-lg text-center border-2 transition-colors w-full
                       ${isSelected ? 'border-[#4169E1] bg-blue-50' : 'border-slate-200'}
                     `}>
                       <p className="font-bold text-sm text-[#333333] truncate w-full">{herdeiro.nome}</p>
@@ -90,15 +97,15 @@ export default function CanvasArvore({ casoAtual, herdeiros, selectedPersonId, o
                   </div>
                 );
               })}
-              {herdeiros.length === 0 && (
-                <div className="text-center p-4 border-2 border-dashed border-slate-300 rounded-lg bg-white/50">
-                  <p className="text-slate-500 text-sm">Nenhum herdeiro cadastrado.</p>
-                  <Button variant="link" onClick={onCreatePerson} className="text-[#4169E1]">
-                    + Adicionar Herdeiro
-                  </Button>
-                </div>
-              )}
             </div>
+            {herdeiros.length === 0 && (
+              <div className="text-center p-4 border-2 border-dashed border-slate-300 rounded-lg bg-white/50 mt-4">
+                <p className="text-slate-500 text-sm">Nenhum herdeiro cadastrado.</p>
+                <Button variant="link" onClick={onCreatePerson} className="text-[#4169E1]">
+                  + Adicionar Herdeiro
+                </Button>
+              </div>
+            )}
           </div>
         ) : (
           <div className="flex items-center justify-center h-full">
