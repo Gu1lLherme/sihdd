@@ -64,6 +64,7 @@ import GestaoPrazos from './pages/GestaoPrazos';
 import Integracoes from './pages/Integracoes';
 import InteligenciaFerramentas from './pages/InteligenciaFerramentas';
 import Inventarios from './pages/Inventarios';
+import LegislacaoAdmin from './pages/LegislacaoAdmin';
 import ModelagemPartilha from './pages/ModelagemPartilha';
 import NovaDoacao from './pages/NovaDoacao';
 import NovoCaso from './pages/NovoCaso';
@@ -72,7 +73,6 @@ import PortalCliente from './pages/PortalCliente';
 import Relatorios from './pages/Relatorios';
 import RelatoriosAuditoria from './pages/RelatoriosAuditoria';
 import Tasks from './pages/Tasks';
-import LegislacaoAdmin from './pages/LegislacaoAdmin';
 import __Layout from './Layout.jsx';
 
 
@@ -94,6 +94,7 @@ export const PAGES = {
     "Integracoes": Integracoes,
     "InteligenciaFerramentas": InteligenciaFerramentas,
     "Inventarios": Inventarios,
+    "LegislacaoAdmin": LegislacaoAdmin,
     "ModelagemPartilha": ModelagemPartilha,
     "NovaDoacao": NovaDoacao,
     "NovoCaso": NovoCaso,
@@ -102,7 +103,6 @@ export const PAGES = {
     "Relatorios": Relatorios,
     "RelatoriosAuditoria": RelatoriosAuditoria,
     "Tasks": Tasks,
-    "LegislacaoAdmin": LegislacaoAdmin,
 }
 
 export const pagesConfig = {

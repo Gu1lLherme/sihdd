@@ -43,13 +43,20 @@ export default function NovoCaso() {
   const isEditing = !!casoId;
 
   const [etapaAtual, setEtapaAtual] = useState(1);
+  const [resultadoPartilha, setResultadoPartilha] = useState(null);
   const [formData, setFormData] = useState({
     nome_falecido: "",
     cpf_falecido: "",
     data_obito: "",
     conjuge_nome: "",
     conjuge_cpf: "",
+    data_casamento: "",
+    conjuge_e_ascendente_herdeiros: true,
+    regime_bens: "comunhao_parcial",
     valor_patrimonio: 0,
+    valor_meacao_conjuge: 0,
+    valor_heranca_conjuge: 0,
+    valor_heranca_filhos: 0,
     aliquota: 4,
     status: "coleta_dados",
     herdeiros: [],
@@ -116,8 +123,14 @@ export default function NovoCaso() {
         data_obito: data.data_obito,
         conjuge_nome: data.conjuge_nome,
         conjuge_cpf: data.conjuge_cpf,
+        data_casamento: data.data_casamento,
+        conjuge_e_ascendente_herdeiros: data.conjuge_e_ascendente_herdeiros,
+        regime_bens: data.regime_bens,
         valor_patrimonio: data.valor_patrimonio,
-        valor_itcmd: data.valor_patrimonio * (data.aliquota / 100),
+        valor_meacao_conjuge: data.valor_meacao_conjuge,
+        valor_heranca_conjuge: data.valor_heranca_conjuge,
+        valor_heranca_filhos: data.valor_heranca_filhos,
+        valor_itcmd: data.valor_itcmd,
         aliquota: data.aliquota,
         status: "geracao_dae",
         prazo_dias: 30,
@@ -294,30 +307,122 @@ export default function NovoCaso() {
 
   const [isCalculating, setIsCalculating] = useState(false);
 
-  const calcularImposto = async () => {
+  const calcularPartilha = async () => {
     setIsCalculating(true);
     try {
-        const response = await base44.functions.invoke('calcularITCMD', {
-            data_fato_gerador: formData.data_obito,
-            tipo_transmissao: 'causa_mortis',
-            valor_bem: Number(formData.valor_patrimonio),
-            tipo_bem: 'outros' // Pode ser refinado se houver detalhe
-        });
+        // Primeiro, precisamos salvar temporariamente para calcular
+        // Calculando patrimônio total dos bens
+        const valorPatrimonio = formData.bens.reduce((sum, b) => sum + (parseFloat(b.valor) || 0), 0);
         
-        const { data } = response;
-        if (data && data.valor_imposto !== undefined) {
+        setFormData(prev => ({
+            ...prev,
+            valor_patrimonio: valorPatrimonio
+        }));
+
+        // Se já temos um caso salvo, calcular partilha
+        if (casoId) {
+            const response = await base44.functions.invoke('calcularPartilhaHeranca', {
+                caso_id: casoId
+            });
+            
+            const { data } = response;
+            if (data && data.sucesso) {
+                setResultadoPartilha(data);
+                setFormData(prev => ({
+                    ...prev,
+                    valor_patrimonio: data.resumo.valor_patrimonio,
+                    valor_meacao_conjuge: data.resumo.meacao_conjuge,
+                    valor_heranca_conjuge: data.resumo.heranca_conjuge,
+                    valor_heranca_filhos: data.resumo.heranca_filhos,
+                    valor_itcmd: data.resumo.itcmd_total,
+                    aliquota: data.resumo.aliquota || 4
+                }));
+                toast.success("Partilha calculada com sucesso!");
+            }
+        } else {
+            // Para novo caso, fazer cálculo local simplificado
+            const qtdFilhos = formData.herdeiros.filter(h => 
+                ['filho', 'filha', 'neto', 'neta'].includes(h.parentesco)
+            ).length;
+            const temFilhos = qtdFilhos > 0;
+            const regimeBens = formData.regime_bens;
+            const dataCasamento = formData.data_casamento ? new Date(formData.data_casamento) : null;
+
+            let totalMeacao = 0;
+            let totalHerancaConjuge = 0;
+            let totalHerancaFilhos = 0;
+
+            formData.bens.forEach(bem => {
+                const valorBem = bem.valor || 0;
+                const dataAquisicao = bem.data_aquisicao ? new Date(bem.data_aquisicao) : null;
+                const origemBem = bem.origem_bem || 'onerosa';
+
+                switch (regimeBens) {
+                    case 'comunhao_parcial':
+                    case 'uniao_estavel':
+                        if (dataAquisicao && dataCasamento && dataAquisicao > dataCasamento && origemBem === 'onerosa') {
+                            totalMeacao += valorBem * 0.50;
+                            totalHerancaFilhos += valorBem * 0.50;
+                        } else {
+                            if (temFilhos) {
+                                totalHerancaConjuge += valorBem / (qtdFilhos + 1);
+                                totalHerancaFilhos += valorBem - (valorBem / (qtdFilhos + 1));
+                            } else {
+                                totalHerancaConjuge += valorBem;
+                            }
+                        }
+                        break;
+                    case 'comunhao_universal':
+                        totalMeacao += valorBem * 0.50;
+                        totalHerancaFilhos += valorBem * 0.50;
+                        break;
+                    case 'separacao_total':
+                    case 'participacao_final':
+                        if (temFilhos) {
+                            totalHerancaConjuge += valorBem / (qtdFilhos + 1);
+                            totalHerancaFilhos += valorBem - (valorBem / (qtdFilhos + 1));
+                        } else {
+                            totalHerancaConjuge += valorBem;
+                        }
+                        break;
+                    case 'separacao_obrigatoria':
+                        totalHerancaFilhos += valorBem;
+                        break;
+                    default:
+                        totalHerancaFilhos += valorBem;
+                }
+            });
+
+            // Regra dos 25%
+            const totalHeranca = totalHerancaConjuge + totalHerancaFilhos;
+            if (formData.conjuge_e_ascendente_herdeiros && temFilhos && 
+                (regimeBens === 'comunhao_parcial' || regimeBens === 'separacao_total')) {
+                const minimo25 = totalHeranca * 0.25;
+                if (totalHerancaConjuge < minimo25) {
+                    totalHerancaConjuge = minimo25;
+                    totalHerancaFilhos = totalHeranca - minimo25;
+                }
+            }
+
+            // Calcular ITCMD (4% padrão)
+            const aliquota = 4;
+            const itcmdTotal = (totalHerancaConjuge + totalHerancaFilhos) * (aliquota / 100);
+
             setFormData(prev => ({
                 ...prev,
-                valor_itcmd: data.valor_imposto,
-                aliquota: data.aliquota_aplicada,
-                detalhes_calculo: data.detalhes,
-                ufp_utilizado: data.ufp_utilizado
+                valor_patrimonio: valorPatrimonio,
+                valor_meacao_conjuge: totalMeacao,
+                valor_heranca_conjuge: totalHerancaConjuge,
+                valor_heranca_filhos: totalHerancaFilhos,
+                valor_itcmd: itcmdTotal,
+                aliquota: aliquota
             }));
-            toast.success("ITCMD calculado com sucesso conforme legislação vigente.");
+
+            toast.success("Partilha calculada localmente. Salve o caso para cálculo definitivo.");
         }
     } catch (error) {
-        console.error("Erro ao calcular ITCMD:", error);
-        toast.error("Erro ao calcular ITCMD. Verifique a data do óbito.");
+        console.error("Erro ao calcular partilha:", error);
+        toast.error("Erro ao calcular partilha. Verifique os dados informados.");
     } finally {
         setIsCalculating(false);
     }
@@ -329,9 +434,9 @@ export default function NovoCaso() {
         const proximaEtapa = etapaAtual + 1;
         setEtapaAtual(proximaEtapa);
         
-        // Se for para o Resumo (Etapa 7), calcula o imposto
+        // Se for para o Resumo (Etapa 7), calcula a partilha
         if (proximaEtapa === 7) {
-            await calcularImposto();
+            await calcularPartilha();
         }
       }
     }
@@ -407,7 +512,12 @@ export default function NovoCaso() {
             </CardTitle>
           </CardHeader>
           <CardContent className="p-6">
-            <EtapaComponente formData={formData} setFormData={setFormData} isCalculating={isCalculating} />
+            <EtapaComponente 
+              formData={formData} 
+              setFormData={setFormData} 
+              isCalculating={isCalculating} 
+              resultadoPartilha={resultadoPartilha}
+            />
           </CardContent>
         </Card>
 
