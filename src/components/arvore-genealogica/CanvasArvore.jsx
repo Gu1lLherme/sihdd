@@ -2,7 +2,7 @@ import React from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { User, Users } from "lucide-react";
+import { User, Users, Heart } from "lucide-react";
 
 export default function CanvasArvore({ casoAtual, herdeiros, selectedPersonId, onSelectPerson, onCreatePerson, zoomLevel }) {
   return (
@@ -13,16 +13,41 @@ export default function CanvasArvore({ casoAtual, herdeiros, selectedPersonId, o
             className="flex flex-col items-center justify-start space-y-8 pt-8 min-w-max min-h-max transition-transform origin-top"
             style={{ transform: `scale(${zoomLevel})` }}
           >
-            {/* Deceased */}
-            <div className="flex flex-col items-center">
-              <div className="w-24 h-24 rounded-full bg-slate-800 flex items-center justify-center border-4 border-white shadow-xl mb-2 relative group cursor-help">
-                <User className="w-12 h-12 text-white" />
-                <div className="absolute -bottom-2 bg-black text-white text-[10px] px-2 py-0.5 rounded-full">Falecido</div>
+            {/* Couple Container */}
+            <div className="flex items-start justify-center gap-4">
+              {/* Deceased */}
+              <div className="flex flex-col items-center">
+                <div className="w-24 h-24 rounded-full bg-slate-800 flex items-center justify-center border-4 border-white shadow-xl mb-2 relative group cursor-help">
+                  <User className="w-12 h-12 text-white" />
+                  <div className="absolute -bottom-2 bg-black text-white text-[10px] px-2 py-0.5 rounded-full">Falecido</div>
+                </div>
+                <div className="bg-white rounded-xl p-3 shadow-lg text-center border-2 border-slate-200 min-w-[160px]">
+                  <p className="font-bold text-[#333333] text-lg">{casoAtual.nome_falecido}</p>
+                  <p className="text-xs text-slate-500">{new Date(casoAtual.data_obito).toLocaleDateString('pt-BR')}</p>
+                </div>
               </div>
-              <div className="bg-white rounded-xl p-3 shadow-lg text-center border-2 border-slate-200">
-                <p className="font-bold text-[#333333] text-lg">{casoAtual.nome_falecido}</p>
-                <p className="text-xs text-slate-500">{new Date(casoAtual.data_obito).toLocaleDateString('pt-BR')}</p>
-              </div>
+
+              {/* Spouse Connector & Spouse */}
+              {casoAtual.conjuge_nome && (
+                <>
+                  <div className="w-16 h-1 bg-slate-300 mt-12 relative flex justify-center shrink-0">
+                    <div className="absolute -top-3 bg-slate-50 p-1 rounded-full">
+                      <Heart className="w-4 h-4 text-red-500 fill-red-500" />
+                    </div>
+                  </div>
+
+                  <div className="flex flex-col items-center">
+                    <div className="w-24 h-24 rounded-full bg-pink-600 flex items-center justify-center border-4 border-white shadow-xl mb-2 relative group cursor-help">
+                      <User className="w-12 h-12 text-white" />
+                      <div className="absolute -bottom-2 bg-pink-800 text-white text-[10px] px-2 py-0.5 rounded-full">Cônjuge</div>
+                    </div>
+                    <div className="bg-white rounded-xl p-3 shadow-lg text-center border-2 border-slate-200 min-w-[160px]">
+                      <p className="font-bold text-[#333333] text-lg">{casoAtual.conjuge_nome}</p>
+                      <p className="text-xs text-slate-500">Sobrevivente</p>
+                    </div>
+                  </div>
+                </>
+              )}
             </div>
 
             {/* Connectors */}
