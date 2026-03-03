@@ -29,6 +29,8 @@ export default function Bens({ formData, setFormData }) {
           valor: 0,
           identificacao: "",
           observacoes: "",
+          data_aquisicao: "",
+          origem_bem: "onerosa",
         },
       ],
     });
@@ -126,6 +128,34 @@ export default function Bens({ formData, setFormData }) {
                         onChange={(e) => updateBem(index, "valor", masks.currencyToNumber(e.target.value))}
                         placeholder="0,00"
                       />
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label>Data de Aquisição *</Label>
+                      <Input
+                        type="date"
+                        value={bem.data_aquisicao || ''}
+                        onChange={(e) => updateBem(index, "data_aquisicao", e.target.value)}
+                      />
+                      <p className="text-xs text-slate-500">Define se o bem é comum ou particular</p>
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label>Origem do Bem *</Label>
+                      <Select
+                        value={bem.origem_bem || 'onerosa'}
+                        onValueChange={(value) => updateBem(index, "origem_bem", value)}
+                      >
+                        <SelectTrigger>
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="onerosa">Compra (Onerosa)</SelectItem>
+                          <SelectItem value="doacao">Doação</SelectItem>
+                          <SelectItem value="heranca">Herança</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <p className="text-xs text-slate-500">Bens de doação/herança são particulares</p>
                     </div>
 
                     <div className="space-y-2">

@@ -21,6 +21,7 @@ export default function Herdeiros({ formData, setFormData }) {
           percentual_partilha: 0,
           email: "",
           telefone: "",
+          e_filho_conjuge: true,
         },
       ],
     });
@@ -156,19 +157,40 @@ export default function Herdeiros({ formData, setFormData }) {
                     </Select>
                   </div>
 
+                  {['filho', 'filha', 'neto', 'neta'].includes(herdeiro.parentesco) && (
+                    <div className="space-y-2">
+                      <Label>É filho(a) do cônjuge sobrevivente?</Label>
+                      <Select
+                        value={herdeiro.e_filho_conjuge === false ? "nao" : "sim"}
+                        onValueChange={(value) => updateHerdeiro(index, "e_filho_conjuge", value === "sim")}
+                      >
+                        <SelectTrigger>
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="sim">Sim</SelectItem>
+                          <SelectItem value="nao">Não (enteado)</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <p className="text-xs text-slate-500">Afeta a regra dos 25% do cônjuge</p>
+                    </div>
+                  )}
+
                   <div className="space-y-2">
-                    <Label>Percentual da Partilha (%) *</Label>
+                    <Label>Percentual da Partilha (%)</Label>
                     <Input
                       type="number"
-                      value={herdeiro.percentual_partilha}
+                      value={herdeiro.percentual_partilha || ''}
                       onChange={(e) =>
-                        updateHerdeiro(index, "percentual_partilha", parseFloat(e.target.value))
+                        updateHerdeiro(index, "percentual_partilha", parseFloat(e.target.value) || 0)
                       }
-                      placeholder="0"
+                      placeholder="Calculado automaticamente"
                       min="0"
                       max="100"
                       step="0.01"
+                      disabled
                     />
+                    <p className="text-xs text-slate-500">Será calculado automaticamente</p>
                   </div>
 
                   <div className="space-y-2">

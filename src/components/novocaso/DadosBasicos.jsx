@@ -174,24 +174,61 @@ export default function DadosBasicos({ formData, setFormData }) {
           </div>
         </div>
 
-        {/* Regime de Bens */}
-        <div className="space-y-2">
-          <Label htmlFor="regime_bens">Regime de Bens do Casamento</Label>
-          <Select
-            value={formData.regime_bens}
-            onValueChange={(val) => handleChange('regime_bens', val)}>
+        {/* Regime de Bens e Data do Casamento */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="space-y-2">
+            <Label htmlFor="regime_bens">Regime de Bens do Casamento</Label>
+            <Select
+              value={formData.regime_bens}
+              onValueChange={(val) => handleChange('regime_bens', val)}>
 
-            <SelectTrigger>
-              <SelectValue placeholder="Selecione o regime de bens" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="uniao_estavel">União Estável</SelectItem>
-              <SelectItem value="comunhao_universal">Comunhão Universal de Bens</SelectItem>
-              <SelectItem value="comunhao_parcial">Comunhão Parcial de Bens</SelectItem>
-              <SelectItem value="separacao_total">Separação Total de Bens</SelectItem>
-              <SelectItem value="participacao_final">Participação Final nos Aquestos</SelectItem>
-            </SelectContent>
-          </Select>
+              <SelectTrigger>
+                <SelectValue placeholder="Selecione o regime de bens" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="uniao_estavel">União Estável</SelectItem>
+                <SelectItem value="comunhao_universal">Comunhão Universal de Bens</SelectItem>
+                <SelectItem value="comunhao_parcial">Comunhão Parcial de Bens</SelectItem>
+                <SelectItem value="separacao_total">Separação Total de Bens</SelectItem>
+                <SelectItem value="separacao_obrigatoria">Separação Obrigatória</SelectItem>
+                <SelectItem value="participacao_final">Participação Final nos Aquestos</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="data_casamento">Data do Casamento</Label>
+            <div className="relative">
+              <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+              <Input
+                id="data_casamento"
+                type="date"
+                className="pl-10"
+                value={formData.data_casamento || ''}
+                onChange={(e) => handleChange('data_casamento', e.target.value)} />
+            </div>
+            <p className="text-xs text-slate-500">Importante para classificar bens em comuns ou particulares</p>
+          </div>
+        </div>
+
+        {/* Regra dos 25% - Cônjuge é ascendente dos herdeiros */}
+        <div className="p-4 bg-amber-50 border border-amber-200 rounded-lg">
+          <div className="flex items-start gap-3">
+            <input
+              type="checkbox"
+              id="conjuge_e_ascendente_herdeiros"
+              checked={formData.conjuge_e_ascendente_herdeiros !== false}
+              onChange={(e) => handleChange('conjuge_e_ascendente_herdeiros', e.target.checked)}
+              className="mt-1 w-4 h-4 text-blue-600 rounded"
+            />
+            <div>
+              <Label htmlFor="conjuge_e_ascendente_herdeiros" className="font-semibold text-amber-900">
+                O cônjuge sobrevivente é pai/mãe de todos os herdeiros?
+              </Label>
+              <p className="text-xs text-amber-700 mt-1">
+                Se marcado, aplica-se a "Regra dos 25%": o cônjuge não pode receber menos que 1/4 da herança quando concorre com seus próprios filhos.
+              </p>
+            </div>
+          </div>
         </div>
       </div>
 
