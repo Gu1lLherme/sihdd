@@ -364,7 +364,7 @@ export default function DadosBasicos({ formData, setFormData }) {
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="conjuge_cpf">CPF do Viúvo(a)</Label>
+            <Label htmlFor="conjuge_cpf">CPF do(a) Viúvo(a)</Label>
             <Input
               id="conjuge_cpf"
               value={formData.conjuge_cpf || ''}
