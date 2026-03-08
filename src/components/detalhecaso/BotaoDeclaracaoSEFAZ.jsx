@@ -12,10 +12,9 @@ export default function BotaoDeclaracaoSEFAZ({ casoId, casoNumero }) {
     try {
       const response = await base44.functions.invoke('gerarDeclaracaoSEFAZ', {
         caso_id: casoId
-      });
+      }, { responseType: 'arraybuffer' });
 
-      const { data } = response;
-      const blob = new Blob([data], { type: 'application/pdf' });
+      const blob = new Blob([response.data], { type: 'application/pdf' });
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
