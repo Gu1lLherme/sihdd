@@ -1,52 +1,191 @@
-import { createClientFromRequest } from 'npm:@base44/sdk@0.8.20';
-import { jsPDF } from 'npm:jspdf@2.5.2';
+// =============================================================================
+// FUNÇÃO: gerarDeclaracaoSEFAZ
+// DESCRIÇÃO: Gera a Declaração do ITCMD "Causa Mortis" preenchendo o template
+//            PDF oficial da SEFAZ/SE via overlay (pdf-lib drawText).
+// ARQUITETURA: Opção B - Overlay sobre PDF estático (sem AcroForm).
+// =============================================================================
 
+import { createClientFromRequest } from 'npm:@base44/sdk@0.8.20';
+import { PDFDocument, StandardFonts, rgb } from 'npm:pdf-lib@1.17.1';
+
+// --- URL do template PDF oficial da SEFAZ (hospedado no storage público) ---
+const TEMPLATE_URL = 'https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/690dfe3076922dca90cee92f/d7ec4ff56_DECLARACAO_ITCMD_CAUSA_MORTIS.pdf';
+
+// --- Labels de mapeamento ---
 const REGIME_LABELS = {
-  uniao_estavel: "União Estável",
-  comunhao_universal: "Comunhão Universal",
-  comunhao_parcial: "Comunhão Parcial",
-  separacao_total: "Separação Total",
-  separacao_obrigatoria: "Separação Obrigatória",
-  participacao_final: "Participação Final"
+  uniao_estavel: "Uniao Estavel",
+  comunhao_universal: "Comunhao Universal",
+  comunhao_parcial: "Comunhao Parcial",
+  separacao_total: "Separacao Total",
+  separacao_obrigatoria: "Separacao Obrigatoria",
+  participacao_final: "Participacao Final"
 };
 
 const ESTADO_CIVIL_LABELS = {
   solteiro: "Solteiro(a)",
   casado: "Casado(a)",
   divorciado: "Divorciado(a)",
-  viuvo: "Viúvo(a)",
-  uniao_estavel: "União Estável",
+  viuvo: "Viuvo(a)",
+  uniao_estavel: "Uniao Estavel",
   separado_judicialmente: "Separado(a) Judicialmente"
 };
 
-function fmt(value) {
-  return (value || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+// =============================================================================
+// DICIONÁRIO DE COORDENADAS (X, Y)
+// Nota: Y é medido a partir da BASE da página no pdf-lib (origem inferior-esquerda).
+// A página A4 tem ~842 pontos de altura. Para converter de "topo" para "base":
+//   y_pdflib = 842 - y_do_topo
+// AJUSTE ESTES VALORES conforme necessário (tentativa e erro).
+// =============================================================================
+const COORDS = {
+  // --- Seção 2: Dados do Inventário ---
+  checkExtrajudicialInv:   { x: 44, y: 698 },   // "( X )" Inventário Extrajudicial
+  checkExtrajudicialSob:   { x: 330, y: 698 },   // "( X )" Sobrepartilha Extrajudicial
+  dataAberturaInventario:  { x: 195, y: 686 },   // Data de Abertura do Inventário
+  checkJudicialInv:        { x: 44, y: 670 },    // "( X )" Inventário Judicial
+  checkJudicialSob:        { x: 330, y: 670 },   // "( X )" Sobrepartilha Judicial
+  dataDistribuicao:        { x: 155, y: 658 },
+  processoNum:             { x: 125, y: 646 },
+  varaComarca:             { x: 130, y: 634 },
+  dataHomologacaoPartilha: { x: 190, y: 622 },
+  dataTransitoJulgado:     { x: 185, y: 610 },
+  processoSobrepartilhaNum:{ x: 435, y: 658 },
+  varaComarcaSob:          { x: 400, y: 646 },
+  dataHomologacaoSob:      { x: 455, y: 634 },
+  dataTransitoJulgadoSob:  { x: 445, y: 622 },
+
+  // --- Seção 3.1: Inventariado ---
+  nomeInventariado:        { x: 68, y: 570 },
+  cpfInventariado:         { x: 420, y: 570 },
+  dataObito:               { x: 95, y: 556 },
+  estadoCivil:             { x: 218, y: 556 },
+  regimeBens:              { x: 340, y: 556 },
+  dataCasamento:           { x: 490, y: 556 },
+
+  // --- Seção 3.2: Inventariante ---
+  nomeInventariante:       { x: 68, y: 530 },
+  cpfInventariante:        { x: 420, y: 530 },
+  enderecoInventariante:   { x: 110, y: 516 },
+  telefoneEmailInv:        { x: 420, y: 516 },
+
+  // --- Seção 4: Bens (linhas dinâmicas, Y decresce para cada bem) ---
+  bensStartY:              490,   // Y da primeira linha de bens
+  bensRowHeight:           12,    // Espaçamento entre linhas
+  bensItemX:               32,    // Coluna "Item"
+  bensDescX:               75,    // Coluna "Descrição"
+  bensMatriculaX:          340,   // Coluna "Matrícula"
+  bensInscricaoX:          430,   // Coluna "Inscrição Municipal"
+  bensValorX:              520,   // Coluna "Valor (R$)"
+
+  // --- Seção 5: Dívidas (linhas dinâmicas) ---
+  dividasStartY:           400,   // Y da primeira linha de dívidas
+  dividasRowHeight:        12,
+  dividasItemX:            32,
+  dividasDescX:            75,
+  dividasValorX:           520,
+
+  // --- Seção 6: Cessão ---
+  checkCessaoOnerosa:      { x: 44, y: 355 },
+  checkCessaoNaoOnerosa:   { x: 330, y: 355 },
+
+  // --- Seção 7: Renúncia ---
+  checkRenunciaTermoJud:   { x: 44, y: 335 },
+  checkRenunciaEscritura:  { x: 330, y: 335 },
+
+  // --- Seção 8: Partilha (linhas dinâmicas) ---
+  partilhaStartY:          300,
+  partilhaRowHeight:       12,
+  partilhaNomeX:           30,
+  partilhaPercX:           195,
+  partilhaQuinhaoRealX:    300,
+  partilhaQuinhaoLegalX:   395,
+  partilhaExcedenteX:      500,
+
+  // --- Seção 9: Uso do Cartório ---
+  cartorioNome:            { x: 65, y: 218 },
+  cartorioMunicipio:       { x: 260, y: 218 },
+  cartorioComarca:         { x: 420, y: 218 },
+
+  // --- Seção 10: Cálculo do Imposto ---
+  dataVencimento:          { x: 40, y: 168 },
+  monteMor:                { x: 145, y: 168 },
+  dividaEspolio:           { x: 255, y: 168 },
+  meacaoConjugalLegal:     { x: 360, y: 168 },
+  montePartivel:           { x: 475, y: 168 },
+
+  baseCalculo:             { x: 40, y: 145 },
+  aliquota:                { x: 145, y: 145 },
+  principal:               { x: 225, y: 145 },
+  atualizacao:             { x: 330, y: 145 },
+  multa:                   { x: 425, y: 145 },
+  juros:                   { x: 510, y: 145 },
+
+  desconto:                { x: 40, y: 125 },
+  totalPagar:              { x: 145, y: 125 },
+  dataPagamentoDAE:        { x: 265, y: 125 },
+  numDAE:                  { x: 385, y: 125 },
+
+  numParcelamento:         { x: 115, y: 110 },
+  baseLegalIsencao:        { x: 375, y: 110 },
+
+  // --- Seção 11: Responsável ---
+  respLocalData:           { x: 45, y: 78 },
+  respNome:                { x: 190, y: 78 },
+  respCPF:                 { x: 370, y: 78 },
+};
+
+// =============================================================================
+// FUNÇÕES UTILITÁRIAS
+// =============================================================================
+
+// Formata número para padrão BRL: "R$ 139.120,00"
+function fmtBRL(value) {
+  const num = value || 0;
+  // Formata manualmente para evitar problemas de locale no Deno
+  const parts = num.toFixed(2).split('.');
+  const intPart = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+  return `R$ ${intPart},${parts[1]}`;
 }
 
+// Formata data ISO para "dd/mm/aaaa"
 function fmtDate(dateStr) {
   if (!dateStr) return '';
   const d = new Date(dateStr + 'T12:00:00');
-  return d.toLocaleDateString('pt-BR');
+  const day = String(d.getDate()).padStart(2, '0');
+  const month = String(d.getMonth() + 1).padStart(2, '0');
+  const year = d.getFullYear();
+  return `${day}/${month}/${year}`;
 }
 
+// Remove acentos para compatibilidade com WinAnsi/Helvetica padrão
+function removeAccents(str) {
+  if (!str) return '';
+  return str.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+}
+
+// =============================================================================
+// HANDLER PRINCIPAL
+// =============================================================================
 Deno.serve(async (req) => {
   try {
+    // --- Autenticação ---
     const base44 = createClientFromRequest(req);
     const user = await base44.auth.me();
     if (!user) {
       return Response.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
+    // --- Payload ---
     const payload = await req.json();
     const { caso_id } = payload;
-
     if (!caso_id) {
-      return Response.json({ error: 'caso_id é obrigatório' }, { status: 400 });
+      return Response.json({ error: 'caso_id e obrigatorio' }, { status: 400 });
     }
 
+    // --- Busca de dados das entidades ---
     const caso = await base44.entities.Caso.get(caso_id);
     if (!caso) {
-      return Response.json({ error: 'Caso não encontrado' }, { status: 404 });
+      return Response.json({ error: 'Caso nao encontrado' }, { status: 404 });
     }
 
     const herdeiros = await base44.entities.Herdeiro.filter({ caso_id });
@@ -56,451 +195,218 @@ Deno.serve(async (req) => {
     const inventariante = inventariantes[0];
 
     let guias = [];
-    try { guias = await base44.entities.GuiaDAE.filter({ caso_id }); } catch(e) {}
+    try { guias = await base44.entities.GuiaDAE.filter({ caso_id }); } catch (_e) { /* sem guias */ }
     const guia = guias[0];
 
-    const doc = new jsPDF('p', 'mm', 'a4');
-    const pw = 210;
-    const ph = 297;
-    const ml = 10; // margin left
-    const mr = 10; // margin right
-    const cw = pw - ml - mr; // content width
-    let y = 8;
-
-    const lw = 0.3; // line width
-    doc.setLineWidth(lw);
-    doc.setDrawColor(0);
-
-    // Helper: draw a cell with border and text
-    function cell(x, cy, w, h, text, opts = {}) {
-      const { fontSize = 7, bold = false, italic = false, fill = false, align = 'left', padding = 1.5, noBorder = false, topBorder = true, bottomBorder = true, leftBorder = true, rightBorder = true } = opts;
-      if (fill) {
-        doc.setFillColor(210, 210, 210);
-        doc.rect(x, cy, w, h, 'F');
-      }
-      if (!noBorder) {
-        if (topBorder) doc.line(x, cy, x + w, cy);
-        if (bottomBorder) doc.line(x, cy + h, x + w, cy + h);
-        if (leftBorder) doc.line(x, cy, x, cy + h);
-        if (rightBorder) doc.line(x + w, cy, x + w, cy + h);
-      }
-      const style = bold && italic ? 'bolditalic' : bold ? 'bold' : italic ? 'italic' : 'normal';
-      doc.setFont('helvetica', style);
-      doc.setFontSize(fontSize);
-      if (text) {
-        const tx = align === 'center' ? x + w / 2 : align === 'right' ? x + w - padding : x + padding;
-        const ty = cy + h / 2 + fontSize * 0.12;
-        doc.text(String(text), tx, ty, { align: align === 'center' ? 'center' : align === 'right' ? 'right' : 'left', maxWidth: w - padding * 2 });
-      }
-    }
-
-    // Helper: draw a full-width section header
-    function sectionHeader(cy, text, h = 5.5) {
-      cell(ml, cy, cw, h, text, { bold: true, fontSize: 7, fill: true });
-      return cy + h;
-    }
-
-    // Helper: check page break
-    function checkPage(needed) {
-      if (y + needed > ph - 12) {
-        doc.addPage();
-        y = 8;
-        return true;
-      }
-      return false;
-    }
-
-    // ========== HEADER ==========
-    // "Impresso em 3 vias" top right
-    doc.setFont('helvetica', 'italic');
-    doc.setFontSize(6);
-    doc.text('Impresso em 3 vias', pw - mr, y + 2, { align: 'right' });
-
-    // Government header (left side)
-    doc.setFont('helvetica', 'bold');
-    doc.setFontSize(8);
-    doc.text('Governo de Sergipe', ml + 2, y + 5);
-    doc.setFont('helvetica', 'normal');
-    doc.setFontSize(7);
-    doc.text('Secretaria de Estado da Fazenda', ml + 2, y + 9);
-    doc.text('Coordenadoria do ITCMD', ml + 2, y + 13);
-
-    // Box "1. Nº da Declaração" (top right)
-    const boxW = 52;
-    const boxH = 14;
-    const boxX = pw - mr - boxW;
-    const boxY = y + 2;
-    doc.rect(boxX, boxY, boxW, boxH);
-    doc.setFont('helvetica', 'bold');
-    doc.setFontSize(6.5);
-    doc.text('1. Nº da Declaração do ITCMD (Uso da', boxX + 2, boxY + 4);
-    doc.text('SEFAZ)', boxX + 2, boxY + 8);
-
-    y += 19;
-
-    // Title
-    doc.setFont('helvetica', 'bold');
-    doc.setFontSize(11);
-    doc.text('DECLARAÇÃO DO ITCMD "CAUSA MORTIS"', pw / 2, y, { align: 'center' });
-    y += 5;
-    doc.setFontSize(8);
-    doc.setFont('helvetica', 'normal');
-    doc.text('(Inventário/ Sobrepartilha)', pw / 2, y, { align: 'center' });
-    y += 4;
-
-    // ========== SEÇÃO 2 - DADOS DO INVENTÁRIO ==========
-    y = sectionHeader(y, '2. DADOS DO INVENTÁRIO/ SOBREPARTILHA - TIPO');
-
-    const tipoInv = caso.tipo_inventario || 'extrajudicial';
-    const tipoProc = caso.tipo_processo || 'inventario';
-    const isExtInv = tipoInv === 'extrajudicial' && tipoProc === 'inventario';
-    const isExtSob = tipoInv === 'extrajudicial' && tipoProc === 'sobrepartilha';
-    const isJudInv = tipoInv === 'judicial' && tipoProc === 'inventario';
-    const isJudSob = tipoInv === 'judicial' && tipoProc === 'sobrepartilha';
-
-    const halfW = cw / 2;
-    const rowH = 5;
-
-    // Row: Inventário Extrajudicial | Sobrepartilha Extrajudicial
-    cell(ml, y, halfW, rowH, `( ${isExtInv ? 'X' : '  '} )  Inventário Extrajudicial`, { fontSize: 7 });
-    cell(ml + halfW, y, halfW, rowH, `( ${isExtSob ? 'X' : '  '} )  Sobrepartilha Extrajudicial`, { fontSize: 7 });
-    y += rowH;
-
-    // Data de Abertura do Inventário
-    cell(ml, y, halfW, rowH, `     Data de Abertura do Inventário: ${isExtInv ? fmtDate(caso.data_abertura_inventario) : ''}`, { fontSize: 6.5 });
-    cell(ml + halfW, y, halfW, rowH, '', { fontSize: 6.5 });
-    y += rowH;
-
-    // Row: Inventário Judicial | Sobrepartilha Judicial
-    cell(ml, y, halfW, rowH, `( ${isJudInv ? 'X' : '  '} )  Inventário Judicial`, { fontSize: 7 });
-    cell(ml + halfW, y, halfW, rowH, `( ${isJudSob ? 'X' : '  '} )  Sobrepartilha Judicial`, { fontSize: 7 });
-    y += rowH;
-
-    // Judicial fields left
-    const jfH = 4.5;
-    cell(ml, y, halfW, jfH, `     Data de Distribuição: ${isJudInv ? fmtDate(caso.data_distribuicao) : ''}`, { fontSize: 6.5 });
-    cell(ml + halfW, y, halfW, jfH, `     Processo de Sobrepartilha nº: ${isJudSob ? (caso.numero_sobrepartilha || '') : ''}`, { fontSize: 6.5 });
-    y += jfH;
-    cell(ml, y, halfW, jfH, `     Processo nº: ${isJudInv ? (caso.numero_processo_judicial || '') : ''}`, { fontSize: 6.5 });
-    cell(ml + halfW, y, halfW, jfH, `     Vara/ Comarca: ${isJudSob ? (caso.vara_comarca_sobrepartilha || '') : ''}`, { fontSize: 6.5 });
-    y += jfH;
-    cell(ml, y, halfW, jfH, `     Vara/ Comarca: ${isJudInv ? (caso.vara_comarca || '') : ''}`, { fontSize: 6.5 });
-    cell(ml + halfW, y, halfW, jfH, `     Data Homologação da Sobrepartilha: ${isJudSob ? fmtDate(caso.data_homologacao_sobrepartilha) : ''}`, { fontSize: 6.5 });
-    y += jfH;
-    cell(ml, y, halfW, jfH, `     Data Homologação da Partilha: ${isJudInv ? fmtDate(caso.data_homologacao_partilha) : ''}`, { fontSize: 6.5 });
-    cell(ml + halfW, y, halfW, jfH, `     Data do Trânsito em Julgado: ${isJudSob ? fmtDate(caso.data_transito_julgado_sobrepartilha) : ''}`, { fontSize: 6.5 });
-    y += jfH;
-    cell(ml, y, halfW, jfH, `     Data do Trânsito em Julgado: ${isJudInv ? fmtDate(caso.data_transito_julgado) : ''}`, { fontSize: 6.5 });
-    cell(ml + halfW, y, halfW, jfH, '', { fontSize: 6.5 });
-    y += jfH;
-
-    // ========== SEÇÃO 3 - IDENTIFICAÇÃO DAS PARTES ==========
-    y = sectionHeader(y, '3. IDENTIFICAÇÃO DAS PARTES');
-
-    // 3.1 INVENTARIADO(A) sub-header
-    cell(ml, y, cw, 5, '3.1. INVENTARIADO(A)', { bold: true, fontSize: 7 });
-    y += 5;
-
-    // Nome | CPF
-    const nameW = cw * 0.7;
-    const cpfW = cw * 0.3;
-    cell(ml, y, nameW, rowH, `Nome: ${caso.nome_falecido || ''}`, { fontSize: 7 });
-    cell(ml + nameW, y, cpfW, rowH, `CPF: ${caso.cpf_falecido || ''}`, { fontSize: 7 });
-    y += rowH;
-
-    // Data óbito | Estado Civil | Regime | Data Casamento
-    const qW = cw / 4;
-    cell(ml, y, qW, rowH, `Data do óbito: ${fmtDate(caso.data_obito)}`, { fontSize: 6.5 });
-    cell(ml + qW, y, qW, rowH, `Estado Civil: ${ESTADO_CIVIL_LABELS[caso.estado_civil] || ''}`, { fontSize: 6.5 });
-    cell(ml + qW * 2, y, qW, rowH, `Regime de bens: ${REGIME_LABELS[caso.regime_bens] || ''}`, { fontSize: 6.5 });
-    cell(ml + qW * 3, y, qW, rowH, `Data Casamento/ União estável: ${fmtDate(caso.data_casamento)}`, { fontSize: 6.5 });
-    y += rowH;
-
-    // 3.2 INVENTARIANTE sub-header
-    cell(ml, y, cw, 5, '3.2. INVENTARIANTE', { bold: true, fontSize: 7 });
-    y += 5;
-
-    cell(ml, y, nameW, rowH, `Nome: ${inventariante?.nome || ''}`, { fontSize: 7 });
-    cell(ml + nameW, y, cpfW, rowH, `CPF: ${inventariante?.cpf_cnpj || ''}`, { fontSize: 7 });
-    y += rowH;
-
-    cell(ml, y, nameW, rowH, `Endereço completo: ${inventariante?.endereco || ''}`, { fontSize: 7 });
-    cell(ml + nameW, y, cpfW, rowH, `Telefone/ E-mail: ${inventariante?.telefone || ''} ${inventariante?.email || ''}`, { fontSize: 6.5 });
-    y += rowH;
-
-    // ========== SEÇÃO 4 - BENS ==========
-    checkPage(25);
-    y = sectionHeader(y, '4. BEM (NS)/ DIREITO(S)');
-
-    // Table header
-    const bColW = [12, 68, 38, 32, 40];
-    const bColX = [ml];
-    for (let i = 1; i < bColW.length; i++) bColX.push(bColX[i - 1] + bColW[i - 1]);
-
-    const bHeaders = ['Item', 'Descrição Detalhada', 'Matrícula de Registro\n(Bem Imóvel)', 'Inscrição Municipal/\nINCRA\n(Bem Imóvel)', 'Valor (R$)'];
-    const bhH = 8;
-    bHeaders.forEach((h, i) => {
-      cell(bColX[i], y, bColW[i], bhH, h, { bold: true, fontSize: 6, align: 'center' });
-    });
-    y += bhH;
-
-    // Rows
-    if (bens.length === 0) {
-      bColW.forEach((w, i) => cell(bColX[i], y, w, rowH, i === 1 ? 'Nenhum bem declarado' : '', { fontSize: 6.5 }));
-      y += rowH;
-    } else {
-      bens.forEach((bem, idx) => {
-        checkPage(6);
-        const rH = 5.5;
-        cell(bColX[0], y, bColW[0], rH, `${idx + 1}`, { fontSize: 6.5, align: 'center' });
-        cell(bColX[1], y, bColW[1], rH, (bem.descricao || '').substring(0, 55), { fontSize: 6.5 });
-        cell(bColX[2], y, bColW[2], rH, (bem.tipo === 'imovel' || bem.tipo === 'casa' || bem.tipo === 'terreno') ? (bem.identificacao || '') : '', { fontSize: 6.5, align: 'center' });
-        cell(bColX[3], y, bColW[3], rH, '', { fontSize: 6.5, align: 'center' });
-        cell(bColX[4], y, bColW[4], rH, `R$ ${fmt(bem.valor)}`, { fontSize: 6.5, align: 'right' });
-        y += rH;
-      });
-    }
-
-    // Total bens
-    const totalBens = bens.reduce((s, b) => s + (b.valor || 0), 0);
-    cell(ml, y, cw - 40, 5, '', { fontSize: 6.5 });
-    cell(ml + cw - 40, y, 40, 5, `Total: R$ ${fmt(totalBens)}`, { bold: true, fontSize: 6.5, align: 'right' });
-    y += 5;
-
-    // ========== SEÇÃO 5 - DÍVIDAS ==========
-    checkPage(20);
-    y = sectionHeader(y, '5. DÍVIDA(S) DO ESPÓLIO');
-
-    const dColW = [12, 128, 50];
-    const dColX = [ml, ml + 12, ml + 140];
-    const dHeaders = ['Item', 'Descrição Detalhada', 'Valor (R$)'];
-    dHeaders.forEach((h, i) => {
-      cell(dColX[i], y, dColW[i], 6, h, { bold: true, fontSize: 6.5, align: 'center' });
-    });
-    y += 6;
-
-    if (dividas.length === 0) {
-      cell(ml, y, cw, rowH, '   Nenhuma dívida declarada.', { fontSize: 6.5 });
-      y += rowH;
-    } else {
-      dividas.forEach((d, idx) => {
-        checkPage(6);
-        cell(dColX[0], y, dColW[0], 5, `${idx + 1}`, { fontSize: 6.5, align: 'center' });
-        cell(dColX[1], y, dColW[1], 5, (d.titulo || d.descricao || '').substring(0, 90), { fontSize: 6.5 });
-        cell(dColX[2], y, dColW[2], 5, `R$ ${fmt(d.valor)}`, { fontSize: 6.5, align: 'right' });
-        y += 5;
-      });
-    }
-
-    // ========== SEÇÃO 6 - CESSÃO ==========
-    checkPage(14);
-    y = sectionHeader(y, '6. CESSÃO DE DIREITOS HEREDITÁRIOS (Se houver) - TIPO');
-
-    const cessao = caso.cessao_direitos || 'nenhuma';
-    cell(ml, y, halfW, rowH, `( ${cessao === 'onerosa' ? 'X' : '  '} )    Onerosa`, { fontSize: 7 });
-    cell(ml + halfW, y, halfW, rowH, `( ${cessao === 'nao_onerosa' ? 'X' : '  '} )    Não Onerosa`, { fontSize: 7 });
-    y += rowH;
-
-    // ========== SEÇÃO 7 - RENÚNCIA ==========
-    y = sectionHeader(y, '7. RENÚNCIA ABDICATIVA EM FAVOR DO MONTE MOR (Se houver) - TIPO');
-
-    const renuncia = caso.renuncia_abdicativa || 'nenhuma';
-    cell(ml, y, halfW, rowH, `( ${renuncia === 'termo_judicial' ? 'X' : '  '} )    Por Termo Judicial`, { fontSize: 7 });
-    cell(ml + halfW, y, halfW, rowH, `( ${renuncia === 'escritura_publica' ? 'X' : '  '} )    Por Escritura Pública`, { fontSize: 7 });
-    y += rowH;
-
-    // ========== SEÇÃO 8 - PARTILHA ==========
-    checkPage(30);
-    y = sectionHeader(y, '8. PARTILHA');
-
-    const pColW = [45, 30, 35, 35, 45];
-    const pColX = [ml];
-    for (let i = 1; i < pColW.length; i++) pColX.push(pColX[i - 1] + pColW[i - 1]);
-
-    const pHeaders = ['Meeiro(a)/ Herdeiro(a)\n(Nome e Condição)', 'Percentual ou Fração\ndo(s) Bem(ns)/ Direito(s)', 'Meação/ Quinhão Real\n(R$)', 'Meação/ Quinhão Legal\n(R$)', 'Excedente de Meação/\nQuinhão\n(R$)'];
-    const phH = 9;
-    pHeaders.forEach((h, i) => {
-      cell(pColX[i], y, pColW[i], phH, h, { bold: true, fontSize: 5.5, align: 'center' });
-    });
-    y += phH;
-
-    // Cônjuge meeiro
-    if (caso.conjuge_nome && ((caso.valor_meacao_conjuge || 0) > 0 || (caso.valor_heranca_conjuge || 0) > 0)) {
-      checkPage(6);
-      const totalConj = (caso.valor_meacao_conjuge || 0) + (caso.valor_heranca_conjuge || 0);
-      const percConj = caso.valor_patrimonio > 0 ? ((totalConj / caso.valor_patrimonio) * 100).toFixed(2) + '%' : '';
-      cell(pColX[0], y, pColW[0], 5.5, `${caso.conjuge_nome} (Meeiro(a))`, { fontSize: 6 });
-      cell(pColX[1], y, pColW[1], 5.5, percConj, { fontSize: 6, align: 'center' });
-      cell(pColX[2], y, pColW[2], 5.5, `R$ ${fmt(caso.valor_meacao_conjuge)}`, { fontSize: 6, align: 'right' });
-      cell(pColX[3], y, pColW[3], 5.5, `R$ ${fmt(caso.valor_heranca_conjuge)}`, { fontSize: 6, align: 'right' });
-      cell(pColX[4], y, pColW[4], 5.5, 'R$ 0,00', { fontSize: 6, align: 'right' });
-      y += 5.5;
-    }
-
-    // Herdeiros
-    herdeiros.filter(h => h.parentesco !== 'conjuge').forEach(h => {
-      checkPage(6);
-      const cond = h.parentesco ? h.parentesco.charAt(0).toUpperCase() + h.parentesco.slice(1) : '';
-      cell(pColX[0], y, pColW[0], 5.5, `${h.nome} (${cond})`, { fontSize: 6 });
-      cell(pColX[1], y, pColW[1], 5.5, h.fracao_bens || `${(h.percentual_partilha || 0).toFixed(2)}%`, { fontSize: 6, align: 'center' });
-      cell(pColX[2], y, pColW[2], 5.5, `R$ ${fmt(h.valor_meacao_quinhao_real || h.valor_parte)}`, { fontSize: 6, align: 'right' });
-      cell(pColX[3], y, pColW[3], 5.5, `R$ ${fmt(h.valor_meacao_quinhao_legal || h.valor_parte)}`, { fontSize: 6, align: 'right' });
-      cell(pColX[4], y, pColW[4], 5.5, `R$ ${fmt(h.valor_excedente_meacao || 0)}`, { fontSize: 6, align: 'right' });
-      y += 5.5;
-    });
-
-    // Empty row if no data
-    if (!caso.conjuge_nome && herdeiros.length === 0) {
-      pColW.forEach((w, i) => cell(pColX[i], y, w, 5.5, '', { fontSize: 6 }));
-      y += 5.5;
-    }
-
-    // Nota
-    doc.setFont('helvetica', 'bold');
-    doc.setFontSize(5.5);
-    const notaText = 'Nota: Havendo divisão do acervo patrimonial, que resulte em "excedente" de meação ou de quinhão, decorrente de transmissão "não onerosa",';
-    const notaText2 = 'providenciar o recolhimento do imposto "inter vivos" e preencher a DECLARAÇÃO DO ITCMD "INTER VIVOS I".';
-    cell(ml, y, cw, 4, notaText, { bold: true, fontSize: 5.5 });
-    y += 4;
-    cell(ml, y, cw, 4, notaText2, { bold: true, fontSize: 5.5 });
-    y += 4;
-
-    // ========== SEÇÃO 9 - USO DO CARTÓRIO ==========
-    checkPage(22);
-    y = sectionHeader(y, '9. USO DO CARTÓRIO');
-
-    doc.setFont('helvetica', 'italic');
-    doc.setFontSize(5.5);
-    cell(ml, y, cw, 4, '(Campo de preenchimento obrigatório em se tratando de Inventário/ Sobrepartilha extrajudiciais)', { italic: true, fontSize: 5.5 });
-    y += 4;
-
-    const cCol3 = cw / 3;
-    cell(ml, y, cCol3, rowH, `Cartório: ${caso.cartorio_nome || ''}`, { fontSize: 6.5 });
-    cell(ml + cCol3, y, cCol3, rowH, `Município: ${caso.cartorio_municipio || ''}`, { fontSize: 6.5 });
-    cell(ml + cCol3 * 2, y, cCol3, rowH, `Comarca: ${caso.cartorio_comarca || ''}`, { fontSize: 6.5 });
-    y += rowH;
-
-    cell(ml, y, cw * 0.65, 8, 'Assinatura e Carimbo do(a) Funcionário(a)', { fontSize: 6.5 });
-    cell(ml + cw * 0.65, y, cw * 0.35, 8, 'Data', { fontSize: 6.5 });
-    y += 8;
-
-    // ========== SEÇÃO 10 - CÁLCULO DO IMPOSTO ==========
-    checkPage(42);
-    y = sectionHeader(y, '10. CÁLCULO DO IMPOSTO');
-
+    // =========================================================================
+    // REGRAS DE NEGÓCIO - Cálculos Financeiros
+    // =========================================================================
+    const monteMor = bens.reduce((sum, b) => sum + (b.valor || 0), 0);
     const totalDividas = dividas.reduce((sum, d) => sum + (d.valor || 0), 0);
-    const monteMor = caso.valor_patrimonio || 0;
     const meacaoLegal = caso.valor_meacao_conjuge || 0;
     const montePartivel = monteMor - totalDividas - meacaoLegal;
     const baseCalculo = montePartivel > 0 ? montePartivel : 0;
-    const aliquota = caso.aliquota || 0;
-    const principal = caso.valor_itcmd || 0;
+    const aliquota = caso.aliquota || 4;
+    const principal = baseCalculo * (aliquota / 100);
     const atualizacao = caso.valor_atualizacao || 0;
     const multa = caso.valor_multa || 0;
     const juros = caso.valor_juros || 0;
     const desconto = caso.valor_desconto || 0;
     const totalPagar = principal + atualizacao + multa + juros - desconto;
 
-    // Row 1: Data Vencimento | Monte Mor | Dívida Espólio | Meação Conjugal Legal | Monte Partível
-    const cW5 = cw / 5;
-    cell(ml, y, cW5, 4, 'Data de Vencimento', { bold: true, fontSize: 5.5, align: 'center' });
-    cell(ml + cW5, y, cW5, 4, 'Monte Mor', { bold: true, fontSize: 5.5, align: 'center' });
-    cell(ml + cW5 * 2, y, cW5, 4, 'Dívida do Espólio', { bold: true, fontSize: 5.5, align: 'center' });
-    cell(ml + cW5 * 3, y, cW5, 4, 'Meação Conjugal Legal', { bold: true, fontSize: 5.5, align: 'center' });
-    cell(ml + cW5 * 4, y, cW5, 4, 'Monte Partível', { bold: true, fontSize: 5.5, align: 'center' });
-    y += 4;
+    // =========================================================================
+    // CARREGAMENTO DO TEMPLATE PDF
+    // =========================================================================
+    const templateBytes = await fetch(TEMPLATE_URL).then(res => res.arrayBuffer());
+    const pdfDoc = await PDFDocument.load(templateBytes);
 
-    cell(ml, y, cW5, 5, guia ? fmtDate(guia.data_vencimento) : '', { fontSize: 6.5, align: 'center' });
-    cell(ml + cW5, y, cW5, 5, `R$ ${fmt(monteMor)}`, { fontSize: 6.5, align: 'center' });
-    cell(ml + cW5 * 2, y, cW5, 5, `R$ ${fmt(totalDividas)}`, { fontSize: 6.5, align: 'center' });
-    cell(ml + cW5 * 3, y, cW5, 5, `R$ ${fmt(meacaoLegal)}`, { fontSize: 6.5, align: 'center' });
-    cell(ml + cW5 * 4, y, cW5, 5, `R$ ${fmt(montePartivel)}`, { fontSize: 6.5, align: 'center' });
-    y += 5;
+    // Embutir fonte Helvetica (suporta WinAnsi - caracteres latinos básicos)
+    const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
+    const fontBold = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
 
-    // Row 2: Base Cálculo | Alíquota | Principal | Atualização | Multa | Juros
-    const cW6 = cw / 6;
-    cell(ml, y, cW6, 4, 'Base de Cálculo (total do Estado\nde SE) R$', { bold: true, fontSize: 5, align: 'center' });
-    cell(ml + cW6, y, cW6 * 0.6, 4, 'Alíquota (%)', { bold: true, fontSize: 5.5, align: 'center' });
-    cell(ml + cW6 + cW6 * 0.6, y, cW6 * 1.1, 4, 'Principal R$', { bold: true, fontSize: 5.5, align: 'center' });
-    cell(ml + cW6 + cW6 * 0.6 + cW6 * 1.1, y, cW6 * 0.9, 4, 'Atualização R$', { bold: true, fontSize: 5.5, align: 'center' });
-    cell(ml + cW6 + cW6 * 0.6 + cW6 * 1.1 + cW6 * 0.9, y, cW6 * 0.8, 4, 'Multa R$', { bold: true, fontSize: 5.5, align: 'center' });
-    cell(ml + cW6 + cW6 * 0.6 + cW6 * 1.1 + cW6 * 0.9 + cW6 * 0.8, y, cW6 * 0.6, 4, 'Juros R$', { bold: true, fontSize: 5.5, align: 'center' });
-    y += 4;
+    const page = pdfDoc.getPages()[0];
+    const fontSize = 8;
+    const smallFont = 7;
+    const color = rgb(0, 0, 0);
 
-    cell(ml, y, cW6, 5, `R$ ${fmt(baseCalculo)}`, { fontSize: 6.5, align: 'center' });
-    cell(ml + cW6, y, cW6 * 0.6, 5, `${aliquota}%`, { fontSize: 6.5, align: 'center' });
-    cell(ml + cW6 + cW6 * 0.6, y, cW6 * 1.1, 5, `R$ ${fmt(principal)}`, { fontSize: 6.5, align: 'center' });
-    cell(ml + cW6 + cW6 * 0.6 + cW6 * 1.1, y, cW6 * 0.9, 5, `R$ ${fmt(atualizacao)}`, { fontSize: 6.5, align: 'center' });
-    cell(ml + cW6 + cW6 * 0.6 + cW6 * 1.1 + cW6 * 0.9, y, cW6 * 0.8, 5, `R$ ${fmt(multa)}`, { fontSize: 6.5, align: 'center' });
-    cell(ml + cW6 + cW6 * 0.6 + cW6 * 1.1 + cW6 * 0.9 + cW6 * 0.8, y, cW6 * 0.6, 5, `R$ ${fmt(juros)}`, { fontSize: 6.5, align: 'center' });
-    y += 5;
+    // Helper: desenha texto na página com remoção de acentos
+    function draw(text, x, y, opts = {}) {
+      const { size = fontSize, bold = false, maxLen = 60 } = opts;
+      let clean = removeAccents(String(text || ''));
+      if (clean.length > maxLen) clean = clean.substring(0, maxLen);
+      page.drawText(clean, {
+        x,
+        y,
+        size,
+        font: bold ? fontBold : font,
+        color,
+      });
+    }
 
-    // Row 3: Desconto | Total a Pagar | Data Pgto DAE | Nº DAE
-    cell(ml, y, cW5, 4, 'Desconto R$', { bold: true, fontSize: 5.5, align: 'center' });
-    cell(ml + cW5, y, cW5, 4, 'Total a Pagar R$', { bold: true, fontSize: 5.5, align: 'center' });
-    cell(ml + cW5 * 2, y, cW5, 4, 'Data de Pagamento do DAE', { bold: true, fontSize: 5.5, align: 'center' });
-    cell(ml + cW5 * 3, y, cW5, 4, 'Nº do DAE', { bold: true, fontSize: 5.5, align: 'center' });
-    cell(ml + cW5 * 4, y, cW5, 4, '', { fontSize: 5.5 });
-    y += 4;
+    // Helper: desenha um "X" para checkboxes
+    function check(coords) {
+      draw('X', coords.x, coords.y, { size: 9, bold: true });
+    }
 
-    cell(ml, y, cW5, 5, `R$ ${fmt(desconto)}`, { fontSize: 6.5, align: 'center' });
-    cell(ml + cW5, y, cW5, 5, `R$ ${fmt(totalPagar)}`, { bold: true, fontSize: 6.5, align: 'center' });
-    cell(ml + cW5 * 2, y, cW5, 5, guia ? fmtDate(guia.data_pagamento) : '', { fontSize: 6.5, align: 'center' });
-    cell(ml + cW5 * 3, y, cW5, 5, guia?.numero_guia || '', { fontSize: 6.5, align: 'center' });
-    cell(ml + cW5 * 4, y, cW5, 5, '', { fontSize: 6.5 });
-    y += 5;
+    // =========================================================================
+    // PREENCHIMENTO - Seção 2: Dados do Inventário
+    // =========================================================================
+    const tipoInv = caso.tipo_inventario || 'extrajudicial';
+    const tipoProc = caso.tipo_processo || 'inventario';
 
-    // Row 4: Nº Parcelamento | Base Legal
-    cell(ml, y, cW5 * 2, 5, 'Nº do Parcelamento:', { fontSize: 6.5 });
-    cell(ml + cW5 * 2, y, cW5 * 3, 5, `Base Legal se houver isenção ou imunidade: ${caso.base_legal_isencao || ''}`, { fontSize: 6.5 });
-    y += 5;
+    if (tipoInv === 'extrajudicial' && tipoProc === 'inventario') {
+      check(COORDS.checkExtrajudicialInv);
+      draw(fmtDate(caso.data_abertura_inventario), COORDS.dataAberturaInventario.x, COORDS.dataAberturaInventario.y);
+    }
+    if (tipoInv === 'extrajudicial' && tipoProc === 'sobrepartilha') {
+      check(COORDS.checkExtrajudicialSob);
+    }
+    if (tipoInv === 'judicial' && tipoProc === 'inventario') {
+      check(COORDS.checkJudicialInv);
+      draw(fmtDate(caso.data_distribuicao), COORDS.dataDistribuicao.x, COORDS.dataDistribuicao.y);
+      draw(caso.numero_processo_judicial, COORDS.processoNum.x, COORDS.processoNum.y);
+      draw(caso.vara_comarca, COORDS.varaComarca.x, COORDS.varaComarca.y);
+      draw(fmtDate(caso.data_homologacao_partilha), COORDS.dataHomologacaoPartilha.x, COORDS.dataHomologacaoPartilha.y);
+      draw(fmtDate(caso.data_transito_julgado), COORDS.dataTransitoJulgado.x, COORDS.dataTransitoJulgado.y);
+    }
+    if (tipoInv === 'judicial' && tipoProc === 'sobrepartilha') {
+      check(COORDS.checkJudicialSob);
+      draw(caso.numero_sobrepartilha, COORDS.processoSobrepartilhaNum.x, COORDS.processoSobrepartilhaNum.y);
+      draw(caso.vara_comarca_sobrepartilha, COORDS.varaComarcaSob.x, COORDS.varaComarcaSob.y);
+      draw(fmtDate(caso.data_homologacao_sobrepartilha), COORDS.dataHomologacaoSob.x, COORDS.dataHomologacaoSob.y);
+      draw(fmtDate(caso.data_transito_julgado_sobrepartilha), COORDS.dataTransitoJulgadoSob.x, COORDS.dataTransitoJulgadoSob.y);
+    }
 
-    // ========== SEÇÃO 11 - RESPONSÁVEL ==========
-    checkPage(18);
-    y = sectionHeader(y, '11. RESPONSÁVEL');
+    // =========================================================================
+    // PREENCHIMENTO - Seção 3.1: Inventariado
+    // =========================================================================
+    draw(caso.nome_falecido, COORDS.nomeInventariado.x, COORDS.nomeInventariado.y, { maxLen: 45 });
+    draw(caso.cpf_falecido, COORDS.cpfInventariado.x, COORDS.cpfInventariado.y);
+    draw(fmtDate(caso.data_obito), COORDS.dataObito.x, COORDS.dataObito.y);
+    draw(ESTADO_CIVIL_LABELS[caso.estado_civil] || '', COORDS.estadoCivil.x, COORDS.estadoCivil.y);
+    draw(REGIME_LABELS[caso.regime_bens] || '', COORDS.regimeBens.x, COORDS.regimeBens.y, { size: smallFont, maxLen: 25 });
+    draw(fmtDate(caso.data_casamento), COORDS.dataCasamento.x, COORDS.dataCasamento.y);
 
-    const hoje = new Date().toLocaleDateString('pt-BR');
-    const rColW4 = cw / 4;
-    cell(ml, y, rColW4, 4, 'Local/ Data', { bold: true, fontSize: 6, align: 'center' });
-    cell(ml + rColW4, y, rColW4, 4, 'Nome completo', { bold: true, fontSize: 6, align: 'center' });
-    cell(ml + rColW4 * 2, y, rColW4, 4, 'CPF', { bold: true, fontSize: 6, align: 'center' });
-    cell(ml + rColW4 * 3, y, rColW4, 4, 'Assinatura', { bold: true, fontSize: 6, align: 'center' });
-    y += 4;
+    // =========================================================================
+    // PREENCHIMENTO - Seção 3.2: Inventariante
+    // =========================================================================
+    draw(inventariante?.nome, COORDS.nomeInventariante.x, COORDS.nomeInventariante.y, { maxLen: 45 });
+    draw(inventariante?.cpf_cnpj, COORDS.cpfInventariante.x, COORDS.cpfInventariante.y);
+    draw(inventariante?.endereco, COORDS.enderecoInventariante.x, COORDS.enderecoInventariante.y, { size: smallFont, maxLen: 50 });
+    const telEmail = [inventariante?.telefone, inventariante?.email].filter(Boolean).join(' / ');
+    draw(telEmail, COORDS.telefoneEmailInv.x, COORDS.telefoneEmailInv.y, { size: smallFont, maxLen: 30 });
 
-    cell(ml, y, rColW4, 7, `${caso.cartorio_municipio || 'Aracaju'}, ${hoje}`, { fontSize: 6.5, align: 'center' });
-    cell(ml + rColW4, y, rColW4, 7, inventariante?.nome || user.full_name || '', { fontSize: 6.5, align: 'center' });
-    cell(ml + rColW4 * 2, y, rColW4, 7, inventariante?.cpf_cnpj || '', { fontSize: 6.5, align: 'center' });
-    cell(ml + rColW4 * 3, y, rColW4, 7, '', { fontSize: 6.5 });
-    y += 7;
+    // =========================================================================
+    // PREENCHIMENTO - Seção 4: Bens (linhas dinâmicas)
+    // =========================================================================
+    bens.forEach((bem, idx) => {
+      const rowY = COORDS.bensStartY - (idx * COORDS.bensRowHeight);
+      if (rowY < 410) return; // Limita para não sobrepor seções abaixo
+      draw(`${idx + 1}`, COORDS.bensItemX, rowY, { size: smallFont });
+      draw(bem.descricao, COORDS.bensDescX, rowY, { size: smallFont, maxLen: 40 });
+      const isImovel = ['imovel', 'casa', 'terreno'].includes(bem.tipo);
+      if (isImovel) draw(bem.identificacao, COORDS.bensMatriculaX, rowY, { size: smallFont, maxLen: 18 });
+      draw(fmtBRL(bem.valor), COORDS.bensValorX, rowY, { size: smallFont, maxLen: 18 });
+    });
 
-    // ========== SEÇÃO 12 - RECEPÇÃO DA DECLARAÇÃO ==========
-    checkPage(28);
-    y = sectionHeader(y, '12. RECEPÇÃO DA DECLARAÇÃO (Uso da SEFAZ)');
+    // =========================================================================
+    // PREENCHIMENTO - Seção 5: Dívidas (linhas dinâmicas)
+    // =========================================================================
+    dividas.forEach((d, idx) => {
+      const rowY = COORDS.dividasStartY - (idx * COORDS.dividasRowHeight);
+      if (rowY < 360) return;
+      draw(`${idx + 1}`, COORDS.dividasItemX, rowY, { size: smallFont });
+      draw(d.titulo || d.descricao, COORDS.dividasDescX, rowY, { size: smallFont, maxLen: 55 });
+      draw(fmtBRL(d.valor), COORDS.dividasValorX, rowY, { size: smallFont, maxLen: 18 });
+    });
 
-    doc.setFont('helvetica', 'bold');
-    doc.setFontSize(5.5);
-    cell(ml, y, cw, 4, 'Documentação recepcionada para posterior análise e fiscalização.', { bold: true, fontSize: 5.5 });
-    y += 4;
+    // =========================================================================
+    // PREENCHIMENTO - Seção 6: Cessão de Direitos
+    // =========================================================================
+    const cessao = caso.cessao_direitos || 'nenhuma';
+    if (cessao === 'onerosa') check(COORDS.checkCessaoOnerosa);
+    if (cessao === 'nao_onerosa') check(COORDS.checkCessaoNaoOnerosa);
 
-    doc.setFont('helvetica', 'normal');
-    doc.setFontSize(5);
-    const recText = 'A Secretaria de Estado da Fazenda reserva-se o Direito de exigir eventuais diferenças do imposto em relação ao período declarado, no prazo decadencial';
-    const recText2 = 'para a constituição do crédito tributário, nos termos do art.173 da Lei nº 5.172, de 25/10/1966 (Código Tributário Nacional).';
-    cell(ml, y, cw, 3.5, recText, { fontSize: 5 });
-    y += 3.5;
-    cell(ml, y, cw, 3.5, recText2, { fontSize: 5 });
-    y += 3.5;
+    // =========================================================================
+    // PREENCHIMENTO - Seção 7: Renúncia Abdicativa
+    // =========================================================================
+    const renuncia = caso.renuncia_abdicativa || 'nenhuma';
+    if (renuncia === 'termo_judicial') check(COORDS.checkRenunciaTermoJud);
+    if (renuncia === 'escritura_publica') check(COORDS.checkRenunciaEscritura);
 
-    cell(ml, y, cw * 0.65, 8, 'Assinatura do(a) Funcionário(a)', { fontSize: 6.5 });
-    cell(ml + cw * 0.65, y, cw * 0.35, 8, 'Data', { fontSize: 6.5 });
-    y += 8;
+    // =========================================================================
+    // PREENCHIMENTO - Seção 8: Partilha (linhas dinâmicas)
+    // =========================================================================
+    let partilhaIdx = 0;
 
-    // Footer
-    doc.setFont('helvetica', 'italic');
-    doc.setFontSize(6);
-    doc.text('Impresso em 3 vias', pw - mr, ph - 5, { align: 'right' });
+    // Cônjuge meeiro
+    if (caso.conjuge_nome && ((caso.valor_meacao_conjuge || 0) > 0 || (caso.valor_heranca_conjuge || 0) > 0)) {
+      const rowY = COORDS.partilhaStartY - (partilhaIdx * COORDS.partilhaRowHeight);
+      draw(`${caso.conjuge_nome} (Meeiro)`, COORDS.partilhaNomeX, rowY, { size: smallFont, maxLen: 28 });
+      const totalConj = (caso.valor_meacao_conjuge || 0) + (caso.valor_heranca_conjuge || 0);
+      const perc = monteMor > 0 ? ((totalConj / monteMor) * 100).toFixed(2) + '%' : '';
+      draw(perc, COORDS.partilhaPercX, rowY, { size: smallFont });
+      draw(fmtBRL(caso.valor_meacao_conjuge), COORDS.partilhaQuinhaoRealX, rowY, { size: smallFont, maxLen: 18 });
+      draw(fmtBRL(caso.valor_heranca_conjuge), COORDS.partilhaQuinhaoLegalX, rowY, { size: smallFont, maxLen: 18 });
+      draw(fmtBRL(0), COORDS.partilhaExcedenteX, rowY, { size: smallFont, maxLen: 18 });
+      partilhaIdx++;
+    }
 
-    const pdfBytes = doc.output('arraybuffer');
+    // Herdeiros
+    herdeiros.filter(h => h.parentesco !== 'conjuge').forEach(h => {
+      const rowY = COORDS.partilhaStartY - (partilhaIdx * COORDS.partilhaRowHeight);
+      if (rowY < 245) return; // Limita para não sobrepor nota/seção 9
+      const cond = h.parentesco ? h.parentesco.charAt(0).toUpperCase() + h.parentesco.slice(1) : '';
+      draw(`${h.nome} (${cond})`, COORDS.partilhaNomeX, rowY, { size: smallFont, maxLen: 28 });
+      draw(h.fracao_bens || `${(h.percentual_partilha || 0).toFixed(2)}%`, COORDS.partilhaPercX, rowY, { size: smallFont });
+      draw(fmtBRL(h.valor_meacao_quinhao_real || h.valor_parte), COORDS.partilhaQuinhaoRealX, rowY, { size: smallFont, maxLen: 18 });
+      draw(fmtBRL(h.valor_meacao_quinhao_legal || h.valor_parte), COORDS.partilhaQuinhaoLegalX, rowY, { size: smallFont, maxLen: 18 });
+      draw(fmtBRL(h.valor_excedente_meacao || 0), COORDS.partilhaExcedenteX, rowY, { size: smallFont, maxLen: 18 });
+      partilhaIdx++;
+    });
+
+    // =========================================================================
+    // PREENCHIMENTO - Seção 9: Uso do Cartório
+    // =========================================================================
+    draw(caso.cartorio_nome, COORDS.cartorioNome.x, COORDS.cartorioNome.y, { maxLen: 30 });
+    draw(caso.cartorio_municipio, COORDS.cartorioMunicipio.x, COORDS.cartorioMunicipio.y, { maxLen: 20 });
+    draw(caso.cartorio_comarca, COORDS.cartorioComarca.x, COORDS.cartorioComarca.y, { maxLen: 20 });
+
+    // =========================================================================
+    // PREENCHIMENTO - Seção 10: Cálculo do Imposto
+    // =========================================================================
+    draw(guia ? fmtDate(guia.data_vencimento) : '', COORDS.dataVencimento.x, COORDS.dataVencimento.y);
+    draw(fmtBRL(monteMor), COORDS.monteMor.x, COORDS.monteMor.y, { size: smallFont });
+    draw(fmtBRL(totalDividas), COORDS.dividaEspolio.x, COORDS.dividaEspolio.y, { size: smallFont });
+    draw(fmtBRL(meacaoLegal), COORDS.meacaoConjugalLegal.x, COORDS.meacaoConjugalLegal.y, { size: smallFont });
+    draw(fmtBRL(montePartivel), COORDS.montePartivel.x, COORDS.montePartivel.y, { size: smallFont });
+
+    draw(fmtBRL(baseCalculo), COORDS.baseCalculo.x, COORDS.baseCalculo.y, { size: smallFont });
+    draw(`${aliquota}%`, COORDS.aliquota.x, COORDS.aliquota.y, { size: smallFont });
+    draw(fmtBRL(principal), COORDS.principal.x, COORDS.principal.y, { size: smallFont });
+    draw(fmtBRL(atualizacao), COORDS.atualizacao.x, COORDS.atualizacao.y, { size: smallFont });
+    draw(fmtBRL(multa), COORDS.multa.x, COORDS.multa.y, { size: smallFont });
+    draw(fmtBRL(juros), COORDS.juros.x, COORDS.juros.y, { size: smallFont });
+
+    draw(fmtBRL(desconto), COORDS.desconto.x, COORDS.desconto.y, { size: smallFont });
+    draw(fmtBRL(totalPagar), COORDS.totalPagar.x, COORDS.totalPagar.y, { size: smallFont, bold: true });
+    draw(guia ? fmtDate(guia.data_pagamento) : '', COORDS.dataPagamentoDAE.x, COORDS.dataPagamentoDAE.y, { size: smallFont });
+    draw(guia?.numero_guia || '', COORDS.numDAE.x, COORDS.numDAE.y, { size: smallFont });
+    draw(caso.base_legal_isencao, COORDS.baseLegalIsencao.x, COORDS.baseLegalIsencao.y, { size: smallFont, maxLen: 30 });
+
+    // =========================================================================
+    // PREENCHIMENTO - Seção 11: Responsável
+    // =========================================================================
+    const hoje = new Date();
+    const hojeStr = `${String(hoje.getDate()).padStart(2,'0')}/${String(hoje.getMonth()+1).padStart(2,'0')}/${hoje.getFullYear()}`;
+    draw(`${removeAccents(caso.cartorio_municipio || 'Aracaju')}, ${hojeStr}`, COORDS.respLocalData.x, COORDS.respLocalData.y, { size: smallFont, maxLen: 25 });
+    draw(inventariante?.nome || user.full_name, COORDS.respNome.x, COORDS.respNome.y, { size: smallFont, maxLen: 28 });
+    draw(inventariante?.cpf_cnpj, COORDS.respCPF.x, COORDS.respCPF.y, { size: smallFont });
+
+    // =========================================================================
+    // SERIALIZAÇÃO E RESPOSTA
+    // =========================================================================
+    const pdfBytes = await pdfDoc.save();
 
     return new Response(pdfBytes, {
       status: 200,
@@ -511,6 +417,7 @@ Deno.serve(async (req) => {
     });
 
   } catch (error) {
+    console.error('Erro ao gerar declaracao SEFAZ:', error);
     return Response.json({ error: error.message }, { status: 500 });
   }
 });
