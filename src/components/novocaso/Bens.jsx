@@ -161,7 +161,7 @@ export default function Bens({ formData, setFormData }) {
                     <div className="space-y-2">
                       <Label>Identificação</Label>
                       <Input
-                        value={bem.identificacao}
+                        value={bem.identificacao || ''}
                         onChange={(e) => updateBem(index, "identificacao", e.target.value)}
                         placeholder="Matrícula, placa, número da conta..."
                       />
@@ -191,7 +191,7 @@ export default function Bens({ formData, setFormData }) {
                     <div className="space-y-2 md:col-span-2">
                       <Label>Descrição *</Label>
                       <Textarea
-                        value={bem.descricao}
+                        value={bem.descricao || ''}
                         onChange={(e) => updateBem(index, "descricao", e.target.value)}
                         placeholder="Descrição detalhada do bem"
                         className="h-20"
@@ -201,7 +201,7 @@ export default function Bens({ formData, setFormData }) {
                     <div className="space-y-2 md:col-span-2">
                       <Label>Observações</Label>
                       <Textarea
-                        value={bem.observacoes}
+                        value={bem.observacoes || ''}
                         onChange={(e) => updateBem(index, "observacoes", e.target.value)}
                         placeholder="Observações adicionais"
                         className="h-16"

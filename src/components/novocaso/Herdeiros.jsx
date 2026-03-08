@@ -97,7 +97,7 @@ export default function Herdeiros({ formData, setFormData }) {
                   <div className="space-y-2">
                     <Label>CPF</Label>
                     <Input
-                      value={herdeiro.cpf}
+                      value={herdeiro.cpf || ''}
                       onChange={(e) => updateHerdeiro(index, "cpf", masks.cpf(e.target.value))}
                       placeholder="000.000.000-00"
                       maxLength={14}
@@ -197,7 +197,7 @@ export default function Herdeiros({ formData, setFormData }) {
                     <Label>Email</Label>
                     <Input
                       type="email"
-                      value={herdeiro.email}
+                      value={herdeiro.email || ''}
                       onChange={(e) => updateHerdeiro(index, "email", e.target.value)}
                       placeholder="email@exemplo.com"
                     />
@@ -206,7 +206,7 @@ export default function Herdeiros({ formData, setFormData }) {
                   <div className="space-y-2">
                     <Label>Telefone</Label>
                     <Input
-                      value={herdeiro.telefone}
+                      value={herdeiro.telefone || ''}
                       onChange={(e) => updateHerdeiro(index, "telefone", masks.phone(e.target.value))}
                       placeholder="(00) 00000-0000"
                     />
