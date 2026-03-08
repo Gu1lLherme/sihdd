@@ -16,14 +16,31 @@ export default function CanvasArvore({ casoAtual, herdeiros, selectedPersonId, o
             {/* Couple Container */}
             <div className="flex items-start justify-center gap-4">
               {/* Deceased */}
-              <div className="flex flex-col items-center">
-                <div className="w-24 h-24 rounded-full bg-slate-800 flex items-center justify-center border-4 border-white shadow-xl mb-2 relative group cursor-help">
+              <div 
+                className="flex flex-col items-center cursor-pointer group"
+                onClick={() => onSelectPerson({
+                  _tipo: 'falecido',
+                  nome: casoAtual.nome_falecido,
+                  cpf: casoAtual.cpf_falecido,
+                  rg: casoAtual.rg,
+                  orgao_expedidor: casoAtual.orgao_expedidor,
+                  data_nascimento: casoAtual.data_nascimento,
+                  data_obito: casoAtual.data_obito,
+                  endereco: casoAtual.endereco,
+                  cep: casoAtual.cep,
+                  nacionalidade: casoAtual.nacionalidade,
+                  sexo: casoAtual.sexo,
+                  estado_civil: casoAtual.estado_civil,
+                  regime_bens: casoAtual.regime_bens,
+                })}
+              >
+                <div className={`w-24 h-24 rounded-full bg-slate-800 flex items-center justify-center border-4 shadow-xl mb-2 relative transition-all group-hover:scale-105 ${selectedPersonId === 'falecido' ? 'ring-4 ring-slate-400 ring-opacity-50 scale-110 border-white' : 'border-white'}`}>
                   <User className="w-12 h-12 text-white" />
                   <div className="absolute -bottom-2 bg-black text-white text-[10px] px-2 py-0.5 rounded-full">Falecido</div>
                 </div>
-                <div className="bg-white rounded-xl p-3 shadow-lg text-center border-2 border-slate-200 min-w-[160px]">
+                <div className={`bg-white rounded-xl p-3 shadow-lg text-center border-2 min-w-[160px] transition-colors ${selectedPersonId === 'falecido' ? 'border-slate-800 bg-slate-50' : 'border-slate-200'}`}>
                   <p className="font-bold text-[#333333] text-lg">{casoAtual.nome_falecido}</p>
-                  <p className="text-xs text-slate-500">{new Date(casoAtual.data_obito).toLocaleDateString('pt-BR')}</p>
+                  <p className="text-xs text-slate-500">{casoAtual.data_obito ? new Date(casoAtual.data_obito).toLocaleDateString('pt-BR') : ''}</p>
                 </div>
               </div>
 
@@ -36,12 +53,25 @@ export default function CanvasArvore({ casoAtual, herdeiros, selectedPersonId, o
                     </div>
                   </div>
 
-                  <div className="flex flex-col items-center">
-                    <div className="w-24 h-24 rounded-full bg-pink-600 flex items-center justify-center border-4 border-white shadow-xl mb-2 relative group cursor-help">
+                  <div 
+                    className="flex flex-col items-center cursor-pointer group"
+                    onClick={() => onSelectPerson({
+                      _tipo: 'conjuge',
+                      nome: casoAtual.conjuge_nome,
+                      cpf: casoAtual.conjuge_cpf,
+                      endereco: casoAtual.conjuge_endereco,
+                      cep: casoAtual.conjuge_cep,
+                      telefone: casoAtual.conjuge_telefone,
+                      email: casoAtual.conjuge_email,
+                      regime_bens: casoAtual.regime_bens,
+                      data_casamento: casoAtual.data_casamento,
+                    })}
+                  >
+                    <div className={`w-24 h-24 rounded-full bg-pink-600 flex items-center justify-center border-4 shadow-xl mb-2 relative transition-all group-hover:scale-105 ${selectedPersonId === 'conjuge' ? 'ring-4 ring-pink-400 ring-opacity-50 scale-110 border-white' : 'border-white'}`}>
                       <User className="w-12 h-12 text-white" />
                       <div className="absolute -bottom-2 bg-pink-800 text-white text-[10px] px-2 py-0.5 rounded-full">Cônjuge</div>
                     </div>
-                    <div className="bg-white rounded-xl p-3 shadow-lg text-center border-2 border-slate-200 min-w-[160px]">
+                    <div className={`bg-white rounded-xl p-3 shadow-lg text-center border-2 min-w-[160px] transition-colors ${selectedPersonId === 'conjuge' ? 'border-pink-600 bg-pink-50' : 'border-slate-200'}`}>
                       <p className="font-bold text-[#333333] text-lg">{casoAtual.conjuge_nome}</p>
                       <p className="text-xs text-slate-500">Sobrevivente</p>
                     </div>

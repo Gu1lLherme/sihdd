@@ -193,7 +193,7 @@ export default function ArvoreGenealogica() {
             <CanvasArvore 
               casoAtual={casoAtual}
               herdeiros={herdeirosDosCaso}
-              selectedPersonId={selectedPerson?.id}
+              selectedPersonId={selectedPerson?._tipo || selectedPerson?.id}
               onSelectPerson={setSelectedPerson}
               onCreatePerson={handleOpenCreate}
               zoomLevel={zoomLevel}
