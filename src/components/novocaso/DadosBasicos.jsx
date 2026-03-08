@@ -4,6 +4,7 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { masks } from "@/components/Masks";
 import { Calendar, Clock, MapPin, User, FileText, Phone, Mail, Briefcase, Users2, ScrollText, AlertCircle } from "lucide-react";
+import FileUpload from "@/components/FileUpload";
 
 export default function DadosBasicos({ formData, setFormData }) {
   const handleChange = (field, value) => {
@@ -247,6 +248,15 @@ export default function DadosBasicos({ formData, setFormData }) {
                 onChange={(e) => handleChange('certidao_obito_data', e.target.value)} />
             </div>
           </div>
+          <div className="pt-2">
+            <Label className="text-slate-600 mb-2 block">Anexar Certidão de Óbito (PDF/Imagem)</Label>
+            <FileUpload
+              value={formData.certidao_obito_url || ""}
+              onChange={(url) => handleChange("certidao_obito_url", url)}
+              label="Anexar Certidão de Óbito"
+              accept=".pdf,.jpg,.jpeg,.png"
+            />
+          </div>
         </div>
 
         {/* Testamento */}
@@ -267,34 +277,45 @@ export default function DadosBasicos({ formData, setFormData }) {
             </div>
           </div>
           {formData.existencia_testamento && (
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-2">
-              <div className="space-y-2">
-                <Label>Tipo de Testamento</Label>
-                <Select
-                  value={formData.testamento_tipo || undefined}
-                  onValueChange={(val) => handleChange('testamento_tipo', val)}>
-                  <SelectTrigger><SelectValue placeholder="Selecione" /></SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="publico">Público</SelectItem>
-                    <SelectItem value="cerrado">Cerrado</SelectItem>
-                    <SelectItem value="particular">Particular</SelectItem>
-                    <SelectItem value="nuncupativo">Nuncupativo</SelectItem>
-                  </SelectContent>
-                </Select>
+            <div className="space-y-4 pt-2">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div className="space-y-2">
+                  <Label>Tipo de Testamento</Label>
+                  <Select
+                    value={formData.testamento_tipo || undefined}
+                    onValueChange={(val) => handleChange('testamento_tipo', val)}>
+                    <SelectTrigger><SelectValue placeholder="Selecione" /></SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="publico">Público</SelectItem>
+                      <SelectItem value="cerrado">Cerrado</SelectItem>
+                      <SelectItem value="particular">Particular</SelectItem>
+                      <SelectItem value="nuncupativo">Nuncupativo</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="space-y-2">
+                  <Label>Cartório de Registro</Label>
+                  <Input
+                    value={formData.testamento_cartorio || ''}
+                    onChange={(e) => handleChange('testamento_cartorio', e.target.value)}
+                    placeholder="Cartório que registrou" />
+                </div>
+                <div className="space-y-2">
+                  <Label>Data de Lavratura</Label>
+                  <Input
+                    type="date"
+                    value={formData.testamento_data || ''}
+                    onChange={(e) => handleChange('testamento_data', e.target.value)} />
+                </div>
               </div>
-              <div className="space-y-2">
-                <Label>Cartório de Registro</Label>
-                <Input
-                  value={formData.testamento_cartorio || ''}
-                  onChange={(e) => handleChange('testamento_cartorio', e.target.value)}
-                  placeholder="Cartório que registrou" />
-              </div>
-              <div className="space-y-2">
-                <Label>Data de Lavratura</Label>
-                <Input
-                  type="date"
-                  value={formData.testamento_data || ''}
-                  onChange={(e) => handleChange('testamento_data', e.target.value)} />
+              <div>
+                <Label className="text-amber-800 mb-2 block">Anexar Testamento (PDF/Imagem)</Label>
+                <FileUpload
+                  value={formData.testamento_url || ""}
+                  onChange={(url) => handleChange("testamento_url", url)}
+                  label="Anexar Testamento"
+                  accept=".pdf,.jpg,.jpeg,.png"
+                />
               </div>
             </div>
           )}
@@ -474,6 +495,22 @@ export default function DadosBasicos({ formData, setFormData }) {
               onChange={(e) => handleChange('data_atendimento', e.target.value)} />
 
           </div>
+        </div>
+
+        {/* Documentos Gerais do Caso */}
+        <div className="space-y-4 p-4 bg-blue-50/50 border border-blue-200 rounded-lg">
+          <div className="flex items-center gap-2">
+            <FileText className="w-4 h-4 text-blue-600" />
+            <Label className="font-semibold text-blue-800">Documentos do Caso</Label>
+          </div>
+          <p className="text-xs text-blue-600">Anexe procurações, certidões, comprovantes e outros documentos relevantes.</p>
+          <FileUpload
+            value={formData.documentos_urls || []}
+            onChange={(urls) => handleChange("documentos_urls", urls)}
+            label="Anexar Documentos"
+            accept=".pdf,.jpg,.jpeg,.png,.doc,.docx"
+            multiple={true}
+          />
         </div>
       </div>
     </div>);

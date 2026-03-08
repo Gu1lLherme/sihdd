@@ -4,8 +4,9 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Package, Plus, Trash2, Upload } from "lucide-react";
+import { Package, Plus, Trash2 } from "lucide-react";
 import { masks } from "@/components/Masks";
+import FileUpload from "@/components/FileUpload";
 
 export default function ListaBensDoacao({ bens, onAddBem, onRemoveBem }) {
   const [novoBem, setNovoBem] = useState({
@@ -85,12 +86,12 @@ export default function ListaBensDoacao({ bens, onAddBem, onRemoveBem }) {
                 </div>
                 <div className="space-y-2">
                     <Label>Anexo (Documento/Matrícula)</Label>
-                    <div className="flex gap-2">
-                        <Button variant="outline" className="w-full" onClick={() => alert("Simulação de Upload: Documento anexado!")}>
-                            <Upload className="w-4 h-4 mr-2" />
-                            Anexar Documento
-                        </Button>
-                    </div>
+                    <FileUpload
+                      value={novoBem.documento_url || ""}
+                      onChange={(url) => setNovoBem({...novoBem, documento_url: url})}
+                      label="Anexar Documento"
+                      accept=".pdf,.jpg,.jpeg,.png"
+                    />
                 </div>
             </div>
             <Button onClick={handleAdd} className="w-full bg-amber-500 hover:bg-amber-600 text-white">

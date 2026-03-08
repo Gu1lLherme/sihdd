@@ -7,6 +7,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Plus, Trash2, Home, Car, Wallet, TrendingUp, Building2, Package } from "lucide-react";
 import { masks } from "@/components/Masks";
+import FileUpload from "@/components/FileUpload";
 
 const bemIcons = {
   imovel: Home,
@@ -213,6 +214,16 @@ export default function Bens({ formData, setFormData }) {
                         onChange={(e) => updateBem(index, "observacoes", e.target.value)}
                         placeholder="Observações adicionais"
                         className="h-16"
+                      />
+                    </div>
+
+                    <div className="space-y-2 md:col-span-2">
+                      <Label>Documento Comprobatório (Matrícula, CRLV, Extrato, etc.)</Label>
+                      <FileUpload
+                        value={bem.documento_url || ""}
+                        onChange={(url) => updateBem(index, "documento_url", url)}
+                        label="Anexar Documento do Bem"
+                        accept=".pdf,.jpg,.jpeg,.png"
                       />
                     </div>
                   </div>

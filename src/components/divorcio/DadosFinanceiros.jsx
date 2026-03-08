@@ -4,8 +4,9 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Scale, Upload, Calculator } from "lucide-react";
+import { Scale, Calculator } from "lucide-react";
 import { masks } from "@/components/Masks";
+import FileUpload from "@/components/FileUpload";
 
 export default function DadosFinanceiros({ data, onChange }) {
   
@@ -45,10 +46,12 @@ export default function DadosFinanceiros({ data, onChange }) {
             </div>
             <div className="space-y-2">
                 <Label>Documento do Regime</Label>
-                <Button variant="outline" className="w-full" onClick={() => alert("Upload Simulado!")}>
-                    <Upload className="w-4 h-4 mr-2" />
-                    Anexar Pacto/Certidão
-                </Button>
+                <FileUpload
+                  value={data.documento_regime_url || ""}
+                  onChange={(url) => onChange("documento_regime_url", url)}
+                  label="Anexar Pacto/Certidão"
+                  accept=".pdf,.jpg,.jpeg,.png"
+                />
             </div>
         </div>
 
