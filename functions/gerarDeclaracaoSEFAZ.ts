@@ -404,16 +404,25 @@ Deno.serve(async (req) => {
     draw(inventariante?.cpf_cnpj, COORDS.respCPF.x, COORDS.respCPF.y, { size: smallFont });
 
     // =========================================================================
-    // SERIALIZAÇÃO E RESPOSTA
+    // SERIALIZAÇÃO - Upload do PDF e retorno da URL
     // =========================================================================
     const pdfBytes = await pdfDoc.save();
 
-    return new Response(pdfBytes, {
-      status: 200,
-      headers: {
-        'Content-Type': 'application/pdf',
-        'Content-Disposition': `attachment; filename=Declaracao_ITCMD_${caso.numero_caso || caso.id}.pdf`
-      }
+    // Cria um File a partir dos bytes para upload
+    const pdfFile = new File(
+      [new Uint8Array(pdfBytes)],
+      `Declaracao_ITCMD_${caso.numero_caso || caso.id}.pdf`,
+      { type: 'application/pdf' }
+    );
+
+    // Upload via integração Core.UploadFile
+    const uploadResult = await base44.integrations.invoke('Core', 'UploadFile', { file: pdfFile });
+    const fileUrl = uploadResult.file_url;
+
+    return Response.json({
+      success: true,
+      file_url: fileUrl,
+      filename: `Declaracao_ITCMD_${caso.numero_caso || caso.id}.pdf`
     });
 
   } catch (error) {
