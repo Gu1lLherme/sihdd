@@ -374,28 +374,33 @@ export default function DadosBasicos({ formData, setFormData }) {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div className="space-y-2">
-            <Label htmlFor="conjuge_percentual">Porcentagem da Partilha (Meação/Quinhão)</Label>
-            <div className="relative">
-              <Input
-                id="conjuge_percentual"
-                type="number"
-                value={formData.conjuge_percentual || ''}
-                onChange={(e) => handleChange('conjuge_percentual', e.target.value)}
-                placeholder="0"
-                min="0"
-                max="100"
-                step="0.01"
-                className="pr-8"
-              />
-              <span className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500">%</span>
-            </div>
-            <p className="text-xs text-slate-500">
-              Valor estimado: R$ {formData.valor_patrimonio && formData.conjuge_percentual 
-                ? ((parseFloat(formData.valor_patrimonio) * parseFloat(formData.conjuge_percentual)) / 100).toLocaleString('pt-BR', { minimumFractionDigits: 2 }) 
-                : '0,00'}
-            </p>
+            <Label htmlFor="conjuge_rg">RG do Cônjuge</Label>
+            <Input
+              id="conjuge_rg"
+              value={formData.conjuge_rg || ''}
+              onChange={(e) => handleChange('conjuge_rg', e.target.value)}
+              placeholder="Número do RG"
+            />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="conjuge_nacionalidade">Nacionalidade</Label>
+            <Input
+              id="conjuge_nacionalidade"
+              value={formData.conjuge_nacionalidade || 'Brasileira'}
+              onChange={(e) => handleChange('conjuge_nacionalidade', e.target.value)}
+              placeholder="Nacionalidade"
+            />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="conjuge_profissao">Profissão</Label>
+            <Input
+              id="conjuge_profissao"
+              value={formData.conjuge_profissao || ''}
+              onChange={(e) => handleChange('conjuge_profissao', e.target.value)}
+              placeholder="Profissão do cônjuge"
+            />
           </div>
         </div>
 
