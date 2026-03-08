@@ -29,21 +29,19 @@ export default function DadosFinanceiros({ data, onChange }) {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="space-y-2">
                 <Label>Regime de Bens</Label>
-                <Select 
-                    value={data.regime_bens} 
-                    onValueChange={(val) => onChange("regime_bens", val)}
-                >
-                    <SelectTrigger>
-                        <SelectValue placeholder="Selecione o regime" />
-                    </SelectTrigger>
-                    <SelectContent>
-                        <SelectItem value="uniao_estavel">União Estável</SelectItem>
-                        <SelectItem value="comunhao_universal">Comunhão Universal</SelectItem>
-                        <SelectItem value="comunhao_parcial">Comunhão Parcial</SelectItem>
-                        <SelectItem value="separacao_total">Separação Total</SelectItem>
-                        <SelectItem value="participacao_final">Participação Final de Aquestos</SelectItem>
-                    </SelectContent>
-                </Select>
+                <Input 
+                    value={
+                      data.regime_bens === 'uniao_estavel' ? 'União Estável' :
+                      data.regime_bens === 'comunhao_universal' ? 'Comunhão Universal' :
+                      data.regime_bens === 'comunhao_parcial' ? 'Comunhão Parcial' :
+                      data.regime_bens === 'separacao_total' ? 'Separação Total' :
+                      data.regime_bens === 'participacao_final' ? 'Participação Final' :
+                      'Não informado'
+                    }
+                    readOnly
+                    className="bg-slate-100"
+                />
+                <p className="text-xs text-slate-500">Definido na etapa anterior</p>
             </div>
             <div className="space-y-2">
                 <Label>Documento do Regime</Label>
