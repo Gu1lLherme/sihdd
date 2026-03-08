@@ -25,7 +25,6 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { BarChart, Bar, ResponsiveContainer, XAxis, Tooltip, Cell } from "recharts";
 import { Card, CardContent } from "@/components/ui/card";
 
 import StatsCardNew from "../components/dashboard/StatsCardNew";
@@ -33,6 +32,7 @@ import IAWidget from "../components/dashboard/IAWidget";
 import ModelagemWidget from "../components/dashboard/ModelagemWidget";
 import PendingTasksWidget from "../components/dashboard/PendingTasksWidget";
 import RecentActivityTable from "../components/dashboard/RecentActivityTable";
+import PatrimonioChart from "../components/dashboard/PatrimonioChart";
 
 export default function Dashboard() {
   const { data: user } = useQuery({
@@ -139,35 +139,7 @@ export default function Dashboard() {
     ? `Próximo: ${new Date(nextTask.data_vencimento).toLocaleDateString()}` 
     : "Sem prazos próximos";
 
-  // Generate Chart Data from real Casos
-  const last6Months = Array.from({ length: 6 }, (_, i) => {
-    const d = new Date();
-    d.setMonth(d.getMonth() - i);
-    return d;
-  }).reverse();
-
-  const chartData = last6Months.map(date => {
-    const monthName = date.toLocaleString('pt-BR', { month: 'short' });
-    const monthKey = date.getMonth();
-    const yearKey = date.getFullYear();
-    
-    // Filter cases created in this month/year
-    const casesInMonth = casos.filter(c => {
-      const cDate = new Date(c.created_date);
-      return cDate.getMonth() === monthKey && cDate.getFullYear() === yearKey;
-    });
-
-    // Sum patrimonio or count cases? Design shows bars, likely value or count. 
-    // Given "Distribuição Patrimonial", let's sum patrimonio.
-    const totalValue = casesInMonth.reduce((sum, c) => sum + (c.valor_patrimonio || 0), 0);
-    
-    return {
-      name: monthName.charAt(0).toUpperCase() + monthName.slice(1),
-      value: totalValue,
-      // Highlight current month
-      active: monthKey === new Date().getMonth()
-    };
-  });
+  // Chart data is now handled by PatrimonioChart component
 
   return (
     <div className="space-y-6">
@@ -295,37 +267,7 @@ export default function Dashboard() {
         {/* Left Column (Charts & Activity) */}
         <div className="lg:col-span-2 space-y-6">
           {/* Chart Section */}
-          <Card className="border-none shadow-sm bg-white">
-            <CardContent className="p-6">
-              <div className="flex justify-between items-center mb-6">
-                <h3 className="font-bold text-[#1a237e] text-lg">Distribuição Patrimonial e Evolução</h3>
-                <Button variant="outline" size="sm" className="text-xs h-8">Últimos 6 Meses</Button>
-              </div>
-              
-              <div className="h-[250px] w-full">
-                <ResponsiveContainer width="100%" height="100%">
-                  <BarChart data={chartData} barSize={40}>
-                    <XAxis 
-                      dataKey="name" 
-                      axisLine={false} 
-                      tickLine={false} 
-                      tick={{ fill: '#94a3b8', fontSize: 12 }} 
-                      dy={10}
-                    />
-                    <Tooltip 
-                      cursor={{ fill: 'transparent' }}
-                      contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
-                    />
-                    <Bar dataKey="value" radius={[4, 4, 4, 4]}>
-                      {chartData.map((entry, index) => (
-                        <Cell key={`cell-${index}`} fill={entry.active ? '#D4AF37' : '#9fa8da'} />
-                      ))}
-                    </Bar>
-                  </BarChart>
-                </ResponsiveContainer>
-              </div>
-            </CardContent>
-          </Card>
+          <PatrimonioChart casos={casos} />
 
           {/* Recent Activity Table */}
           <RecentActivityTable casos={casos} />
