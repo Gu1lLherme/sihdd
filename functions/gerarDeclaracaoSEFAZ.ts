@@ -404,24 +404,21 @@ Deno.serve(async (req) => {
     draw(inventariante?.cpf_cnpj, COORDS.respCPF.x, COORDS.respCPF.y, { size: smallFont });
 
     // =========================================================================
-    // SERIALIZAÇÃO - Upload do PDF e retorno da URL
+    // SERIALIZAÇÃO - Retorna PDF como base64
     // =========================================================================
     const pdfBytes = await pdfDoc.save();
-
-    // Cria um File a partir dos bytes para upload
-    const pdfFile = new File(
-      [new Uint8Array(pdfBytes)],
-      `Declaracao_ITCMD_${caso.numero_caso || caso.id}.pdf`,
-      { type: 'application/pdf' }
-    );
-
-    // Upload via integração Core.UploadFile
-    const uploadResult = await base44.integrations.invoke('Core', 'UploadFile', { file: pdfFile });
-    const fileUrl = uploadResult.file_url;
+    const uint8 = new Uint8Array(pdfBytes);
+    
+    // Converter para base64
+    let binary = '';
+    for (let i = 0; i < uint8.length; i++) {
+      binary += String.fromCharCode(uint8[i]);
+    }
+    const base64 = btoa(binary);
 
     return Response.json({
       success: true,
-      file_url: fileUrl,
+      pdf_base64: base64,
       filename: `Declaracao_ITCMD_${caso.numero_caso || caso.id}.pdf`
     });
 
