@@ -9,6 +9,7 @@ import { useNavigate } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 
 import DadosBasicos from "../components/novocaso/DadosBasicos";
+import DadosInventario from "../components/novocaso/DadosInventario";
 import AdministradorProvisorio from "../components/novocaso/AdministradorProvisorio";
 import Herdeiros from "../components/novocaso/Herdeiros";
 import Bens from "../components/novocaso/Bens";
@@ -27,12 +28,13 @@ const WrapperInventariante = ({ formData, setFormData }) => {
 
 const ETAPAS = [
   { id: 1, titulo: "Dados Iniciais", componente: DadosBasicos },
-  { id: 2, titulo: "Administrador Provisório", componente: AdministradorProvisorio },
-  { id: 3, titulo: "Herdeiros", componente: Herdeiros },
-  { id: 4, titulo: "Inventariante", componente: WrapperInventariante },
-  { id: 5, titulo: "Bens", componente: Bens },
-  { id: 6, titulo: "Dívidas", componente: Dividas },
-  { id: 7, titulo: "Resumo", componente: Resumo },
+  { id: 2, titulo: "Tipo Inventário", componente: DadosInventario },
+  { id: 3, titulo: "Adm. Provisório", componente: AdministradorProvisorio },
+  { id: 4, titulo: "Herdeiros", componente: Herdeiros },
+  { id: 5, titulo: "Inventariante", componente: WrapperInventariante },
+  { id: 6, titulo: "Bens", componente: Bens },
+  { id: 7, titulo: "Dívidas", componente: Dividas },
+  { id: 8, titulo: "Resumo", componente: Resumo },
 ];
 
 export default function NovoCaso() {
@@ -121,6 +123,24 @@ export default function NovoCaso() {
         nome_falecido: data.nome_falecido,
         cpf_falecido: data.cpf_falecido,
         data_obito: data.data_obito,
+        estado_civil: data.estado_civil,
+        tipo_inventario: data.tipo_inventario || 'extrajudicial',
+        tipo_processo: data.tipo_processo || 'inventario',
+        data_abertura_inventario: data.data_abertura_inventario,
+        data_distribuicao: data.data_distribuicao,
+        numero_processo_judicial: data.numero_processo_judicial,
+        vara_comarca: data.vara_comarca,
+        data_homologacao_partilha: data.data_homologacao_partilha,
+        data_transito_julgado: data.data_transito_julgado,
+        numero_sobrepartilha: data.numero_sobrepartilha,
+        vara_comarca_sobrepartilha: data.vara_comarca_sobrepartilha,
+        data_homologacao_sobrepartilha: data.data_homologacao_sobrepartilha,
+        data_transito_julgado_sobrepartilha: data.data_transito_julgado_sobrepartilha,
+        cartorio_nome: data.cartorio_nome,
+        cartorio_municipio: data.cartorio_municipio,
+        cartorio_comarca: data.cartorio_comarca,
+        cessao_direitos: data.cessao_direitos,
+        renuncia_abdicativa: data.renuncia_abdicativa,
         conjuge_nome: data.conjuge_nome,
         conjuge_cpf: data.conjuge_cpf,
         data_casamento: data.data_casamento,
@@ -434,8 +454,8 @@ export default function NovoCaso() {
         const proximaEtapa = etapaAtual + 1;
         setEtapaAtual(proximaEtapa);
         
-        // Se for para o Resumo (Etapa 7), calcula a partilha
-        if (proximaEtapa === 7) {
+        // Se for para o Resumo (Etapa 8), calcula a partilha
+        if (proximaEtapa === 8) {
             await calcularPartilha();
         }
       }

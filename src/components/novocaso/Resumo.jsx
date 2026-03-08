@@ -1,7 +1,7 @@
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { CheckCircle2, User, Users, Home, Calculator, Scale, AlertTriangle, Heart } from "lucide-react";
+import { CheckCircle2, User, Users, Home, Calculator, Scale, AlertTriangle, Heart, FileText } from "lucide-react";
 import { PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip } from 'recharts';
 
 const COLORS = ['#1e40af', '#3b82f6', '#60a5fa', '#93c5fd', '#dbeafe', '#f59e0b', '#10b981'];
@@ -64,6 +64,17 @@ export default function Resumo({ formData, isCalculating, resultadoPartilha }) {
           Resumo do Inventário
         </h3>
         <p className="text-sm text-slate-600">Revise todos os dados antes de salvar</p>
+      </div>
+
+      {/* Aviso sobre Declaração SEFAZ */}
+      <div className="p-4 bg-blue-50 border-2 border-blue-200 rounded-lg flex items-start gap-3">
+        <FileText className="w-5 h-5 text-blue-600 mt-0.5" />
+        <div>
+          <p className="font-semibold text-blue-900">Declaração SEFAZ</p>
+          <p className="text-sm text-blue-700">
+            Após salvar o caso, você poderá gerar a "Declaração do ITCMD Causa Mortis" para envio à SEFAZ na página de detalhes do caso.
+          </p>
+        </div>
       </div>
 
       {/* Alerta da Regra dos 25% */}

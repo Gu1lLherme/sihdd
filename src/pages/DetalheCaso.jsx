@@ -11,6 +11,7 @@ import StatusTimeline from "../components/detalhecaso/StatusTimeline";
 import HerdeirosList from "../components/detalhecaso/HerdeirosList";
 import BensList from "../components/detalhecaso/BensList";
 import GuiasDAE from "../components/detalhecaso/GuiasDAE";
+import BotaoDeclaracaoSEFAZ from "../components/detalhecaso/BotaoDeclaracaoSEFAZ";
 
 export default function DetalheCaso() {
   const navigate = useNavigate();
@@ -92,12 +93,13 @@ export default function DetalheCaso() {
           >
             <ArrowLeft className="w-4 h-4" />
           </Button>
-          <div>
+          <div className="flex-1">
             <h1 className="text-3xl font-bold text-[#1e3a5f]">
               Inventário — {caso.nome_falecido}
             </h1>
             <p className="text-slate-600">Acompanhamento detalhado do processo</p>
           </div>
+          <BotaoDeclaracaoSEFAZ casoId={casoId} casoNumero={caso.numero_caso} />
         </div>
 
         <div className="space-y-6">
