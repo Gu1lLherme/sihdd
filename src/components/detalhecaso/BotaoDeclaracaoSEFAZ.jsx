@@ -14,15 +14,24 @@ export default function BotaoDeclaracaoSEFAZ({ casoId, casoNumero }) {
         caso_id: casoId
       });
 
-      const { file_url, filename } = response.data;
+      const { pdf_base64, filename } = response.data;
       
-      // Abre o PDF em nova aba para download
+      // Converte base64 para blob e faz download
+      const byteChars = atob(pdf_base64);
+      const byteNumbers = new Array(byteChars.length);
+      for (let i = 0; i < byteChars.length; i++) {
+        byteNumbers[i] = byteChars.charCodeAt(i);
+      }
+      const byteArray = new Uint8Array(byteNumbers);
+      const blob = new Blob([byteArray], { type: 'application/pdf' });
+      
+      const url = window.URL.createObjectURL(blob);
       const a = document.createElement('a');
-      a.href = file_url;
+      a.href = url;
       a.download = filename || `Declaracao_ITCMD_${casoNumero || casoId}.pdf`;
-      a.target = '_blank';
       document.body.appendChild(a);
       a.click();
+      window.URL.revokeObjectURL(url);
       a.remove();
       toast.success("Declaração SEFAZ gerada com sucesso!");
     } catch (error) {
