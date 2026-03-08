@@ -45,8 +45,7 @@ Deno.serve(async (req) => {
     }
 
     // Buscar todos os dados
-    const casos = await base44.entities.Caso.filter({ id: caso_id });
-    const caso = casos[0];
+    const caso = await base44.entities.Caso.get(caso_id);
     if (!caso) {
       return Response.json({ error: 'Caso não encontrado' }, { status: 404 });
     }
