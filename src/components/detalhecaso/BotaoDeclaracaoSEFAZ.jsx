@@ -12,16 +12,17 @@ export default function BotaoDeclaracaoSEFAZ({ casoId, casoNumero }) {
     try {
       const response = await base44.functions.invoke('gerarDeclaracaoSEFAZ', {
         caso_id: casoId
-      }, { responseType: 'arraybuffer' });
+      });
 
-      const blob = new Blob([response.data], { type: 'application/pdf' });
-      const url = window.URL.createObjectURL(blob);
+      const { file_url, filename } = response.data;
+      
+      // Abre o PDF em nova aba para download
       const a = document.createElement('a');
-      a.href = url;
-      a.download = `Declaracao_ITCMD_${casoNumero || casoId}.pdf`;
+      a.href = file_url;
+      a.download = filename || `Declaracao_ITCMD_${casoNumero || casoId}.pdf`;
+      a.target = '_blank';
       document.body.appendChild(a);
       a.click();
-      window.URL.revokeObjectURL(url);
       a.remove();
       toast.success("Declaração SEFAZ gerada com sucesso!");
     } catch (error) {
