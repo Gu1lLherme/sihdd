@@ -16,12 +16,22 @@ export default function Herdeiros({ formData, setFormData }) {
         {
           nome: "",
           cpf: "",
+          rg: "",
+          data_nascimento: "",
+          nacionalidade: "Brasileira",
+          profissao: "",
+          estado_civil: "solteiro",
+          endereco: "",
+          cep: "",
           parentesco: "filho",
           condicao_especial: "nenhuma",
           percentual_partilha: 0,
           email: "",
           telefone: "",
           e_filho_conjuge: true,
+          representante_legal_nome: "",
+          representante_legal_cpf: "",
+          representante_legal_telefone: "",
         },
       ],
     });
@@ -114,6 +124,69 @@ export default function Herdeiros({ formData, setFormData }) {
                   </div>
 
                   <div className="space-y-2">
+                    <Label>Data de Nascimento</Label>
+                    <Input
+                      type="date"
+                      value={herdeiro.data_nascimento || ''}
+                      onChange={(e) => updateHerdeiro(index, "data_nascimento", e.target.value)}
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label>Nacionalidade</Label>
+                    <Input
+                      value={herdeiro.nacionalidade || 'Brasileira'}
+                      onChange={(e) => updateHerdeiro(index, "nacionalidade", e.target.value)}
+                      placeholder="Nacionalidade"
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label>Profissão</Label>
+                    <Input
+                      value={herdeiro.profissao || ''}
+                      onChange={(e) => updateHerdeiro(index, "profissao", e.target.value)}
+                      placeholder="Profissão"
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label>Estado Civil</Label>
+                    <Select
+                      value={herdeiro.estado_civil || "solteiro"}
+                      onValueChange={(value) => updateHerdeiro(index, "estado_civil", value)}
+                    >
+                      <SelectTrigger><SelectValue /></SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="solteiro">Solteiro(a)</SelectItem>
+                        <SelectItem value="casado">Casado(a)</SelectItem>
+                        <SelectItem value="divorciado">Divorciado(a)</SelectItem>
+                        <SelectItem value="viuvo">Viúvo(a)</SelectItem>
+                        <SelectItem value="uniao_estavel">União Estável</SelectItem>
+                        <SelectItem value="menor">Menor</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label>Endereço</Label>
+                    <Input
+                      value={herdeiro.endereco || ''}
+                      onChange={(e) => updateHerdeiro(index, "endereco", e.target.value)}
+                      placeholder="Endereço completo"
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label>CEP</Label>
+                    <Input
+                      value={herdeiro.cep || ''}
+                      onChange={(e) => updateHerdeiro(index, "cep", masks.cep(e.target.value))}
+                      placeholder="00000-000"
+                    />
+                  </div>
+
+                  <div className="space-y-2">
                     <Label>Parentesco *</Label>
                     <Select
                       value={herdeiro.parentesco}
@@ -124,11 +197,18 @@ export default function Herdeiros({ formData, setFormData }) {
                       </SelectTrigger>
                       <SelectContent>
                         <SelectItem value="conjuge">Cônjuge</SelectItem>
-                        <SelectItem value="filho">Filho(a)</SelectItem>
+                        <SelectItem value="filho">Filho</SelectItem>
+                        <SelectItem value="filha">Filha</SelectItem>
                         <SelectItem value="pai">Pai</SelectItem>
                         <SelectItem value="mae">Mãe</SelectItem>
-                        <SelectItem value="irmao">Irmão/Irmã</SelectItem>
-                        <SelectItem value="neto">Neto(a)</SelectItem>
+                        <SelectItem value="irmao">Irmão</SelectItem>
+                        <SelectItem value="irma">Irmã</SelectItem>
+                        <SelectItem value="neto">Neto</SelectItem>
+                        <SelectItem value="neta">Neta</SelectItem>
+                        <SelectItem value="sobrinho">Sobrinho</SelectItem>
+                        <SelectItem value="sobrinha">Sobrinha</SelectItem>
+                        <SelectItem value="tio">Tio</SelectItem>
+                        <SelectItem value="tia">Tia</SelectItem>
                         <SelectItem value="outro">Outro</SelectItem>
                       </SelectContent>
                     </Select>
