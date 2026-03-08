@@ -58,6 +58,15 @@ export default function FormInventariante({ data, onChange, readOnly = false }) 
               readOnly={readOnly}
             />
           </div>
+          <div className="space-y-2 md:col-span-2">
+            <Label>Endereço Completo</Label>
+            <Input 
+              value={data.endereco || ""} 
+              onChange={(e) => handleChange("endereco", e.target.value)}
+              placeholder="Rua, Número, Bairro, Cidade - UF"
+              readOnly={readOnly}
+            />
+          </div>
           <div className="space-y-2">
             <Label>Data da Nomeação *</Label>
             <div className="relative">
