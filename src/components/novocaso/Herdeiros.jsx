@@ -292,6 +292,39 @@ export default function Herdeiros({ formData, setFormData }) {
                     />
                   </div>
                 </div>
+
+                {/* Representante Legal - aparece para menores/incapazes */}
+                {['menor', 'menor_emancipado', 'interditado', 'curatela', 'nascituro'].includes(herdeiro.condicao_especial) && (
+                  <div className="mt-4 p-4 bg-blue-50 border border-blue-200 rounded-lg space-y-4">
+                    <p className="text-sm font-semibold text-blue-900">Representante Legal</p>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                      <div className="space-y-2">
+                        <Label>Nome do Representante</Label>
+                        <Input
+                          value={herdeiro.representante_legal_nome || ''}
+                          onChange={(e) => updateHerdeiro(index, "representante_legal_nome", e.target.value)}
+                          placeholder="Nome completo"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label>CPF do Representante</Label>
+                        <Input
+                          value={herdeiro.representante_legal_cpf || ''}
+                          onChange={(e) => updateHerdeiro(index, "representante_legal_cpf", masks.cpf(e.target.value))}
+                          placeholder="000.000.000-00"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label>Telefone do Representante</Label>
+                        <Input
+                          value={herdeiro.representante_legal_telefone || ''}
+                          onChange={(e) => updateHerdeiro(index, "representante_legal_telefone", masks.phone(e.target.value))}
+                          placeholder="(00) 00000-0000"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                )}
               </CardContent>
             </Card>
           ))}
