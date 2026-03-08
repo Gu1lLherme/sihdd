@@ -108,10 +108,36 @@ export default function Resumo({ formData, isCalculating, resultadoPartilha }) {
               <span className="text-slate-600">CPF:</span>
               <span className="font-semibold">{formData.cpf_falecido || "-"}</span>
             </div>
+            {formData.profissao && (
+              <div className="flex justify-between">
+                <span className="text-slate-600">Profissão:</span>
+                <span className="font-semibold">{formData.profissao}</span>
+              </div>
+            )}
+            {formData.filiacao_mae && (
+              <div className="flex justify-between">
+                <span className="text-slate-600">Filiação:</span>
+                <span className="font-semibold text-xs">{formData.filiacao_pai || '-'} / {formData.filiacao_mae}</span>
+              </div>
+            )}
             <div className="flex justify-between">
               <span className="text-slate-600">Data Óbito:</span>
               <span className="font-semibold">{formData.data_obito || "-"}</span>
             </div>
+            {formData.certidao_obito_numero && (
+              <div className="flex justify-between">
+                <span className="text-slate-600">Cert. Óbito:</span>
+                <span className="font-semibold text-xs">{formData.certidao_obito_numero}</span>
+              </div>
+            )}
+            {formData.existencia_testamento && (
+              <div className="flex justify-between">
+                <span className="text-slate-600">Testamento:</span>
+                <Badge variant="outline" className="text-amber-700 border-amber-300 bg-amber-50 text-xs">
+                  {formData.testamento_tipo ? formData.testamento_tipo.charAt(0).toUpperCase() + formData.testamento_tipo.slice(1) : 'Sim'}
+                </Badge>
+              </div>
+            )}
             <div className="flex justify-between">
               <span className="text-slate-600">Cônjuge:</span>
               <span className="font-semibold">{formData.conjuge_nome || "-"}</span>
