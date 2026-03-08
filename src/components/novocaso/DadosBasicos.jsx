@@ -3,45 +3,57 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { masks } from "@/components/Masks";
-import { Calendar, Clock, MapPin, User, FileText, Phone, Mail, Briefcase, Users2, ScrollText } from "lucide-react";
+import { Calendar, Clock, MapPin, User, FileText, Phone, Mail, Briefcase, Users2, ScrollText, AlertCircle } from "lucide-react";
 
 export default function DadosBasicos({ formData, setFormData }) {
   const handleChange = (field, value) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
+  const nomeVazio = !formData.nome_falecido?.trim();
+  const cpfVazio = !formData.cpf_falecido?.trim();
+  const dataObitoVazia = !formData.data_obito;
+  const temCamposObrigatoriosVazios = nomeVazio || cpfVazio || dataObitoVazia;
+
   return (
     <div className="space-y-8 animate-in fade-in duration-500">
+
+      {temCamposObrigatoriosVazios && (
+        <div className="flex items-center gap-2 p-3 bg-amber-50 border border-amber-200 rounded-lg">
+          <AlertCircle className="w-5 h-5 text-amber-600 shrink-0" />
+          <p className="text-sm text-amber-700">Preencha todos os campos obrigatórios (<span className="text-red-500 font-bold">*</span>) para avançar à próxima etapa.</p>
+        </div>
+      )}
       
       {/* 1.1 DADOS DO FALECIDO */}
       <div className="space-y-6">
         <div className="flex items-center gap-2 border-b pb-2 border-slate-200">
           <User className="w-5 h-5 text-blue-900" />
-          <h3 className="font-bold text-xl text-blue-900">Dados do Falecido
-          </h3>
+          <h3 className="font-bold text-xl text-blue-900">Dados do Falecido</h3>
         </div>
 
         {/* Nome Completo */}
         <div className="space-y-2">
-          <Label htmlFor="nome_falecido">Nome Completo *</Label>
+          <Label htmlFor="nome_falecido">Nome Completo <span className="text-red-500">*</span></Label>
           <Input id="nome_falecido"
           value={formData.nome_falecido || ''}
           onChange={(e) => handleChange('nome_falecido', e.target.value)}
           placeholder="Nome completo do falecido"
-          className="text-lg" />
-
+          className={`text-lg ${nomeVazio ? "border-red-300 focus:border-red-500" : ""}`} />
+          {nomeVazio && <p className="text-xs text-red-500">Campo obrigatório</p>}
         </div>
 
         {/* Documentação */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
           <div className="space-y-2">
-            <Label htmlFor="cpf_falecido">CPF *</Label>
+            <Label htmlFor="cpf_falecido">CPF <span className="text-red-500">*</span></Label>
             <Input
               id="cpf_falecido"
               value={formData.cpf_falecido}
               onChange={(e) => handleChange('cpf_falecido', masks.cpf(e.target.value))}
-              placeholder="000.000.000-00" />
-
+              placeholder="000.000.000-00"
+              className={cpfVazio ? "border-red-300 focus:border-red-500" : ""} />
+            {cpfVazio && <p className="text-xs text-red-500">Campo obrigatório</p>}
           </div>
           <div className="space-y-2">
             <Label htmlFor="rg">RG</Label>
@@ -141,17 +153,17 @@ export default function DadosBasicos({ formData, setFormData }) {
         {/* Informações do Óbito */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div className="space-y-2">
-            <Label htmlFor="data_obito">Data do Óbito *</Label>
+            <Label htmlFor="data_obito">Data do Óbito <span className="text-red-500">*</span></Label>
             <div className="relative">
               <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
               <Input
                 id="data_obito"
                 type="date"
-                className="pl-10"
+                className={`pl-10 ${dataObitoVazia ? "border-red-300 focus:border-red-500" : ""}`}
                 value={formData.data_obito || ''}
                 onChange={(e) => handleChange('data_obito', e.target.value)} />
-
             </div>
+            {dataObitoVazia && <p className="text-xs text-red-500">Campo obrigatório</p>}
           </div>
           <div className="space-y-2">
             <Label htmlFor="horario_obito">Horário do Óbito</Label>
