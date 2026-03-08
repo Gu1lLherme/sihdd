@@ -25,7 +25,7 @@ export default function DadosBasicos({ formData, setFormData }) {
         <div className="space-y-2">
           <Label htmlFor="nome_falecido">Nome Completo *</Label>
           <Input id="nome_falecido"
-          value={formData.nome_falecido}
+          value={formData.nome_falecido || ''}
           onChange={(e) => handleChange('nome_falecido', e.target.value)}
           placeholder="Nome completo do falecido"
           className="text-lg" />
@@ -77,7 +77,7 @@ export default function DadosBasicos({ formData, setFormData }) {
           <div className="space-y-2">
             <Label htmlFor="sexo">Sexo</Label>
             <Select
-              value={formData.sexo}
+              value={formData.sexo || undefined}
               onValueChange={(val) => handleChange('sexo', val)}>
 
               <SelectTrigger>
@@ -119,7 +119,7 @@ export default function DadosBasicos({ formData, setFormData }) {
                 id="data_obito"
                 type="date"
                 className="pl-10"
-                value={formData.data_obito}
+                value={formData.data_obito || ''}
                 onChange={(e) => handleChange('data_obito', e.target.value)} />
 
             </div>
@@ -179,7 +179,7 @@ export default function DadosBasicos({ formData, setFormData }) {
           <div className="space-y-2">
             <Label htmlFor="regime_bens">Regime de Bens do Casamento</Label>
             <Select
-              value={formData.regime_bens}
+              value={formData.regime_bens || undefined}
               onValueChange={(val) => handleChange('regime_bens', val)}>
 
               <SelectTrigger>
@@ -244,7 +244,7 @@ export default function DadosBasicos({ formData, setFormData }) {
             <Label htmlFor="conjuge_nome">Nome Completo</Label>
             <Input
               id="conjuge_nome"
-              value={formData.conjuge_nome}
+              value={formData.conjuge_nome || ''}
               onChange={(e) => handleChange('conjuge_nome', e.target.value)}
               placeholder="Nome completo do viúvo(a)"
             />

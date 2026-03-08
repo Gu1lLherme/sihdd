@@ -251,7 +251,6 @@ export default function NovoCaso() {
   });
 
   const validateStep = (step) => {
-    return true; // Validação desabilitada para testes
     const missing = [];
 
     switch (step) {
@@ -266,36 +265,26 @@ export default function NovoCaso() {
         }
         return true;
 
-      case 2: // Administrador Provisório
-        // Validações opcionais ou obrigatórias? Assumindo opcionais por enquanto ou apenas nome
-        // if (!formData.administrador_provisorio?.nome) {
-        //    toast.error("Informe o nome do Administrador Provisório");
-        //    return false;
-        // }
+      case 2: // Tipo Inventário
         return true;
 
-      case 3: // Herdeiros
+      case 3: // Administrador Provisório
+        return true;
+
+      case 4: // Herdeiros
         if (formData.herdeiros.length === 0) {
           toast.error("Adicione pelo menos um herdeiro para prosseguir.");
           return false;
         }
         
-        // Validar dados dos herdeiros
-        const herdeirosIncompletos = formData.herdeiros.some(h => !h.nome || !h.parentesco || !h.percentual_partilha);
+        const herdeirosIncompletos = formData.herdeiros.some(h => !h.nome || !h.parentesco);
         if (herdeirosIncompletos) {
-             toast.error("Verifique os dados dos herdeiros (Nome, Parentesco e % são obrigatórios).");
+             toast.error("Verifique os dados dos herdeiros (Nome e Parentesco são obrigatórios).");
              return false;
-        }
-
-        // Validar percentual total
-        const totalPercentual = formData.herdeiros.reduce((sum, h) => sum + (parseFloat(h.percentual_partilha) || 0), 0);
-        if (Math.abs(totalPercentual - 100) > 0.1) {
-            toast.error(`A soma das partilhas deve ser 100%. Total atual: ${totalPercentual.toFixed(2)}%`);
-            return false;
         }
         return true;
 
-      case 4: // Inventariante
+      case 5: // Inventariante
         if (!formData.inventariante?.nome) missing.push("Nome do Inventariante");
         if (!formData.inventariante?.cpf_cnpj) missing.push("CPF/CNPJ do Inventariante");
         if (!formData.inventariante?.data_nomeacao) missing.push("Data de Nomeação");
@@ -306,7 +295,7 @@ export default function NovoCaso() {
         }
         return true;
 
-      case 5: // Bens
+      case 6: // Bens
         if (formData.bens.length === 0) {
             toast.warning("Atenção: Nenhum bem foi adicionado ao espólio.");
         }
@@ -317,7 +306,7 @@ export default function NovoCaso() {
         }
         return true;
 
-      case 6: // Dívidas
+      case 7: // Dívidas
         return true;
 
       default:

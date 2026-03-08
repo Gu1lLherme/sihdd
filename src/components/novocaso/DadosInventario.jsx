@@ -240,7 +240,7 @@ export default function DadosInventario({ formData, setFormData }) {
       <div className="space-y-2">
         <Label>Estado Civil do Falecido</Label>
         <Select
-          value={formData.estado_civil || ''}
+          value={formData.estado_civil || undefined}
           onValueChange={(val) => handleChange('estado_civil', val)}
         >
           <SelectTrigger><SelectValue placeholder="Selecione" /></SelectTrigger>
