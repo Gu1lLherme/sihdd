@@ -3,7 +3,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { masks } from "@/components/Masks";
-import { Calendar, Clock, MapPin, User, FileText, Phone, Mail } from "lucide-react";
+import { Calendar, Clock, MapPin, User, FileText, Phone, Mail, Briefcase, Users2, ScrollText } from "lucide-react";
 
 export default function DadosBasicos({ formData, setFormData }) {
   const handleChange = (field, value) => {
@@ -79,7 +79,6 @@ export default function DadosBasicos({ formData, setFormData }) {
             <Select
               value={formData.sexo || undefined}
               onValueChange={(val) => handleChange('sexo', val)}>
-
               <SelectTrigger>
                 <SelectValue placeholder="Selecione" />
               </SelectTrigger>
@@ -96,7 +95,6 @@ export default function DadosBasicos({ formData, setFormData }) {
               value={formData.nacionalidade || 'Brasileira'}
               onChange={(e) => handleChange('nacionalidade', e.target.value)}
               placeholder="Ex: Brasileira" />
-
           </div>
           <div className="space-y-2">
             <Label htmlFor="data_nascimento">Data de Nascimento</Label>
@@ -105,7 +103,38 @@ export default function DadosBasicos({ formData, setFormData }) {
               type="date"
               value={formData.data_nascimento || ''}
               onChange={(e) => handleChange('data_nascimento', e.target.value)} />
+          </div>
+        </div>
 
+        {/* Profissão e Filiação */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="space-y-2">
+            <Label htmlFor="profissao">Profissão</Label>
+            <div className="relative">
+              <Briefcase className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+              <Input
+                id="profissao"
+                className="pl-10"
+                value={formData.profissao || ''}
+                onChange={(e) => handleChange('profissao', e.target.value)}
+                placeholder="Profissão do falecido" />
+            </div>
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="filiacao_pai">Nome do Pai</Label>
+            <Input
+              id="filiacao_pai"
+              value={formData.filiacao_pai || ''}
+              onChange={(e) => handleChange('filiacao_pai', e.target.value)}
+              placeholder="Nome completo do pai" />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="filiacao_mae">Nome da Mãe</Label>
+            <Input
+              id="filiacao_mae"
+              value={formData.filiacao_mae || ''}
+              onChange={(e) => handleChange('filiacao_mae', e.target.value)}
+              placeholder="Nome completo da mãe" />
           </div>
         </div>
 
@@ -172,6 +201,91 @@ export default function DadosBasicos({ formData, setFormData }) {
               placeholder="00000-000" />
 
           </div>
+        </div>
+
+        {/* Certidão de Óbito */}
+        <div className="space-y-4 p-4 bg-slate-50 border border-slate-200 rounded-lg">
+          <div className="flex items-center gap-2">
+            <ScrollText className="w-4 h-4 text-slate-600" />
+            <Label className="font-semibold text-slate-700">Certidão de Óbito</Label>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="space-y-2">
+              <Label htmlFor="certidao_obito_numero">Nº Matrícula</Label>
+              <Input
+                id="certidao_obito_numero"
+                value={formData.certidao_obito_numero || ''}
+                onChange={(e) => handleChange('certidao_obito_numero', e.target.value)}
+                placeholder="Número da matrícula" />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="certidao_obito_cartorio">Cartório Emissor</Label>
+              <Input
+                id="certidao_obito_cartorio"
+                value={formData.certidao_obito_cartorio || ''}
+                onChange={(e) => handleChange('certidao_obito_cartorio', e.target.value)}
+                placeholder="Nome do cartório" />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="certidao_obito_data">Data de Emissão</Label>
+              <Input
+                id="certidao_obito_data"
+                type="date"
+                value={formData.certidao_obito_data || ''}
+                onChange={(e) => handleChange('certidao_obito_data', e.target.value)} />
+            </div>
+          </div>
+        </div>
+
+        {/* Testamento */}
+        <div className="space-y-4 p-4 bg-amber-50/50 border border-amber-200 rounded-lg">
+          <div className="flex items-start gap-3">
+            <input
+              type="checkbox"
+              id="existencia_testamento"
+              checked={formData.existencia_testamento === true}
+              onChange={(e) => handleChange('existencia_testamento', e.target.checked)}
+              className="mt-1 w-4 h-4 text-blue-600 rounded"
+            />
+            <div className="flex-1">
+              <Label htmlFor="existencia_testamento" className="font-semibold text-amber-900">
+                Existe testamento registrado?
+              </Label>
+              <p className="text-xs text-amber-700 mt-1">Marque se há testamento público, cerrado ou particular.</p>
+            </div>
+          </div>
+          {formData.existencia_testamento && (
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-2">
+              <div className="space-y-2">
+                <Label>Tipo de Testamento</Label>
+                <Select
+                  value={formData.testamento_tipo || undefined}
+                  onValueChange={(val) => handleChange('testamento_tipo', val)}>
+                  <SelectTrigger><SelectValue placeholder="Selecione" /></SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="publico">Público</SelectItem>
+                    <SelectItem value="cerrado">Cerrado</SelectItem>
+                    <SelectItem value="particular">Particular</SelectItem>
+                    <SelectItem value="nuncupativo">Nuncupativo</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="space-y-2">
+                <Label>Cartório de Registro</Label>
+                <Input
+                  value={formData.testamento_cartorio || ''}
+                  onChange={(e) => handleChange('testamento_cartorio', e.target.value)}
+                  placeholder="Cartório que registrou" />
+              </div>
+              <div className="space-y-2">
+                <Label>Data de Lavratura</Label>
+                <Input
+                  type="date"
+                  value={formData.testamento_data || ''}
+                  onChange={(e) => handleChange('testamento_data', e.target.value)} />
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Regime de Bens e Data do Casamento */}
