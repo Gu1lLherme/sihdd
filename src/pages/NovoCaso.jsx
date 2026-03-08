@@ -491,13 +491,13 @@ export default function NovoCaso() {
           </div>
         </div>
 
-        <div className="mb-8">
-          <div className="flex justify-between items-center">
+        <div className="mb-8 overflow-x-auto">
+          <div className="flex justify-between items-center min-w-[700px]">
             {ETAPAS.map((etapa, index) => (
               <div key={etapa.id} className="flex items-center flex-1">
                 <div className="flex flex-col items-center flex-1">
                   <div
-                    className={`w-10 h-10 rounded-full flex items-center justify-center font-semibold transition-colors ${
+                    className={`w-8 h-8 md:w-10 md:h-10 rounded-full flex items-center justify-center font-semibold text-sm transition-colors ${
                       etapaAtual >= etapa.id
                         ? "bg-blue-900 text-white"
                         : "bg-slate-200 text-slate-500"
@@ -506,7 +506,7 @@ export default function NovoCaso() {
                     {etapa.id}
                   </div>
                   <p
-                    className={`text-sm mt-2 font-medium ${
+                    className={`text-[10px] md:text-xs mt-1 font-medium text-center leading-tight ${
                       etapaAtual >= etapa.id ? "text-blue-900" : "text-slate-500"
                     }`}
                   >
@@ -515,7 +515,7 @@ export default function NovoCaso() {
                 </div>
                 {index < ETAPAS.length - 1 && (
                   <div
-                    className={`h-1 flex-1 mx-2 rounded transition-colors ${
+                    className={`h-1 flex-1 mx-1 rounded transition-colors ${
                       etapaAtual > etapa.id ? "bg-blue-900" : "bg-slate-200"
                     }`}
                   />
