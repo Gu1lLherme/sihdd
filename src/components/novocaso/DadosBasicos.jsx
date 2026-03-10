@@ -54,8 +54,10 @@ export default function DadosBasicos({ formData, setFormData }) {
               value={formData.cpf_falecido}
               onChange={(e) => handleChange('cpf_falecido', masks.cpf(e.target.value))}
               placeholder="000.000.000-00"
-              className={cpfVazio ? "border-red-300 focus:border-red-500" : ""} />
+              maxLength={14}
+              className={cpfVazio || (!validators.cpf(formData.cpf_falecido).valid && formData.cpf_falecido) ? "border-red-300 focus:border-red-500" : ""} />
             {cpfVazio && <p className="text-xs text-red-500">Campo obrigatório</p>}
+            <FieldError value={formData.cpf_falecido} validator="cpf" />
           </div>
           <div className="space-y-2">
             <Label htmlFor="rg">RG</Label>
@@ -212,8 +214,9 @@ export default function DadosBasicos({ formData, setFormData }) {
               id="cep"
               value={formData.cep || ''}
               onChange={(e) => handleChange('cep', masks.cep(e.target.value))}
-              placeholder="00000-000" />
-
+              placeholder="00000-000"
+              maxLength={9} />
+            <FieldError value={formData.cep} validator="cep" />
           </div>
         </div>
 
@@ -403,7 +406,9 @@ export default function DadosBasicos({ formData, setFormData }) {
               value={formData.conjuge_cpf || ''}
               onChange={(e) => handleChange('conjuge_cpf', masks.cpf(e.target.value))}
               placeholder="000.000.000-00"
+              maxLength={14}
             />
+            <FieldError value={formData.conjuge_cpf} validator="cpf" />
           </div>
         </div>
 
@@ -453,8 +458,9 @@ export default function DadosBasicos({ formData, setFormData }) {
               id="conjuge_cep"
               value={formData.conjuge_cep || ''}
               onChange={(e) => handleChange('conjuge_cep', masks.cep(e.target.value))}
-              placeholder="00000-000" />
-
+              placeholder="00000-000"
+              maxLength={9} />
+            <FieldError value={formData.conjuge_cep} validator="cep" />
           </div>
         </div>
 
@@ -468,8 +474,9 @@ export default function DadosBasicos({ formData, setFormData }) {
                 className="pl-10"
                 value={formData.conjuge_telefone || ''}
                 onChange={(e) => handleChange('conjuge_telefone', masks.phone(e.target.value))}
-                placeholder="(00) 00000-0000" />
-
+                placeholder="(00) 00000-0000"
+                maxLength={15} />
+              <FieldError value={formData.conjuge_telefone} validator="phone" />
             </div>
           </div>
           <div className="space-y-2">
@@ -483,7 +490,7 @@ export default function DadosBasicos({ formData, setFormData }) {
                 value={formData.conjuge_email || ''}
                 onChange={(e) => handleChange('conjuge_email', e.target.value)}
                 placeholder="email@exemplo.com" />
-
+              <FieldError value={formData.conjuge_email} validator="email" />
             </div>
           </div>
           <div className="space-y-2">
