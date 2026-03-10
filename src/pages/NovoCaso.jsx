@@ -282,8 +282,12 @@ export default function NovoCaso() {
 
         // Validações de formato
         const erros = [];
+        if (formData.nome_falecido && !validators.nome(formData.nome_falecido).valid) erros.push("Nome do Falecido: " + validators.nome(formData.nome_falecido).message);
         if (formData.cpf_falecido && !validators.cpf(formData.cpf_falecido).valid) erros.push("CPF do Falecido inválido");
+        if (formData.rg && !validators.rg(formData.rg).valid) erros.push("RG do Falecido inválido");
+        if (formData.conjuge_nome && !validators.nome(formData.conjuge_nome).valid) erros.push("Nome do Cônjuge: " + validators.nome(formData.conjuge_nome).message);
         if (formData.conjuge_cpf && !validators.cpf(formData.conjuge_cpf).valid) erros.push("CPF do Cônjuge inválido");
+        if (formData.conjuge_rg && !validators.rg(formData.conjuge_rg).valid) erros.push("RG do Cônjuge inválido");
         if (formData.conjuge_email && !validators.email(formData.conjuge_email).valid) erros.push("Email do Cônjuge inválido");
         if (formData.conjuge_telefone && !validators.phone(formData.conjuge_telefone).valid) erros.push("Telefone do Cônjuge inválido");
         if (formData.cep && !validators.cep(formData.cep).valid) erros.push("CEP do Falecido inválido");
@@ -298,8 +302,20 @@ export default function NovoCaso() {
       case 2: // Tipo Inventário
         return true;
 
-      case 3: // Administrador Provisório
+      case 3: { // Administrador Provisório
+        const adm = formData.administrador_provisorio || {};
+        const errosAdm = [];
+        if (adm.cpf && !validators.cpf(adm.cpf).valid) errosAdm.push("CPF do Administrador inválido");
+        if (adm.email && !validators.email(adm.email).valid) errosAdm.push("Email do Administrador inválido");
+        if (adm.telefone && !validators.phone(adm.telefone).valid) errosAdm.push("Telefone do Administrador inválido");
+        if (adm.cep && !validators.cep(adm.cep).valid) errosAdm.push("CEP do Administrador inválido");
+        if (adm.conjuge_cpf && !validators.cpf(adm.conjuge_cpf).valid) errosAdm.push("CPF do Cônjuge do Administrador inválido");
+        if (errosAdm.length > 0) {
+          toast.error(errosAdm.join("; "));
+          return false;
+        }
         return true;
+      }
 
       case 4: // Herdeiros
         if (formData.herdeiros.length === 0) {
@@ -317,8 +333,10 @@ export default function NovoCaso() {
         const errosHerdeiros = [];
         formData.herdeiros.forEach((h, i) => {
           if (h.cpf && !validators.cpf(h.cpf).valid) errosHerdeiros.push(`CPF do Herdeiro ${i + 1} inválido`);
+          if (h.rg && !validators.rg(h.rg).valid) errosHerdeiros.push(`RG do Herdeiro ${i + 1} inválido`);
           if (h.email && !validators.email(h.email).valid) errosHerdeiros.push(`Email do Herdeiro ${i + 1} inválido`);
           if (h.telefone && !validators.phone(h.telefone).valid) errosHerdeiros.push(`Telefone do Herdeiro ${i + 1} inválido`);
+          if (h.cep && !validators.cep(h.cep).valid) errosHerdeiros.push(`CEP do Herdeiro ${i + 1} inválido`);
         });
         if (errosHerdeiros.length > 0) {
           toast.error(errosHerdeiros.join("; "));
@@ -326,7 +344,7 @@ export default function NovoCaso() {
         }
         return true;
 
-      case 5: // Inventariante
+      case 5: { // Inventariante
         if (!formData.inventariante?.nome) missing.push("Nome do Inventariante");
         if (!formData.inventariante?.cpf_cnpj) missing.push("CPF/CNPJ do Inventariante");
         if (!formData.inventariante?.data_nomeacao) missing.push("Data de Nomeação");
@@ -335,7 +353,17 @@ export default function NovoCaso() {
             toast.error(`Campos obrigatórios do Inventariante: ${missing.join(", ")}`);
             return false;
         }
+        const inv = formData.inventariante;
+        const errosInv = [];
+        if (inv.cpf_cnpj && !validators.cpf(inv.cpf_cnpj).valid) errosInv.push("CPF/CNPJ do Inventariante inválido");
+        if (inv.email && !validators.email(inv.email).valid) errosInv.push("Email do Inventariante inválido");
+        if (inv.telefone && !validators.phone(inv.telefone).valid) errosInv.push("Telefone do Inventariante inválido");
+        if (errosInv.length > 0) {
+            toast.error(errosInv.join("; "));
+            return false;
+        }
         return true;
+      }
 
       case 6: // Bens
         if (formData.bens.length === 0) {
