@@ -69,5 +69,28 @@ export const masks = {
       .toUpperCase()
       .replace(/[^A-Z0-9]/g, '')
       .slice(0, 7);
+  },
+
+  rg: (value) => {
+    return value.replace(/\D/g, '').slice(0, 15);
+  },
+
+  onlyLetters: (value) => {
+    return value.replace(/[^a-zA-ZÀ-ÿ\s]/g, '');
+  },
+
+  orgaoExpedidor: (value) => {
+    return value.replace(/[^a-zA-Z/\-\s]/g, '').toUpperCase();
+  },
+
+  processNumber: (value) => {
+    return value
+      .replace(/\D/g, '')
+      .replace(/(\d{7})(\d)/, '$1-$2')
+      .replace(/(-\d{2})(\d)/, '$1.$2')
+      .replace(/(\.\d{4})(\d)/, '$1.$2')
+      .replace(/(\.\d{1})(\d)/, '$1.$2')
+      .replace(/(\.\d{2})(\d)/, '$1.$2')
+      .slice(0, 25);
   }
 };
