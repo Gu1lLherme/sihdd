@@ -39,10 +39,11 @@ export default function DadosBasicos({ formData, setFormData }) {
           <Label htmlFor="nome_falecido">Nome Completo <span className="text-red-500">*</span></Label>
           <Input id="nome_falecido"
           value={formData.nome_falecido || ''}
-          onChange={(e) => handleChange('nome_falecido', e.target.value)}
+          onChange={(e) => handleChange('nome_falecido', masks.onlyLetters(e.target.value))}
           placeholder="Nome completo do falecido"
           className={`text-lg ${nomeVazio ? "border-red-300 focus:border-red-500" : ""}`} />
           {nomeVazio && <p className="text-xs text-red-500">Campo obrigatório</p>}
+          <FieldError value={formData.nome_falecido} validator="nome" />
         </div>
 
         {/* Documentação */}
@@ -64,18 +65,19 @@ export default function DadosBasicos({ formData, setFormData }) {
             <Input
               id="rg"
               value={formData.rg || ''}
-              onChange={(e) => handleChange('rg', e.target.value)}
-              placeholder="Número do RG" />
-
+              onChange={(e) => handleChange('rg', masks.rg(e.target.value))}
+              placeholder="Somente números"
+              maxLength={15} />
+            <FieldError value={formData.rg} validator="rg" />
           </div>
           <div className="space-y-2">
             <Label htmlFor="orgao_expedidor">Órgão Expedidor</Label>
             <Input
               id="orgao_expedidor"
               value={formData.orgao_expedidor || ''}
-              onChange={(e) => handleChange('orgao_expedidor', e.target.value.toUpperCase())}
-              placeholder="SSP/UF" />
-
+              onChange={(e) => handleChange('orgao_expedidor', masks.orgaoExpedidor(e.target.value))}
+              placeholder="SSP/UF"
+              maxLength={10} />
           </div>
           <div className="space-y-2">
             <Label htmlFor="data_expedicao">Data Expedição</Label>
@@ -109,7 +111,7 @@ export default function DadosBasicos({ formData, setFormData }) {
             <Input
               id="nacionalidade"
               value={formData.nacionalidade || 'Brasileira'}
-              onChange={(e) => handleChange('nacionalidade', e.target.value)}
+              onChange={(e) => handleChange('nacionalidade', masks.onlyLetters(e.target.value))}
               placeholder="Ex: Brasileira" />
           </div>
           <div className="space-y-2">
@@ -132,7 +134,7 @@ export default function DadosBasicos({ formData, setFormData }) {
                 id="profissao"
                 className="pl-10"
                 value={formData.profissao || ''}
-                onChange={(e) => handleChange('profissao', e.target.value)}
+                onChange={(e) => handleChange('profissao', masks.onlyLetters(e.target.value))}
                 placeholder="Profissão do falecido" />
             </div>
           </div>
@@ -141,7 +143,7 @@ export default function DadosBasicos({ formData, setFormData }) {
             <Input
               id="filiacao_pai"
               value={formData.filiacao_pai || ''}
-              onChange={(e) => handleChange('filiacao_pai', e.target.value)}
+              onChange={(e) => handleChange('filiacao_pai', masks.onlyLetters(e.target.value))}
               placeholder="Nome completo do pai" />
           </div>
           <div className="space-y-2">
@@ -149,7 +151,7 @@ export default function DadosBasicos({ formData, setFormData }) {
             <Input
               id="filiacao_mae"
               value={formData.filiacao_mae || ''}
-              onChange={(e) => handleChange('filiacao_mae', e.target.value)}
+              onChange={(e) => handleChange('filiacao_mae', masks.onlyLetters(e.target.value))}
               placeholder="Nome completo da mãe" />
           </div>
         </div>
@@ -395,9 +397,10 @@ export default function DadosBasicos({ formData, setFormData }) {
             <Input
               id="conjuge_nome"
               value={formData.conjuge_nome || ''}
-              onChange={(e) => handleChange('conjuge_nome', e.target.value)}
+              onChange={(e) => handleChange('conjuge_nome', masks.onlyLetters(e.target.value))}
               placeholder="Nome completo do viúvo(a)"
             />
+            <FieldError value={formData.conjuge_nome} validator="nome" />
           </div>
           <div className="space-y-2">
             <Label htmlFor="conjuge_cpf">CPF do(a) Viúvo(a)</Label>
@@ -418,16 +421,18 @@ export default function DadosBasicos({ formData, setFormData }) {
             <Input
               id="conjuge_rg"
               value={formData.conjuge_rg || ''}
-              onChange={(e) => handleChange('conjuge_rg', e.target.value)}
-              placeholder="Número do RG"
+              onChange={(e) => handleChange('conjuge_rg', masks.rg(e.target.value))}
+              placeholder="Somente números"
+              maxLength={15}
             />
+            <FieldError value={formData.conjuge_rg} validator="rg" />
           </div>
           <div className="space-y-2">
             <Label htmlFor="conjuge_nacionalidade">Nacionalidade</Label>
             <Input
               id="conjuge_nacionalidade"
               value={formData.conjuge_nacionalidade || 'Brasileira'}
-              onChange={(e) => handleChange('conjuge_nacionalidade', e.target.value)}
+              onChange={(e) => handleChange('conjuge_nacionalidade', masks.onlyLetters(e.target.value))}
               placeholder="Nacionalidade"
             />
           </div>
@@ -436,7 +441,7 @@ export default function DadosBasicos({ formData, setFormData }) {
             <Input
               id="conjuge_profissao"
               value={formData.conjuge_profissao || ''}
-              onChange={(e) => handleChange('conjuge_profissao', e.target.value)}
+              onChange={(e) => handleChange('conjuge_profissao', masks.onlyLetters(e.target.value))}
               placeholder="Profissão do cônjuge"
             />
           </div>
