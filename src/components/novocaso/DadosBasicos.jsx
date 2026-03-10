@@ -3,6 +3,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { masks } from "@/components/Masks";
+import { validators, FieldError } from "@/components/validations";
 import { Calendar, Clock, MapPin, User, FileText, Phone, Mail, Briefcase, Users2, ScrollText, AlertCircle } from "lucide-react";
 import FileUpload from "@/components/FileUpload";
 
@@ -90,7 +91,7 @@ export default function DadosBasicos({ formData, setFormData }) {
           <div className="space-y-2">
             <Label htmlFor="sexo">Sexo</Label>
             <Select
-              value={formData.sexo || undefined}
+              value={formData.sexo || ""}
               onValueChange={(val) => handleChange('sexo', val)}>
               <SelectTrigger>
                 <SelectValue placeholder="Selecione" />
@@ -282,7 +283,7 @@ export default function DadosBasicos({ formData, setFormData }) {
                 <div className="space-y-2">
                   <Label>Tipo de Testamento</Label>
                   <Select
-                    value={formData.testamento_tipo || undefined}
+                    value={formData.testamento_tipo || ""}
                     onValueChange={(val) => handleChange('testamento_tipo', val)}>
                     <SelectTrigger><SelectValue placeholder="Selecione" /></SelectTrigger>
                     <SelectContent>
@@ -326,9 +327,8 @@ export default function DadosBasicos({ formData, setFormData }) {
           <div className="space-y-2">
             <Label htmlFor="regime_bens">Regime de Bens do Casamento</Label>
             <Select
-              value={formData.regime_bens || undefined}
+              value={formData.regime_bens || ""}
               onValueChange={(val) => handleChange('regime_bens', val)}>
-
               <SelectTrigger>
                 <SelectValue placeholder="Selecione o regime de bens" />
               </SelectTrigger>
