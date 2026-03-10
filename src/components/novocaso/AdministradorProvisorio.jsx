@@ -2,6 +2,7 @@ import React from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { masks } from "@/components/Masks";
+import { validators, FieldError } from "@/components/validations";
 import { User, CreditCard, MapPin, Mail, Phone, Heart } from "lucide-react";
 
 export default function AdministradorProvisorio({ formData, setFormData }) {
@@ -30,7 +31,7 @@ export default function AdministradorProvisorio({ formData, setFormData }) {
           <Input
             id="admin_nome"
             value={data.nome || ''}
-            onChange={(e) => handleChange('nome', e.target.value)}
+            onChange={(e) => handleChange('nome', masks.onlyLetters(e.target.value))}
             placeholder="Nome do administrador"
           />
         </div>
@@ -41,7 +42,9 @@ export default function AdministradorProvisorio({ formData, setFormData }) {
             value={data.cpf || ''}
             onChange={(e) => handleChange('cpf', masks.cpf(e.target.value))}
             placeholder="000.000.000-00"
+            maxLength={14}
           />
+          <FieldError value={data.cpf} validator="cpf" />
         </div>
       </div>
 
@@ -66,7 +69,9 @@ export default function AdministradorProvisorio({ formData, setFormData }) {
             value={data.cep || ''}
             onChange={(e) => handleChange('cep', masks.cep(e.target.value))}
             placeholder="00000-000"
+            maxLength={9}
           />
+          <FieldError value={data.cep} validator="cep" />
         </div>
       </div>
 
@@ -83,6 +88,7 @@ export default function AdministradorProvisorio({ formData, setFormData }) {
               onChange={(e) => handleChange('email', e.target.value)}
               placeholder="email@exemplo.com"
             />
+            <FieldError value={data.email} validator="email" />
           </div>
         </div>
         <div className="space-y-2">
@@ -95,7 +101,9 @@ export default function AdministradorProvisorio({ formData, setFormData }) {
               value={data.telefone || ''}
               onChange={(e) => handleChange('telefone', masks.phone(e.target.value))}
               placeholder="(00) 00000-0000"
+              maxLength={15}
             />
+            <FieldError value={data.telefone} validator="phone" />
           </div>
         </div>
       </div>
@@ -111,7 +119,7 @@ export default function AdministradorProvisorio({ formData, setFormData }) {
             <Input
               id="admin_conjuge_nome"
               value={data.conjuge_nome || ''}
-              onChange={(e) => handleChange('conjuge_nome', e.target.value)}
+              onChange={(e) => handleChange('conjuge_nome', masks.onlyLetters(e.target.value))}
               placeholder="Nome completo"
             />
           </div>
@@ -122,7 +130,9 @@ export default function AdministradorProvisorio({ formData, setFormData }) {
               value={data.conjuge_cpf || ''}
               onChange={(e) => handleChange('conjuge_cpf', masks.cpf(e.target.value))}
               placeholder="000.000.000-00"
+              maxLength={14}
             />
+            <FieldError value={data.conjuge_cpf} validator="cpf" />
           </div>
         </div>
       </div>

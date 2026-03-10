@@ -100,7 +100,7 @@ export default function Herdeiros({ formData, setFormData }) {
                     <Label>Nome Completo *</Label>
                     <Input
                       value={herdeiro.nome}
-                      onChange={(e) => updateHerdeiro(index, "nome", e.target.value)}
+                      onChange={(e) => updateHerdeiro(index, "nome", masks.onlyLetters(e.target.value))}
                       placeholder="Nome do herdeiro"
                     />
                   </div>
@@ -120,9 +120,11 @@ export default function Herdeiros({ formData, setFormData }) {
                     <Label>RG</Label>
                     <Input
                       value={herdeiro.rg || ''}
-                      onChange={(e) => updateHerdeiro(index, "rg", e.target.value)}
-                      placeholder="RG"
+                      onChange={(e) => updateHerdeiro(index, "rg", masks.rg(e.target.value))}
+                      placeholder="Somente números"
+                      maxLength={15}
                     />
+                    <FieldError value={herdeiro.rg} validator="rg" />
                   </div>
 
                   <div className="space-y-2">
@@ -138,7 +140,7 @@ export default function Herdeiros({ formData, setFormData }) {
                     <Label>Nacionalidade</Label>
                     <Input
                       value={herdeiro.nacionalidade || 'Brasileira'}
-                      onChange={(e) => updateHerdeiro(index, "nacionalidade", e.target.value)}
+                      onChange={(e) => updateHerdeiro(index, "nacionalidade", masks.onlyLetters(e.target.value))}
                       placeholder="Nacionalidade"
                     />
                   </div>
@@ -147,7 +149,7 @@ export default function Herdeiros({ formData, setFormData }) {
                     <Label>Profissão</Label>
                     <Input
                       value={herdeiro.profissao || ''}
-                      onChange={(e) => updateHerdeiro(index, "profissao", e.target.value)}
+                      onChange={(e) => updateHerdeiro(index, "profissao", masks.onlyLetters(e.target.value))}
                       placeholder="Profissão"
                     />
                   </div>
@@ -309,7 +311,7 @@ export default function Herdeiros({ formData, setFormData }) {
                         <Label>Nome do Representante</Label>
                         <Input
                           value={herdeiro.representante_legal_nome || ''}
-                          onChange={(e) => updateHerdeiro(index, "representante_legal_nome", e.target.value)}
+                          onChange={(e) => updateHerdeiro(index, "representante_legal_nome", masks.onlyLetters(e.target.value))}
                           placeholder="Nome completo"
                         />
                       </div>

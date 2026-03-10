@@ -5,6 +5,7 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { UserCheck, Calendar as CalendarIcon } from "lucide-react";
 import { masks } from "@/components/Masks";
+import { FieldError } from "@/components/validations";
 
 export default function FormInventariante({ data, onChange, readOnly = false }) {
   const handleChange = (field, value) => {
@@ -25,7 +26,7 @@ export default function FormInventariante({ data, onChange, readOnly = false }) 
             <Label>Nome Completo *</Label>
             <Input 
               value={data.nome || ""} 
-              onChange={(e) => handleChange("nome", e.target.value)}
+              onChange={(e) => handleChange("nome", masks.onlyLetters(e.target.value))}
               placeholder="Nome do inventariante"
               readOnly={readOnly}
             />
@@ -37,7 +38,9 @@ export default function FormInventariante({ data, onChange, readOnly = false }) 
               onChange={(e) => handleChange("cpf_cnpj", masks.cpf(e.target.value))}
               placeholder="000.000.000-00"
               readOnly={readOnly}
+              maxLength={14}
             />
+            <FieldError value={data.cpf_cnpj} validator="cpf" />
           </div>
           <div className="space-y-2">
             <Label>E-mail Principal *</Label>
@@ -48,6 +51,7 @@ export default function FormInventariante({ data, onChange, readOnly = false }) 
               type="email"
               readOnly={readOnly}
             />
+            <FieldError value={data.email} validator="email" />
           </div>
           <div className="space-y-2">
             <Label>Telefone</Label>
@@ -56,7 +60,9 @@ export default function FormInventariante({ data, onChange, readOnly = false }) 
               onChange={(e) => handleChange("telefone", masks.phone(e.target.value))}
               placeholder="(00) 00000-0000"
               readOnly={readOnly}
+              maxLength={15}
             />
+            <FieldError value={data.telefone} validator="phone" />
           </div>
           <div className="space-y-2 md:col-span-2">
             <Label>Endereço Completo</Label>
