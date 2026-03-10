@@ -6,6 +6,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Plus, Trash2, Users } from "lucide-react";
 import { masks } from "@/components/Masks";
+import { FieldError } from "@/components/validations";
 
 export default function Herdeiros({ formData, setFormData }) {
   const addHerdeiro = () => {
@@ -112,6 +113,7 @@ export default function Herdeiros({ formData, setFormData }) {
                       placeholder="000.000.000-00"
                       maxLength={14}
                     />
+                    <FieldError value={herdeiro.cpf} validator="cpf" />
                   </div>
 
                   <div className="space-y-2">
@@ -183,7 +185,9 @@ export default function Herdeiros({ formData, setFormData }) {
                       value={herdeiro.cep || ''}
                       onChange={(e) => updateHerdeiro(index, "cep", masks.cep(e.target.value))}
                       placeholder="00000-000"
+                      maxLength={9}
                     />
+                    <FieldError value={herdeiro.cep} validator="cep" />
                   </div>
 
                   <div className="space-y-2">
@@ -281,6 +285,7 @@ export default function Herdeiros({ formData, setFormData }) {
                       onChange={(e) => updateHerdeiro(index, "email", e.target.value)}
                       placeholder="email@exemplo.com"
                     />
+                    <FieldError value={herdeiro.email} validator="email" />
                   </div>
 
                   <div className="space-y-2">
@@ -289,7 +294,9 @@ export default function Herdeiros({ formData, setFormData }) {
                       value={herdeiro.telefone || ''}
                       onChange={(e) => updateHerdeiro(index, "telefone", masks.phone(e.target.value))}
                       placeholder="(00) 00000-0000"
+                      maxLength={15}
                     />
+                    <FieldError value={herdeiro.telefone} validator="phone" />
                   </div>
                 </div>
 
@@ -312,7 +319,9 @@ export default function Herdeiros({ formData, setFormData }) {
                           value={herdeiro.representante_legal_cpf || ''}
                           onChange={(e) => updateHerdeiro(index, "representante_legal_cpf", masks.cpf(e.target.value))}
                           placeholder="000.000.000-00"
+                          maxLength={14}
                         />
+                        <FieldError value={herdeiro.representante_legal_cpf} validator="cpf" />
                       </div>
                       <div className="space-y-2">
                         <Label>Telefone do Representante</Label>
@@ -320,7 +329,9 @@ export default function Herdeiros({ formData, setFormData }) {
                           value={herdeiro.representante_legal_telefone || ''}
                           onChange={(e) => updateHerdeiro(index, "representante_legal_telefone", masks.phone(e.target.value))}
                           placeholder="(00) 00000-0000"
+                          maxLength={15}
                         />
+                        <FieldError value={herdeiro.representante_legal_telefone} validator="phone" />
                       </div>
                     </div>
                   </div>
