@@ -8,6 +8,7 @@ import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 
+import { validators } from "@/components/validations";
 import DadosBasicos from "../components/novocaso/DadosBasicos";
 import DadosInventario from "../components/novocaso/DadosInventario";
 import AdministradorProvisorio from "../components/novocaso/AdministradorProvisorio";
@@ -278,6 +279,20 @@ export default function NovoCaso() {
           toast.error(`Campos obrigatórios: ${missing.join(", ")}`);
           return false;
         }
+
+        // Validações de formato
+        const erros = [];
+        if (formData.cpf_falecido && !validators.cpf(formData.cpf_falecido).valid) erros.push("CPF do Falecido inválido");
+        if (formData.conjuge_cpf && !validators.cpf(formData.conjuge_cpf).valid) erros.push("CPF do Cônjuge inválido");
+        if (formData.conjuge_email && !validators.email(formData.conjuge_email).valid) erros.push("Email do Cônjuge inválido");
+        if (formData.conjuge_telefone && !validators.phone(formData.conjuge_telefone).valid) erros.push("Telefone do Cônjuge inválido");
+        if (formData.cep && !validators.cep(formData.cep).valid) erros.push("CEP do Falecido inválido");
+        if (formData.conjuge_cep && !validators.cep(formData.conjuge_cep).valid) erros.push("CEP do Cônjuge inválido");
+
+        if (erros.length > 0) {
+          toast.error(`Corrija os campos: ${erros.join(", ")}`);
+          return false;
+        }
         return true;
 
       case 2: // Tipo Inventário
@@ -296,6 +311,18 @@ export default function NovoCaso() {
         if (herdeirosIncompletos) {
              toast.error("Verifique os dados dos herdeiros (Nome e Parentesco são obrigatórios).");
              return false;
+        }
+        
+        // Validar CPFs e emails dos herdeiros
+        const errosHerdeiros = [];
+        formData.herdeiros.forEach((h, i) => {
+          if (h.cpf && !validators.cpf(h.cpf).valid) errosHerdeiros.push(`CPF do Herdeiro ${i + 1} inválido`);
+          if (h.email && !validators.email(h.email).valid) errosHerdeiros.push(`Email do Herdeiro ${i + 1} inválido`);
+          if (h.telefone && !validators.phone(h.telefone).valid) errosHerdeiros.push(`Telefone do Herdeiro ${i + 1} inválido`);
+        });
+        if (errosHerdeiros.length > 0) {
+          toast.error(errosHerdeiros.join("; "));
+          return false;
         }
         return true;
 
