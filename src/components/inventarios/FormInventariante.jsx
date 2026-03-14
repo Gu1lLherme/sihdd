@@ -25,6 +25,7 @@ export default function FormInventariante({ data, onChange, readOnly = false }) 
           <div className="space-y-2">
             <Label>Nome Completo *</Label>
             <Input 
+              id="inv_nome"
               value={data.nome || ""} 
               onChange={(e) => handleChange("nome", masks.onlyLetters(e.target.value))}
               placeholder="Nome do inventariante"
@@ -34,6 +35,7 @@ export default function FormInventariante({ data, onChange, readOnly = false }) 
           <div className="space-y-2">
             <Label>CPF / CNPJ *</Label>
             <Input 
+              id="inv_cpf_cnpj"
               value={data.cpf_cnpj || ""} 
               onChange={(e) => handleChange("cpf_cnpj", masks.cpf(e.target.value))}
               placeholder="000.000.000-00"
@@ -45,6 +47,7 @@ export default function FormInventariante({ data, onChange, readOnly = false }) 
           <div className="space-y-2">
             <Label>E-mail Principal *</Label>
             <Input 
+              id="inv_email"
               value={data.email || ""} 
               onChange={(e) => handleChange("email", e.target.value)}
               placeholder="email@exemplo.com"
@@ -56,6 +59,7 @@ export default function FormInventariante({ data, onChange, readOnly = false }) 
           <div className="space-y-2">
             <Label>Telefone</Label>
             <Input 
+              id="inv_telefone"
               value={data.telefone || ""} 
               onChange={(e) => handleChange("telefone", masks.phone(e.target.value))}
               placeholder="(00) 00000-0000"
@@ -77,6 +81,7 @@ export default function FormInventariante({ data, onChange, readOnly = false }) 
             <Label>Data da Nomeação *</Label>
             <div className="relative">
               <Input 
+                id="inv_data_nomeacao"
                 value={data.data_nomeacao || ""} 
                 onChange={(e) => handleChange("data_nomeacao", e.target.value)}
                 type="date"
