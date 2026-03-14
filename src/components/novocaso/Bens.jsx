@@ -125,6 +125,7 @@ export default function Bens({ formData, setFormData }) {
                     <div className="space-y-2">
                       <Label>Valor (R$) *</Label>
                       <Input
+                        id={`bem_${index}_valor`}
                         value={masks.currency(bem.valor * 100)}
                         onChange={(e) => updateBem(index, "valor", masks.currencyToNumber(e.target.value))}
                         placeholder="0,00"
@@ -200,6 +201,7 @@ export default function Bens({ formData, setFormData }) {
                     <div className="space-y-2 md:col-span-2">
                       <Label>Descrição *</Label>
                       <Textarea
+                        id={`bem_${index}_descricao`}
                         value={bem.descricao || ''}
                         onChange={(e) => updateBem(index, "descricao", e.target.value)}
                         placeholder="Descrição detalhada do bem"
