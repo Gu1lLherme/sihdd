@@ -67,8 +67,8 @@ export default function DadosBasicos({ formData, setFormData }) {
               id="rg"
               value={formData.rg || ''}
               onChange={(e) => handleChange('rg', masks.rg(e.target.value))}
-              placeholder="Somente números"
-              maxLength={15} />
+              placeholder="00.000.000-0"
+              maxLength={12} />
             <FieldError value={formData.rg} validator="rg" />
           </div>
           <OrgaoExpedidorSelect

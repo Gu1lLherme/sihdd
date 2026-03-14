@@ -23,7 +23,7 @@ export const validators = {
     if (!value) return { valid: true, message: "" };
     const cleaned = value.replace(/\D/g, "");
     if (cleaned.length < 5) return { valid: false, message: "RG deve ter no mínimo 5 dígitos" };
-    if (cleaned.length > 15) return { valid: false, message: "RG deve ter no máximo 15 dígitos" };
+    if (cleaned.length > 9) return { valid: false, message: "RG deve ter no máximo 9 dígitos" };
     return { valid: true, message: "" };
   },
 
