@@ -6,6 +6,7 @@ import { masks } from "@/components/Masks";
 import { validators, FieldError } from "@/components/validations";
 import { Calendar, Clock, MapPin, User, FileText, Phone, Mail, Briefcase, Users2, ScrollText, AlertCircle } from "lucide-react";
 import FileUpload from "@/components/FileUpload";
+import OrgaoExpedidorSelect from "@/components/novocaso/OrgaoExpedidorSelect";
 
 export default function DadosBasicos({ formData, setFormData }) {
   const handleChange = (field, value) => {
@@ -70,15 +71,10 @@ export default function DadosBasicos({ formData, setFormData }) {
               maxLength={15} />
             <FieldError value={formData.rg} validator="rg" />
           </div>
-          <div className="space-y-2">
-            <Label htmlFor="orgao_expedidor">Órgão Expedidor</Label>
-            <Input
-              id="orgao_expedidor"
-              value={formData.orgao_expedidor || ''}
-              onChange={(e) => handleChange('orgao_expedidor', masks.orgaoExpedidor(e.target.value))}
-              placeholder="SSP/UF"
-              maxLength={10} />
-          </div>
+          <OrgaoExpedidorSelect
+            value={formData.orgao_expedidor || ''}
+            onChange={(val) => handleChange('orgao_expedidor', val)}
+          />
           <div className="space-y-2">
             <Label htmlFor="data_expedicao">Data Expedição</Label>
             <Input
