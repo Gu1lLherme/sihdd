@@ -80,6 +80,7 @@ export default function DadosBasicos({ formData, setFormData }) {
             <Input
               id="data_expedicao"
               type="date"
+              max="9999-12-31"
               value={formData.data_expedicao || ''}
               onChange={(e) => handleChange('data_expedicao', e.target.value)} />
 
@@ -115,6 +116,7 @@ export default function DadosBasicos({ formData, setFormData }) {
             <Input
               id="data_nascimento"
               type="date"
+              max="9999-12-31"
               value={formData.data_nascimento || ''}
               onChange={(e) => handleChange('data_nascimento', e.target.value)} />
           </div>
@@ -161,6 +163,7 @@ export default function DadosBasicos({ formData, setFormData }) {
               <Input
                 id="data_obito"
                 type="date"
+                max="9999-12-31"
                 className={`pl-10 ${dataObitoVazia ? "border-red-300 focus:border-red-500" : ""}`}
                 value={formData.data_obito || ''}
                 onChange={(e) => handleChange('data_obito', e.target.value)} />
@@ -246,6 +249,7 @@ export default function DadosBasicos({ formData, setFormData }) {
               <Input
                 id="certidao_obito_data"
                 type="date"
+                max="9999-12-31"
                 value={formData.certidao_obito_data || ''}
                 onChange={(e) => handleChange('certidao_obito_data', e.target.value)} />
             </div>
@@ -306,6 +310,7 @@ export default function DadosBasicos({ formData, setFormData }) {
                   <Label>Data de Lavratura</Label>
                   <Input
                     type="date"
+                    max="9999-12-31"
                     value={formData.testamento_data || ''}
                     onChange={(e) => handleChange('testamento_data', e.target.value)} />
                 </div>
@@ -350,6 +355,7 @@ export default function DadosBasicos({ formData, setFormData }) {
               <Input
                 id="data_casamento"
                 type="date"
+                max="9999-12-31"
                 className="pl-10"
                 value={formData.data_casamento || ''}
                 onChange={(e) => handleChange('data_casamento', e.target.value)} />
@@ -499,6 +505,7 @@ export default function DadosBasicos({ formData, setFormData }) {
             <Input
               id="data_atendimento"
               type="date"
+              max="9999-12-31"
               value={formData.data_atendimento || ''}
               onChange={(e) => handleChange('data_atendimento', e.target.value)} />
 
