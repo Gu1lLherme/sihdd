@@ -9,6 +9,7 @@ import { useNavigate } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 
 import { validators } from "@/components/validations";
+import { scrollToError } from "@/components/novocaso/scrollToError";
 import DadosBasicos from "../components/novocaso/DadosBasicos";
 import DadosInventario from "../components/novocaso/DadosInventario";
 import AdministradorProvisorio from "../components/novocaso/AdministradorProvisorio";
@@ -267,114 +268,123 @@ export default function NovoCaso() {
   });
 
   const validateStep = (step) => {
-    const missing = [];
+    // Helper: checa e retorna o primeiro campo com erro
+    const checkField = (value, validatorName, fieldId, label, isRequired = false) => {
+      if (isRequired && (!value || (typeof value === "string" && !value.trim()))) {
+        return { fieldId, message: `${label} é obrigatório` };
+      }
+      if (value && validators[validatorName]) {
+        const result = validators[validatorName](value);
+        if (!result.valid) return { fieldId, message: `${label}: ${result.message}` };
+      }
+      return null;
+    };
+
+    let firstError = null;
 
     switch (step) {
-      case 1: // Dados Iniciais
-        if (!formData.nome_falecido) missing.push("Nome do Falecido");
-        if (!formData.cpf_falecido) missing.push("CPF do Falecido");
-        if (!formData.data_obito) missing.push("Data do Óbito");
-        
-        if (missing.length > 0) {
-          toast.error(`Campos obrigatórios: ${missing.join(", ")}`);
-          return false;
-        }
-
-        // Validações de formato
-        const erros = [];
-        if (formData.nome_falecido && !validators.nome(formData.nome_falecido).valid) erros.push("Nome do Falecido: " + validators.nome(formData.nome_falecido).message);
-        if (formData.cpf_falecido && !validators.cpf(formData.cpf_falecido).valid) erros.push("CPF do Falecido inválido");
-        if (formData.rg && !validators.rg(formData.rg).valid) erros.push("RG do Falecido inválido");
-        if (formData.conjuge_nome && !validators.nome(formData.conjuge_nome).valid) erros.push("Nome do Cônjuge: " + validators.nome(formData.conjuge_nome).message);
-        if (formData.conjuge_cpf && !validators.cpf(formData.conjuge_cpf).valid) erros.push("CPF do Cônjuge inválido");
-        if (formData.conjuge_rg && !validators.rg(formData.conjuge_rg).valid) erros.push("RG do Cônjuge inválido");
-        if (formData.conjuge_email && !validators.email(formData.conjuge_email).valid) erros.push("Email do Cônjuge inválido");
-        if (formData.conjuge_telefone && !validators.phone(formData.conjuge_telefone).valid) erros.push("Telefone do Cônjuge inválido");
-        if (formData.cep && !validators.cep(formData.cep).valid) erros.push("CEP do Falecido inválido");
-        if (formData.conjuge_cep && !validators.cep(formData.conjuge_cep).valid) erros.push("CEP do Cônjuge inválido");
-
-        if (erros.length > 0) {
-          toast.error(`Corrija os campos: ${erros.join(", ")}`);
+      case 1: { // Dados Iniciais
+        const checks = [
+          checkField(formData.nome_falecido, "nome", "nome_falecido", "Nome do Falecido", true),
+          checkField(formData.cpf_falecido, "cpf", "cpf_falecido", "CPF do Falecido", true),
+          checkField(formData.data_obito, null, "data_obito", "Data do Óbito", true),
+          checkField(formData.rg, "rg", "rg", "RG do Falecido"),
+          checkField(formData.cep, "cep", "cep", "CEP do Falecido"),
+          checkField(formData.conjuge_nome, "nome", "conjuge_nome", "Nome do Cônjuge"),
+          checkField(formData.conjuge_cpf, "cpf", "conjuge_cpf", "CPF do Cônjuge"),
+          checkField(formData.conjuge_rg, "rg", "conjuge_rg", "RG do Cônjuge"),
+          checkField(formData.conjuge_email, "email", "conjuge_email", "Email do Cônjuge"),
+          checkField(formData.conjuge_telefone, "phone", "conjuge_telefone", "Telefone do Cônjuge"),
+          checkField(formData.conjuge_cep, "cep", "conjuge_cep", "CEP do Cônjuge"),
+        ];
+        firstError = checks.find(Boolean);
+        if (firstError) {
+          toast.error(firstError.message);
+          scrollToError(firstError.fieldId);
           return false;
         }
         return true;
+      }
 
       case 2: // Tipo Inventário
         return true;
 
       case 3: { // Administrador Provisório
         const adm = formData.administrador_provisorio || {};
-        const errosAdm = [];
-        if (adm.cpf && !validators.cpf(adm.cpf).valid) errosAdm.push("CPF do Administrador inválido");
-        if (adm.email && !validators.email(adm.email).valid) errosAdm.push("Email do Administrador inválido");
-        if (adm.telefone && !validators.phone(adm.telefone).valid) errosAdm.push("Telefone do Administrador inválido");
-        if (adm.cep && !validators.cep(adm.cep).valid) errosAdm.push("CEP do Administrador inválido");
-        if (adm.conjuge_cpf && !validators.cpf(adm.conjuge_cpf).valid) errosAdm.push("CPF do Cônjuge do Administrador inválido");
-        if (errosAdm.length > 0) {
-          toast.error(errosAdm.join("; "));
+        const checksAdm = [
+          checkField(adm.cpf, "cpf", "admin_cpf", "CPF do Administrador"),
+          checkField(adm.email, "email", "admin_email", "Email do Administrador"),
+          checkField(adm.telefone, "phone", "admin_telefone", "Telefone do Administrador"),
+          checkField(adm.cep, "cep", "admin_cep", "CEP do Administrador"),
+          checkField(adm.conjuge_cpf, "cpf", "admin_conjuge_cpf", "CPF do Cônjuge do Administrador"),
+        ];
+        firstError = checksAdm.find(Boolean);
+        if (firstError) {
+          toast.error(firstError.message);
+          scrollToError(firstError.fieldId);
           return false;
         }
         return true;
       }
 
-      case 4: // Herdeiros
+      case 4: { // Herdeiros
         if (formData.herdeiros.length === 0) {
           toast.error("Adicione pelo menos um herdeiro para prosseguir.");
           return false;
         }
-        
-        const herdeirosIncompletos = formData.herdeiros.some(h => !h.nome || !h.parentesco);
-        if (herdeirosIncompletos) {
-             toast.error("Verifique os dados dos herdeiros (Nome e Parentesco são obrigatórios).");
-             return false;
-        }
-        
-        // Validar CPFs e emails dos herdeiros
-        const errosHerdeiros = [];
-        formData.herdeiros.forEach((h, i) => {
-          if (h.cpf && !validators.cpf(h.cpf).valid) errosHerdeiros.push(`CPF do Herdeiro ${i + 1} inválido`);
-          if (h.rg && !validators.rg(h.rg).valid) errosHerdeiros.push(`RG do Herdeiro ${i + 1} inválido`);
-          if (h.email && !validators.email(h.email).valid) errosHerdeiros.push(`Email do Herdeiro ${i + 1} inválido`);
-          if (h.telefone && !validators.phone(h.telefone).valid) errosHerdeiros.push(`Telefone do Herdeiro ${i + 1} inválido`);
-          if (h.cep && !validators.cep(h.cep).valid) errosHerdeiros.push(`CEP do Herdeiro ${i + 1} inválido`);
-        });
-        if (errosHerdeiros.length > 0) {
-          toast.error(errosHerdeiros.join("; "));
-          return false;
-        }
-        return true;
 
-      case 5: { // Inventariante
-        if (!formData.inventariante?.nome) missing.push("Nome do Inventariante");
-        if (!formData.inventariante?.cpf_cnpj) missing.push("CPF/CNPJ do Inventariante");
-        if (!formData.inventariante?.data_nomeacao) missing.push("Data de Nomeação");
-
-        if (missing.length > 0) {
-            toast.error(`Campos obrigatórios do Inventariante: ${missing.join(", ")}`);
+        for (let i = 0; i < formData.herdeiros.length; i++) {
+          const h = formData.herdeiros[i];
+          const checksH = [
+            checkField(h.nome, "nome", `herdeiro_${i}_nome`, `Nome do Herdeiro ${i + 1}`, true),
+            checkField(h.cpf, "cpf", `herdeiro_${i}_cpf`, `CPF do Herdeiro ${i + 1}`),
+            checkField(h.rg, "rg", `herdeiro_${i}_rg`, `RG do Herdeiro ${i + 1}`),
+            checkField(h.email, "email", `herdeiro_${i}_email`, `Email do Herdeiro ${i + 1}`),
+            checkField(h.telefone, "phone", `herdeiro_${i}_telefone`, `Telefone do Herdeiro ${i + 1}`),
+            checkField(h.cep, "cep", `herdeiro_${i}_cep`, `CEP do Herdeiro ${i + 1}`),
+          ];
+          firstError = checksH.find(Boolean);
+          if (firstError) {
+            toast.error(firstError.message);
+            scrollToError(firstError.fieldId);
             return false;
-        }
-        const inv = formData.inventariante;
-        const errosInv = [];
-        if (inv.cpf_cnpj && !validators.cpf(inv.cpf_cnpj).valid) errosInv.push("CPF/CNPJ do Inventariante inválido");
-        if (inv.email && !validators.email(inv.email).valid) errosInv.push("Email do Inventariante inválido");
-        if (inv.telefone && !validators.phone(inv.telefone).valid) errosInv.push("Telefone do Inventariante inválido");
-        if (errosInv.length > 0) {
-            toast.error(errosInv.join("; "));
-            return false;
+          }
         }
         return true;
       }
 
-      case 6: // Bens
+      case 5: { // Inventariante
+        const inv = formData.inventariante || {};
+        const checksInv = [
+          checkField(inv.nome, "nome", "inv_nome", "Nome do Inventariante", true),
+          checkField(inv.cpf_cnpj, "cpf", "inv_cpf_cnpj", "CPF/CNPJ do Inventariante", true),
+          checkField(inv.data_nomeacao, null, "inv_data_nomeacao", "Data de Nomeação", true),
+          checkField(inv.email, "email", "inv_email", "Email do Inventariante"),
+          checkField(inv.telefone, "phone", "inv_telefone", "Telefone do Inventariante"),
+        ];
+        firstError = checksInv.find(Boolean);
+        if (firstError) {
+          toast.error(firstError.message);
+          scrollToError(firstError.fieldId);
+          return false;
+        }
+        return true;
+      }
+
+      case 6: { // Bens
         if (formData.bens.length === 0) {
             toast.warning("Atenção: Nenhum bem foi adicionado ao espólio.");
         }
-        const invalidBem = formData.bens.find(b => !b.descricao || !b.valor || b.valor <= 0);
-        if (invalidBem) {
-            toast.error("Existem bens com dados incompletos. Verifique Descrição e Valor (deve ser maior que zero).");
+        const invalidBemIdx = formData.bens.findIndex(b => !b.descricao || !b.valor || b.valor <= 0);
+        if (invalidBemIdx >= 0) {
+            const b = formData.bens[invalidBemIdx];
+            const fieldId = !b.descricao ? `bem_${invalidBemIdx}_descricao` : `bem_${invalidBemIdx}_valor`;
+            toast.error(`Bem ${invalidBemIdx + 1}: Verifique Descrição e Valor.`);
+            scrollToError(fieldId);
             return false;
         }
         return true;
+      }
 
       case 7: // Dívidas
         return true;
