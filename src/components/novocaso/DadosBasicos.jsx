@@ -424,8 +424,8 @@ export default function DadosBasicos({ formData, setFormData }) {
               id="conjuge_rg"
               value={formData.conjuge_rg || ''}
               onChange={(e) => handleChange('conjuge_rg', masks.rg(e.target.value))}
-              placeholder="Somente números"
-              maxLength={15}
+              placeholder="00.000.000-0"
+              maxLength={12}
             />
             <FieldError value={formData.conjuge_rg} validator="rg" />
           </div>

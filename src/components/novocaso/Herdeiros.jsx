@@ -124,8 +124,8 @@ export default function Herdeiros({ formData, setFormData }) {
                       id={`herdeiro_${index}_rg`}
                       value={herdeiro.rg || ''}
                       onChange={(e) => updateHerdeiro(index, "rg", masks.rg(e.target.value))}
-                      placeholder="Somente números"
-                      maxLength={15}
+                      placeholder="00.000.000-0"
+                      maxLength={12}
                     />
                     <FieldError value={herdeiro.rg} validator="rg" />
                   </div>
