@@ -7,6 +7,7 @@ import { validators, FieldError } from "@/components/validations";
 import { Calendar, Clock, MapPin, User, FileText, Phone, Mail, Briefcase, Users2, ScrollText, AlertCircle } from "lucide-react";
 import FileUpload from "@/components/FileUpload";
 import OrgaoExpedidorSelect from "@/components/novocaso/OrgaoExpedidorSelect";
+import CepInput from "@/components/novocaso/CepInput";
 
 export default function DadosBasicos({ formData, setFormData }) {
   const handleChange = (field, value) => {
@@ -209,16 +210,13 @@ export default function DadosBasicos({ formData, setFormData }) {
 
             </div>
           </div>
-          <div className="space-y-2">
-            <Label htmlFor="cep">CEP</Label>
-            <Input
-              id="cep"
-              value={formData.cep || ''}
-              onChange={(e) => handleChange('cep', masks.cep(e.target.value))}
-              placeholder="00000-000"
-              maxLength={9} />
-            <FieldError value={formData.cep} validator="cep" />
-          </div>
+          <CepInput
+            id="cep"
+            label="CEP"
+            cepValue={formData.cep}
+            onCepChange={(val) => handleChange('cep', val)}
+            onAddressFound={(addr) => handleChange('endereco', addr)}
+          />
         </div>
 
         {/* Certidão de Óbito */}
@@ -459,16 +457,13 @@ export default function DadosBasicos({ formData, setFormData }) {
               placeholder="Mesmo do falecido, se aplicável" />
 
           </div>
-          <div className="space-y-2">
-            <Label htmlFor="conjuge_cep">CEP</Label>
-            <Input
-              id="conjuge_cep"
-              value={formData.conjuge_cep || ''}
-              onChange={(e) => handleChange('conjuge_cep', masks.cep(e.target.value))}
-              placeholder="00000-000"
-              maxLength={9} />
-            <FieldError value={formData.conjuge_cep} validator="cep" />
-          </div>
+          <CepInput
+            id="conjuge_cep"
+            label="CEP"
+            cepValue={formData.conjuge_cep}
+            onCepChange={(val) => handleChange('conjuge_cep', val)}
+            onAddressFound={(addr) => handleChange('conjuge_endereco', addr)}
+          />
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
