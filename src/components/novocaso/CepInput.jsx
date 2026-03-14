@@ -12,6 +12,7 @@ export default function CepInput({
   onCepChange, 
   onAddressFound 
 }) {
+  // onAddressFound receives an object: { logradouro, bairro, cidade, uf }
   const [loading, setLoading] = useState(false);
   const [found, setFound] = useState(false);
   const [error, setError] = useState("");
@@ -37,13 +38,12 @@ export default function CepInput({
     setFound(true);
     setTimeout(() => setFound(false), 3000);
 
-    const parts = [
-      data.logradouro,
-      data.bairro,
-      data.localidade ? `${data.localidade} - ${data.uf}` : ""
-    ].filter(Boolean);
-
-    onAddressFound(parts.join(", "));
+    onAddressFound({
+      logradouro: data.logradouro || "",
+      bairro: data.bairro || "",
+      cidade: data.localidade || "",
+      uf: data.uf || "",
+    });
   }, [onAddressFound]);
 
   const handleChange = (e) => {
