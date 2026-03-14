@@ -42,33 +42,51 @@ const UFS = [
 ];
 
 export default function OrgaoExpedidorSelect({ value, onChange }) {
-  // Parseia o valor existente (ex: "SSP/SE" -> orgao="SSP", uf="SE")
-  const parsed = useMemo(() => {
+  // Estado interno para manter seleções parciais (antes de ambos estarem preenchidos)
+  const initialParsed = useMemo(() => {
     if (!value) return { orgao: "", uf: "" };
     const parts = value.split("/");
     if (parts.length === 2) {
-      const orgaoMatch = ORGAOS_EXPEDIDORES.find(o => o.sigla === parts[0].trim());
-      const ufMatch = UFS.includes(parts[1].trim());
-      if (orgaoMatch && ufMatch) return { orgao: parts[0].trim(), uf: parts[1].trim() };
+      return { orgao: parts[0].trim(), uf: parts[1].trim() };
     }
+    // Valor sem "/" — pode ser só o órgão
+    const orgaoMatch = ORGAOS_EXPEDIDORES.find(o => o.sigla === value.trim());
+    if (orgaoMatch) return { orgao: value.trim(), uf: "" };
     return { orgao: "", uf: "" };
+  }, []);
+
+  const [orgao, setOrgao] = useState(initialParsed.orgao);
+  const [uf, setUf] = useState(initialParsed.uf);
+
+  // Sincroniza com valor externo quando muda (ex: edição)
+  React.useEffect(() => {
+    if (!value) { setOrgao(""); setUf(""); return; }
+    const parts = value.split("/");
+    if (parts.length === 2) {
+      setOrgao(parts[0].trim());
+      setUf(parts[1].trim());
+    }
   }, [value]);
 
-  const handleOrgaoChange = (orgao) => {
-    const newValue = orgao && parsed.uf ? `${orgao}/${parsed.uf}` : orgao || "";
-    onChange(newValue);
+  const handleOrgaoChange = (newOrgao) => {
+    setOrgao(newOrgao);
+    if (newOrgao && uf) {
+      onChange(`${newOrgao}/${uf}`);
+    }
   };
 
-  const handleUfChange = (uf) => {
-    const newValue = parsed.orgao && uf ? `${parsed.orgao}/${uf}` : "";
-    onChange(newValue);
+  const handleUfChange = (newUf) => {
+    setUf(newUf);
+    if (orgao && newUf) {
+      onChange(`${orgao}/${newUf}`);
+    }
   };
 
   return (
     <div className="space-y-2">
       <Label>Órgão Expedidor</Label>
       <div className="grid grid-cols-2 gap-2">
-        <Select value={parsed.orgao || ""} onValueChange={handleOrgaoChange}>
+        <Select value={orgao} onValueChange={handleOrgaoChange}>
           <SelectTrigger className="text-xs">
             <SelectValue placeholder="Órgão" />
           </SelectTrigger>
@@ -81,19 +99,22 @@ export default function OrgaoExpedidorSelect({ value, onChange }) {
             ))}
           </SelectContent>
         </Select>
-        <Select value={parsed.uf || ""} onValueChange={handleUfChange}>
+        <Select value={uf} onValueChange={handleUfChange}>
           <SelectTrigger className="text-xs">
             <SelectValue placeholder="UF" />
           </SelectTrigger>
           <SelectContent>
-            {UFS.map(uf => (
-              <SelectItem key={uf} value={uf}>{uf}</SelectItem>
+            {UFS.map(u => (
+              <SelectItem key={u} value={u}>{u}</SelectItem>
             ))}
           </SelectContent>
         </Select>
       </div>
-      {value && !parsed.orgao && (
-        <p className="text-xs text-amber-600">Selecione o órgão e a UF para validar</p>
+      {orgao && !uf && (
+        <p className="text-xs text-amber-600">Selecione a UF para completar</p>
+      )}
+      {!orgao && uf && (
+        <p className="text-xs text-amber-600">Selecione o órgão para completar</p>
       )}
     </div>
   );
