@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
@@ -59,7 +59,7 @@ export default function OrgaoExpedidorSelect({ value, onChange }) {
   const [uf, setUf] = useState(initialParsed.uf);
 
   // Sincroniza com valor externo quando muda (ex: edição)
-  React.useEffect(() => {
+  useEffect(() => {
     if (!value) { setOrgao(""); setUf(""); return; }
     const parts = value.split("/");
     if (parts.length === 2) {
