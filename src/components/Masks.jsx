@@ -81,7 +81,14 @@ export const masks = {
   },
 
   matriculaCertidao: (value) => {
-    return value.replace(/\D/g, '').slice(0, 32);
+    return value
+      .replace(/\D/g, '')
+      .slice(0, 32)
+      .replace(/^(\d{14})(\d)/, '$1 $2')
+      .replace(/^(\d{14} \d{1})(\d)/, '$1 $2')
+      .replace(/^(\d{14} \d{1} \d{5})(\d)/, '$1 $2')
+      .replace(/^(\d{14} \d{1} \d{5} \d{3})(\d)/, '$1 $2')
+      .replace(/^(\d{14} \d{1} \d{5} \d{3} \d{7})(\d)/, '$1 $2');
   },
 
   onlyLetters: (value) => {

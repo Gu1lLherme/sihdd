@@ -282,8 +282,8 @@ export default function DadosBasicos({ formData, setFormData }) {
                 id="certidao_obito_numero"
                 value={formData.certidao_obito_numero || ''}
                 onChange={(e) => handleChange('certidao_obito_numero', masks.matriculaCertidao(e.target.value))}
-                placeholder="00000000000000000000000000000000"
-                maxLength={32} />
+                placeholder="00000000000000 0 00000 000 0000000 00"
+                maxLength={37} />
               <FieldError value={formData.certidao_obito_numero} validator="matriculaCertidaoObito" />
             </div>
             <div className="space-y-2">
