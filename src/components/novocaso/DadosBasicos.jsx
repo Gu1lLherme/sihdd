@@ -8,6 +8,7 @@ import { Calendar, Clock, MapPin, User, FileText, Phone, Mail, Briefcase, Users2
 import FileUpload from "@/components/FileUpload";
 import OrgaoExpedidorSelect from "@/components/novocaso/OrgaoExpedidorSelect";
 import CepInput from "@/components/novocaso/CepInput";
+import CpfUnicoValidator from "@/components/novocaso/CpfUnicoValidator";
 
 const TODAY = new Date().toISOString().split('T')[0];
 const MIN_DATE = "1600-01-01";
@@ -64,6 +65,7 @@ export default function DadosBasicos({ formData, setFormData }) {
               className={cpfVazio || (!validators.cpf(formData.cpf_falecido).valid && formData.cpf_falecido) ? "border-red-300 focus:border-red-500" : ""} />
             {cpfVazio && <p className="text-xs text-red-500">Campo obrigatório</p>}
             <FieldError value={formData.cpf_falecido} validator="cpf" />
+            <CpfUnicoValidator cpf={formData.cpf_falecido} formData={formData} ownerLabel="falecido" />
           </div>
           <div className="space-y-2">
             <Label htmlFor="rg">RG</Label>
@@ -470,6 +472,7 @@ export default function DadosBasicos({ formData, setFormData }) {
               maxLength={14}
             />
             <FieldError value={formData.conjuge_cpf} validator="cpf" />
+            <CpfUnicoValidator cpf={formData.conjuge_cpf} formData={formData} ownerLabel="conjuge" />
           </div>
         </div>
 
