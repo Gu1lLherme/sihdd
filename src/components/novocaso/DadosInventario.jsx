@@ -4,6 +4,11 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { FileText, Building2 } from "lucide-react";
+import { FieldError } from "@/components/validations";
+import DateAfterBirthValidator from "@/components/novocaso/DateAfterBirthValidator";
+
+const TODAY = new Date().toISOString().split('T')[0];
+const MIN_DATE = "1600-01-01";
 
 export default function DadosInventario({ formData, setFormData }) {
   const handleChange = (field, value) => {
@@ -54,9 +59,13 @@ export default function DadosInventario({ formData, setFormData }) {
               <Label>Data de Abertura do Inventário</Label>
               <Input
                 type="date"
+                min={formData.data_nascimento || MIN_DATE}
+                max={TODAY}
                 value={formData.data_abertura_inventario || ''}
                 onChange={(e) => handleChange('data_abertura_inventario', e.target.value)}
               />
+              <FieldError value={formData.data_abertura_inventario} validator="datePastOnly" />
+              <DateAfterBirthValidator date={formData.data_abertura_inventario} dataNascimento={formData.data_nascimento} label="Data de abertura" />
             </div>
           </CardContent>
         </Card>
@@ -74,9 +83,13 @@ export default function DadosInventario({ formData, setFormData }) {
                 <Label>Data de Distribuição</Label>
                 <Input
                   type="date"
+                  min={formData.data_nascimento || MIN_DATE}
+                  max={TODAY}
                   value={formData.data_distribuicao || ''}
                   onChange={(e) => handleChange('data_distribuicao', e.target.value)}
                 />
+                <FieldError value={formData.data_distribuicao} validator="datePastOnly" />
+                <DateAfterBirthValidator date={formData.data_distribuicao} dataNascimento={formData.data_nascimento} label="Data de distribuição" />
               </div>
               <div className="space-y-2">
                 <Label>Processo nº</Label>
@@ -224,11 +237,11 @@ export default function DadosInventario({ formData, setFormData }) {
                 />
               </div>
               <div className="space-y-2">
-                <Label>Comarca</Label>
+                <Label>Ofício</Label>
                 <Input
                   value={formData.cartorio_comarca || ''}
                   onChange={(e) => handleChange('cartorio_comarca', e.target.value)}
-                  placeholder="Comarca"
+                  placeholder="Ofício"
                 />
               </div>
             </div>

@@ -7,7 +7,13 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Plus, Trash2, Home, Car, Wallet, TrendingUp, Building2, Package } from "lucide-react";
 import { masks } from "@/components/Masks";
+import { FieldError } from "@/components/validations";
 import FileUpload from "@/components/FileUpload";
+import DateAfterBirthValidator from "@/components/novocaso/DateAfterBirthValidator";
+import CepInput from "@/components/novocaso/CepInput";
+
+const TODAY = new Date().toISOString().split('T')[0];
+const MIN_DATE = "1600-01-01";
 
 const bemIcons = {
   imovel: Home,
@@ -126,8 +132,15 @@ export default function Bens({ formData, setFormData }) {
                       <Label>Valor (R$) *</Label>
                       <Input
                         id={`bem_${index}_valor`}
-                        value={masks.currency(bem.valor * 100)}
-                        onChange={(e) => updateBem(index, "valor", masks.currencyToNumber(e.target.value))}
+                        value={bem._valorDisplay ?? (bem.valor ? masks.currency(String(Math.round(bem.valor * 100))) : "")}
+                        onChange={(e) => {
+                          const raw = e.target.value.replace(/\D/g, "");
+                          const display = raw === "" ? "" : masks.currency(raw);
+                          const numValue = raw === "" ? 0 : Number(raw) / 100;
+                          const newBens = [...formData.bens];
+                          newBens[index] = { ...newBens[index], valor: numValue, _valorDisplay: display };
+                          setFormData({ ...formData, bens: newBens });
+                        }}
                         placeholder="0,00"
                       />
                     </div>
@@ -136,9 +149,13 @@ export default function Bens({ formData, setFormData }) {
                       <Label>Data de Aquisição *</Label>
                       <Input
                         type="date"
+                        min={formData.data_nascimento || MIN_DATE}
+                        max={TODAY}
                         value={bem.data_aquisicao || ''}
                         onChange={(e) => updateBem(index, "data_aquisicao", e.target.value)}
                       />
+                      <FieldError value={bem.data_aquisicao} validator="datePastOnly" />
+                      <DateAfterBirthValidator date={bem.data_aquisicao} dataNascimento={formData.data_nascimento} label="Data de aquisição" />
                       <p className="text-xs text-slate-500">Define se o bem é comum ou particular</p>
                     </div>
 
@@ -171,7 +188,24 @@ export default function Bens({ formData, setFormData }) {
 
                     {bem.tipo === 'imovel' && (
                       <>
-                        <div className="space-y-2 md:col-span-2">
+                        <div className="space-y-2">
+                          <CepInput
+                            id={`bem_${index}_cep`}
+                            label="CEP do Imóvel"
+                            cepValue={bem.cep_imovel}
+                            onCepChange={(val) => updateBem(index, "cep_imovel", val)}
+                            onAddressFound={({ logradouro, bairro, cidade, uf }) => {
+                              const newBens = [...formData.bens];
+                              newBens[index] = {
+                                ...newBens[index],
+                                endereco_bem: `${logradouro}, ${bairro}, ${cidade} - ${uf}`,
+                                municipio_bem: cidade
+                              };
+                              setFormData({ ...formData, bens: newBens });
+                            }}
+                          />
+                        </div>
+                        <div className="space-y-2">
                           <Label>Endereço do Imóvel</Label>
                           <Input
                             value={bem.endereco_bem || ''}
@@ -180,11 +214,28 @@ export default function Bens({ formData, setFormData }) {
                           />
                         </div>
                         <div className="space-y-2">
+                          <Label>Matrícula do Imóvel</Label>
+                          <Input
+                            value={bem.matricula_imovel || ''}
+                            onChange={(e) => updateBem(index, "matricula_imovel", e.target.value)}
+                            placeholder="Nº da matrícula no cartório"
+                          />
+                          <p className="text-xs text-slate-500">Opcional - Número de registro no cartório</p>
+                        </div>
+                        <div className="space-y-2">
                           <Label>Cartório de Registro</Label>
                           <Input
                             value={bem.cartorio_registro || ''}
                             onChange={(e) => updateBem(index, "cartorio_registro", e.target.value)}
-                            placeholder="Nome do Cartório e Comarca"
+                            placeholder="Nome do Cartório"
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label>Ofício</Label>
+                          <Input
+                            value={bem.oficio_cartorio || ''}
+                            onChange={(e) => updateBem(index, "oficio_cartorio", e.target.value)}
+                            placeholder="Ofício do cartório"
                           />
                         </div>
                         <div className="space-y-2">
@@ -204,9 +255,16 @@ export default function Bens({ formData, setFormData }) {
                         id={`bem_${index}_descricao`}
                         value={bem.descricao || ''}
                         onChange={(e) => updateBem(index, "descricao", e.target.value)}
-                        placeholder="Descrição detalhada do bem"
+                        placeholder={bem.tipo === 'imovel' 
+                          ? "Utilize a descrição conforme consta na Escritura do imóvel. Se não possuir, informe: tipo da construção, área construída, área total do terreno, metragem, confrontações e demais características relevantes." 
+                          : "Descrição detalhada do bem"}
                         className="h-20"
                       />
+                      {bem.tipo === 'imovel' && (
+                        <p className="text-xs text-blue-600">
+                          💡 Dica: Utilize a descrição que consta na Escritura do imóvel. Caso não possua, descreva a estrutura, metragem, confrontações e características mínimas.
+                        </p>
+                      )}
                     </div>
 
                     <div className="space-y-2 md:col-span-2">

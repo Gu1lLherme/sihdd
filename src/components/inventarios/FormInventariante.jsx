@@ -6,8 +6,12 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { UserCheck, Calendar as CalendarIcon } from "lucide-react";
 import { masks } from "@/components/Masks";
 import { FieldError } from "@/components/validations";
+import DateAfterBirthValidator from "@/components/novocaso/DateAfterBirthValidator";
 
-export default function FormInventariante({ data, onChange, readOnly = false }) {
+const TODAY = new Date().toISOString().split('T')[0];
+const MIN_DATE = "1600-01-01";
+
+export default function FormInventariante({ data, onChange, readOnly = false, formData }) {
   const handleChange = (field, value) => {
     onChange({ ...data, [field]: value });
   };
@@ -85,9 +89,13 @@ export default function FormInventariante({ data, onChange, readOnly = false }) 
                 value={data.data_nomeacao || ""} 
                 onChange={(e) => handleChange("data_nomeacao", e.target.value)}
                 type="date"
+                min={formData?.data_nascimento || MIN_DATE}
+                max={TODAY}
                 readOnly={readOnly}
               />
             </div>
+            <FieldError value={data.data_nomeacao} validator="datePastOnly" />
+            <DateAfterBirthValidator date={data.data_nomeacao} dataNascimento={formData?.data_nascimento} label="Data de nomeação" />
             <p className="text-xs text-slate-500">
               * Define o início da contagem de prazos
             </p>

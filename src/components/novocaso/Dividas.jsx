@@ -6,6 +6,11 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Trash2, Plus, DollarSign } from "lucide-react";
 import { masks } from "@/components/Masks";
+import { FieldError } from "@/components/validations";
+import DateAfterBirthValidator from "@/components/novocaso/DateAfterBirthValidator";
+
+const TODAY = new Date().toISOString().split('T')[0];
+const MIN_DATE = "1600-01-01";
 
 export default function Dividas({ formData, setFormData }) {
   const [novaDivida, setNovaDivida] = useState({
@@ -74,9 +79,12 @@ export default function Dividas({ formData, setFormData }) {
               <Label>Data Vencimento</Label>
               <Input
                 type="date"
+                min={formData.data_nascimento || MIN_DATE}
                 value={novaDivida.data_vencimento}
                 onChange={(e) => setNovaDivida({...novaDivida, data_vencimento: e.target.value})}
               />
+              <FieldError value={novaDivida.data_vencimento} validator="datePastOnly" />
+              <DateAfterBirthValidator date={novaDivida.data_vencimento} dataNascimento={formData.data_nascimento} label="Data de vencimento" />
             </div>
             <div className="space-y-2">
               <Label>Descrição</Label>

@@ -4,6 +4,8 @@ import { Label } from "@/components/ui/label";
 import { masks } from "@/components/Masks";
 import { validators, FieldError } from "@/components/validations";
 import { User, CreditCard, MapPin, Mail, Phone, Heart } from "lucide-react";
+import CpfUnicoValidator from "@/components/novocaso/CpfUnicoValidator";
+import CepInput from "@/components/novocaso/CepInput";
 
 export default function AdministradorProvisorio({ formData, setFormData }) {
   const data = formData.administrador_provisorio || {};
@@ -45,33 +47,80 @@ export default function AdministradorProvisorio({ formData, setFormData }) {
             maxLength={14}
           />
           <FieldError value={data.cpf} validator="cpf" />
+          <CpfUnicoValidator cpf={data.cpf} formData={formData} ownerLabel="admin" />
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <CepInput
+          id="admin_cep"
+          label="CEP"
+          cepValue={data.cep}
+          onCepChange={(val) => handleChange('cep', val)}
+          onAddressFound={({ logradouro, bairro, cidade, uf }) => {
+            setFormData(prev => ({
+              ...prev,
+              administrador_provisorio: {
+                ...prev.administrador_provisorio,
+                logradouro,
+                bairro,
+                cidade,
+                uf,
+              }
+            }));
+          }}
+        />
         <div className="space-y-2 md:col-span-2">
-          <Label htmlFor="admin_endereco">Endereço Completo</Label>
+          <Label htmlFor="admin_logradouro">Logradouro</Label>
           <div className="relative">
             <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
             <Input
-              id="admin_endereco"
+              id="admin_logradouro"
               className="pl-10"
-              value={data.endereco || ''}
-              onChange={(e) => handleChange('endereco', e.target.value)}
-              placeholder="Rua, Número, Bairro"
+              value={data.logradouro || ''}
+              onChange={(e) => handleChange('logradouro', e.target.value)}
+              placeholder="Rua, Avenida..."
             />
           </div>
         </div>
         <div className="space-y-2">
-          <Label htmlFor="admin_cep">CEP</Label>
+          <Label htmlFor="admin_numero">Número</Label>
           <Input
-            id="admin_cep"
-            value={data.cep || ''}
-            onChange={(e) => handleChange('cep', masks.cep(e.target.value))}
-            placeholder="00000-000"
-            maxLength={9}
+            id="admin_numero"
+            value={data.numero || ''}
+            onChange={(e) => handleChange('numero', e.target.value)}
+            placeholder="Nº"
           />
-          <FieldError value={data.cep} validator="cep" />
+        </div>
+      </div>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="space-y-2">
+          <Label htmlFor="admin_bairro">Bairro</Label>
+          <Input
+            id="admin_bairro"
+            value={data.bairro || ''}
+            onChange={(e) => handleChange('bairro', e.target.value)}
+            placeholder="Bairro"
+          />
+        </div>
+        <div className="space-y-2">
+          <Label htmlFor="admin_cidade">Cidade</Label>
+          <Input
+            id="admin_cidade"
+            value={data.cidade || ''}
+            onChange={(e) => handleChange('cidade', e.target.value)}
+            placeholder="Cidade"
+          />
+        </div>
+        <div className="space-y-2">
+          <Label htmlFor="admin_uf">UF</Label>
+          <Input
+            id="admin_uf"
+            value={data.uf || ''}
+            onChange={(e) => handleChange('uf', e.target.value.toUpperCase())}
+            placeholder="SP"
+            maxLength={2}
+          />
         </div>
       </div>
 
@@ -133,6 +182,7 @@ export default function AdministradorProvisorio({ formData, setFormData }) {
               maxLength={14}
             />
             <FieldError value={data.conjuge_cpf} validator="cpf" />
+            <CpfUnicoValidator cpf={data.conjuge_cpf} formData={formData} ownerLabel="admin_conjuge" />
           </div>
         </div>
       </div>

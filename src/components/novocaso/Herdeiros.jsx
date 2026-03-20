@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -7,8 +7,24 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Plus, Trash2, Users } from "lucide-react";
 import { masks } from "@/components/Masks";
 import { FieldError } from "@/components/validations";
+import CpfUnicoValidator from "@/components/novocaso/CpfUnicoValidator";
+import DateAfterBirthValidator from "@/components/novocaso/DateAfterBirthValidator";
+import CepInput from "@/components/novocaso/CepInput";
+
+const TODAY = new Date().toISOString().split('T')[0];
+const MIN_DATE = "1600-01-01";
 
 export default function Herdeiros({ formData, setFormData }) {
+  const lastHerdeiroRef = useRef(null);
+  const prevCountRef = useRef(formData.herdeiros.length);
+
+  useEffect(() => {
+    if (formData.herdeiros.length > prevCountRef.current && lastHerdeiroRef.current) {
+      lastHerdeiroRef.current.scrollIntoView({ behavior: "smooth", block: "center" });
+    }
+    prevCountRef.current = formData.herdeiros.length;
+  }, [formData.herdeiros.length]);
+
   const addHerdeiro = () => {
     setFormData({
       ...formData,
@@ -82,7 +98,7 @@ export default function Herdeiros({ formData, setFormData }) {
       ) : (
         <div className="space-y-4">
           {formData.herdeiros.map((herdeiro, index) => (
-            <Card key={index} className="border-slate-200 shadow-md">
+            <Card key={index} ref={index === formData.herdeiros.length - 1 ? lastHerdeiroRef : null} className="border-slate-200 shadow-md">
               <CardHeader className="bg-slate-50 border-b border-slate-200 flex-row justify-between items-center">
                 <CardTitle className="text-base">Herdeiro {index + 1}</CardTitle>
                 <Button
@@ -116,6 +132,7 @@ export default function Herdeiros({ formData, setFormData }) {
                       maxLength={14}
                     />
                     <FieldError value={herdeiro.cpf} validator="cpf" />
+                    <CpfUnicoValidator cpf={herdeiro.cpf} formData={formData} ownerLabel={`herdeiro_${index}`} />
                   </div>
 
                   <div className="space-y-2">
@@ -134,11 +151,13 @@ export default function Herdeiros({ formData, setFormData }) {
                     <Label>Data de Nascimento</Label>
                     <Input
                       type="date"
-                      min="1600-01-01"
-                      max={new Date().toISOString().split('T')[0]}
+                      min={formData.data_nascimento || MIN_DATE}
+                      max={TODAY}
                       value={herdeiro.data_nascimento || ''}
                       onChange={(e) => updateHerdeiro(index, "data_nascimento", e.target.value)}
                     />
+                    <FieldError value={herdeiro.data_nascimento} validator="datePastOnly" />
+                    <DateAfterBirthValidator date={herdeiro.data_nascimento} dataNascimento={formData.data_nascimento} label="Data de nascimento do herdeiro" />
                   </div>
 
                   <div className="space-y-2">
@@ -178,24 +197,29 @@ export default function Herdeiros({ formData, setFormData }) {
                   </div>
 
                   <div className="space-y-2">
+                    <CepInput
+                      id={`herdeiro_${index}_cep`}
+                      label="CEP"
+                      cepValue={herdeiro.cep}
+                      onCepChange={(val) => updateHerdeiro(index, "cep", val)}
+                      onAddressFound={({ logradouro, bairro, cidade, uf }) => {
+                        const newHerdeiros = [...formData.herdeiros];
+                        newHerdeiros[index] = {
+                          ...newHerdeiros[index],
+                          endereco: `${logradouro}, ${bairro}, ${cidade} - ${uf}`
+                        };
+                        setFormData({ ...formData, herdeiros: newHerdeiros });
+                      }}
+                    />
+                  </div>
+
+                  <div className="space-y-2">
                     <Label>Endereço</Label>
                     <Input
                       value={herdeiro.endereco || ''}
                       onChange={(e) => updateHerdeiro(index, "endereco", e.target.value)}
                       placeholder="Endereço completo"
                     />
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label>CEP</Label>
-                    <Input
-                      id={`herdeiro_${index}_cep`}
-                      value={herdeiro.cep || ''}
-                      onChange={(e) => updateHerdeiro(index, "cep", masks.cep(e.target.value))}
-                      placeholder="00000-000"
-                      maxLength={9}
-                    />
-                    <FieldError value={herdeiro.cep} validator="cep" />
                   </div>
 
                   <div className="space-y-2">

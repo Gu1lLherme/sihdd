@@ -23,7 +23,8 @@ const WrapperInventariante = ({ formData, setFormData }) => {
     return (
         <FormInventariante 
             data={formData.inventariante || {}} 
-            onChange={(data) => setFormData({...formData, inventariante: data})} 
+            onChange={(data) => setFormData({...formData, inventariante: data})}
+            formData={formData}
         />
     );
 };
@@ -631,11 +632,11 @@ export default function NovoCaso() {
           ) : (
             <Button
               onClick={salvar}
-              disabled={mutation.isPending}
-              className="bg-green-600 hover:bg-green-700 text-white"
+              disabled={mutation.isPending || mutation.isSuccess}
+              className={mutation.isSuccess ? "bg-emerald-700 text-white cursor-default" : "bg-green-600 hover:bg-green-700 text-white"}
             >
               <Save className="w-4 h-4 mr-2" />
-              {mutation.isPending ? "Salvando..." : (isEditing ? "Atualizar Caso" : "Salvar Caso")}
+              {mutation.isPending ? "Salvando..." : mutation.isSuccess ? "Caso Salvo ✓" : (isEditing ? "Atualizar Caso" : "Salvar Caso")}
             </Button>
           )}
         </div>
