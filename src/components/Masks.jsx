@@ -80,6 +80,10 @@ export const masks = {
       .replace(/(-\d{1})\d+?$/, '$1');
   },
 
+  matriculaCertidao: (value) => {
+    return value.replace(/\D/g, '').slice(0, 32);
+  },
+
   onlyLetters: (value) => {
     return value.replace(/[^a-zA-ZÀ-ÿ\s]/g, '');
   },

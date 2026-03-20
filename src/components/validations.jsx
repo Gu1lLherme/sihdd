@@ -24,6 +24,22 @@ export const validators = {
     const cleaned = value.replace(/\D/g, "");
     if (cleaned.length < 5) return { valid: false, message: "RG deve ter no mínimo 5 dígitos" };
     if (cleaned.length > 9) return { valid: false, message: "RG deve ter no máximo 9 dígitos" };
+    // Filtro de números repetidos
+    if (/^(\d)\1+$/.test(cleaned)) return { valid: false, message: "Número de RG inválido (sequência repetida)" };
+    // Validação do dígito verificador (Módulo 11 - Padrão SP) para RGs com 9 dígitos
+    if (cleaned.length === 9) {
+      const pesos = [2, 3, 4, 5, 6, 7, 8, 9];
+      let soma = 0;
+      for (let i = 0; i < 8; i++) {
+        soma += parseInt(cleaned.charAt(i)) * pesos[i];
+      }
+      const resto = soma % 11;
+      const digitoEsperado = resto === 10 ? 'X' : String(resto);
+      const digitoInformado = cleaned.charAt(8);
+      if (digitoInformado !== digitoEsperado && !(resto === 10 && digitoInformado === '0')) {
+        return { valid: false, message: "RG Inválido. Por favor, confira os números digitados." };
+      }
+    }
     return { valid: true, message: "" };
   },
 
@@ -75,6 +91,15 @@ export const validators = {
     const date = new Date(value);
     if (isNaN(date.getTime())) return { valid: false, message: "Data inválida" };
     if (date > new Date()) return { valid: false, message: "Data não pode ser futura" };
+    const year = date.getFullYear();
+    if (year < 1600 || year > new Date().getFullYear()) return { valid: false, message: "Ano deve estar entre 1600 e " + new Date().getFullYear() };
+    return { valid: true, message: "" };
+  },
+
+  matriculaCertidaoObito: (value) => {
+    if (!value) return { valid: true, message: "" };
+    const cleaned = value.replace(/\D/g, "");
+    if (cleaned.length !== 32) return { valid: false, message: "Matrícula deve ter exatamente 32 dígitos numéricos" };
     return { valid: true, message: "" };
   },
 

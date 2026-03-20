@@ -9,6 +9,9 @@ import FileUpload from "@/components/FileUpload";
 import OrgaoExpedidorSelect from "@/components/novocaso/OrgaoExpedidorSelect";
 import CepInput from "@/components/novocaso/CepInput";
 
+const TODAY = new Date().toISOString().split('T')[0];
+const MIN_DATE = "1600-01-01";
+
 export default function DadosBasicos({ formData, setFormData }) {
   const handleChange = (field, value) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
@@ -81,9 +84,11 @@ export default function DadosBasicos({ formData, setFormData }) {
             <Input
               id="data_expedicao"
               type="date"
-              max="9999-12-31"
+              min={MIN_DATE}
+              max={TODAY}
               value={formData.data_expedicao || ''}
               onChange={(e) => handleChange('data_expedicao', e.target.value)} />
+            <FieldError value={formData.data_expedicao} validator="datePastOnly" />
 
           </div>
         </div>
@@ -117,9 +122,11 @@ export default function DadosBasicos({ formData, setFormData }) {
             <Input
               id="data_nascimento"
               type="date"
-              max="9999-12-31"
+              min={MIN_DATE}
+              max={TODAY}
               value={formData.data_nascimento || ''}
               onChange={(e) => handleChange('data_nascimento', e.target.value)} />
+            <FieldError value={formData.data_nascimento} validator="datePastOnly" />
           </div>
         </div>
 
@@ -164,7 +171,8 @@ export default function DadosBasicos({ formData, setFormData }) {
               <Input
                 id="data_obito"
                 type="date"
-                max="9999-12-31"
+                min={MIN_DATE}
+                max={TODAY}
                 className={`pl-10 ${dataObitoVazia ? "border-red-300 focus:border-red-500" : ""}`}
                 value={formData.data_obito || ''}
                 onChange={(e) => handleChange('data_obito', e.target.value)} />
@@ -269,12 +277,14 @@ export default function DadosBasicos({ formData, setFormData }) {
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="certidao_obito_numero">Nº Matrícula</Label>
+              <Label htmlFor="certidao_obito_numero">Nº Matrícula (32 dígitos)</Label>
               <Input
                 id="certidao_obito_numero"
                 value={formData.certidao_obito_numero || ''}
-                onChange={(e) => handleChange('certidao_obito_numero', e.target.value)}
-                placeholder="Número da matrícula" />
+                onChange={(e) => handleChange('certidao_obito_numero', masks.matriculaCertidao(e.target.value))}
+                placeholder="00000000000000000000000000000000"
+                maxLength={32} />
+              <FieldError value={formData.certidao_obito_numero} validator="matriculaCertidaoObito" />
             </div>
             <div className="space-y-2">
               <Label htmlFor="certidao_obito_cartorio">Cartório Emissor</Label>
@@ -289,9 +299,11 @@ export default function DadosBasicos({ formData, setFormData }) {
               <Input
                 id="certidao_obito_data"
                 type="date"
-                max="9999-12-31"
+                min={MIN_DATE}
+                max={TODAY}
                 value={formData.certidao_obito_data || ''}
                 onChange={(e) => handleChange('certidao_obito_data', e.target.value)} />
+              <FieldError value={formData.certidao_obito_data} validator="datePastOnly" />
             </div>
           </div>
           <div className="pt-2">
@@ -350,9 +362,11 @@ export default function DadosBasicos({ formData, setFormData }) {
                   <Label>Data de Lavratura</Label>
                   <Input
                     type="date"
-                    max="9999-12-31"
+                    min={MIN_DATE}
+                    max={TODAY}
                     value={formData.testamento_data || ''}
                     onChange={(e) => handleChange('testamento_data', e.target.value)} />
+                  <FieldError value={formData.testamento_data} validator="datePastOnly" />
                 </div>
               </div>
               <div>
@@ -395,10 +409,12 @@ export default function DadosBasicos({ formData, setFormData }) {
               <Input
                 id="data_casamento"
                 type="date"
-                max="9999-12-31"
+                min={MIN_DATE}
+                max={TODAY}
                 className="pl-10"
                 value={formData.data_casamento || ''}
                 onChange={(e) => handleChange('data_casamento', e.target.value)} />
+            <FieldError value={formData.data_casamento} validator="datePastOnly" />
             </div>
             <p className="text-xs text-slate-500">Importante para classificar bens em comuns ou particulares</p>
           </div>
@@ -584,9 +600,11 @@ export default function DadosBasicos({ formData, setFormData }) {
             <Input
               id="data_atendimento"
               type="date"
-              max="9999-12-31"
+              min={MIN_DATE}
+              max={TODAY}
               value={formData.data_atendimento || ''}
               onChange={(e) => handleChange('data_atendimento', e.target.value)} />
+            <FieldError value={formData.data_atendimento} validator="datePastOnly" />
 
           </div>
         </div>

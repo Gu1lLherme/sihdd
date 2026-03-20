@@ -134,6 +134,8 @@ export default function Herdeiros({ formData, setFormData }) {
                     <Label>Data de Nascimento</Label>
                     <Input
                       type="date"
+                      min="1600-01-01"
+                      max={new Date().toISOString().split('T')[0]}
                       value={herdeiro.data_nascimento || ''}
                       onChange={(e) => updateHerdeiro(index, "data_nascimento", e.target.value)}
                     />
