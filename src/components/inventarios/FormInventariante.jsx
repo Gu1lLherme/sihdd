@@ -7,6 +7,7 @@ import { UserCheck, Calendar as CalendarIcon } from "lucide-react";
 import { masks } from "@/components/Masks";
 import { FieldError } from "@/components/validations";
 import DateAfterBirthValidator from "@/components/novocaso/DateAfterBirthValidator";
+import CepInput from "@/components/novocaso/CepInput";
 
 const TODAY = new Date().toISOString().split('T')[0];
 const MIN_DATE = "1600-01-01";
@@ -72,13 +73,67 @@ export default function FormInventariante({ data, onChange, readOnly = false, fo
             />
             <FieldError value={data.telefone} validator="phone" />
           </div>
-          <div className="space-y-2 md:col-span-2">
-            <Label>Endereço Completo</Label>
+          <div className="space-y-2">
+            <CepInput
+              id="inv_cep"
+              label="CEP"
+              cepValue={data.cep}
+              onCepChange={(val) => handleChange("cep", val)}
+              onAddressFound={({ logradouro, bairro, cidade, uf }) => {
+                onChange({
+                  ...data,
+                  logradouro,
+                  bairro,
+                  cidade,
+                  uf,
+                });
+              }}
+            />
+          </div>
+          <div className="space-y-2">
+            <Label>Logradouro</Label>
             <Input 
-              value={data.endereco || ""} 
-              onChange={(e) => handleChange("endereco", e.target.value)}
-              placeholder="Rua, Número, Bairro, Cidade - UF"
+              value={data.logradouro || ""} 
+              onChange={(e) => handleChange("logradouro", e.target.value)}
+              placeholder="Rua, Avenida..."
               readOnly={readOnly}
+            />
+          </div>
+          <div className="space-y-2">
+            <Label>Número</Label>
+            <Input 
+              value={data.numero || ""} 
+              onChange={(e) => handleChange("numero", e.target.value)}
+              placeholder="Nº"
+              readOnly={readOnly}
+            />
+          </div>
+          <div className="space-y-2">
+            <Label>Bairro</Label>
+            <Input 
+              value={data.bairro || ""} 
+              onChange={(e) => handleChange("bairro", e.target.value)}
+              placeholder="Bairro"
+              readOnly={readOnly}
+            />
+          </div>
+          <div className="space-y-2">
+            <Label>Cidade</Label>
+            <Input 
+              value={data.cidade || ""} 
+              onChange={(e) => handleChange("cidade", e.target.value)}
+              placeholder="Cidade"
+              readOnly={readOnly}
+            />
+          </div>
+          <div className="space-y-2">
+            <Label>UF</Label>
+            <Input 
+              value={data.uf || ""} 
+              onChange={(e) => handleChange("uf", e.target.value.toUpperCase())}
+              placeholder="SP"
+              readOnly={readOnly}
+              maxLength={2}
             />
           </div>
           <div className="space-y-2">
