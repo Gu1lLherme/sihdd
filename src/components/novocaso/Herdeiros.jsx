@@ -26,10 +26,10 @@ export default function Herdeiros({ formData, setFormData }) {
   }, [formData.herdeiros.length]);
 
   const addHerdeiro = () => {
-    setFormData({
-      ...formData,
+    setFormData((prev) => ({
+      ...prev,
       herdeiros: [
-        ...formData.herdeiros,
+        ...prev.herdeiros,
         {
           nome: "",
           cpf: "",
@@ -55,20 +55,22 @@ export default function Herdeiros({ formData, setFormData }) {
           representante_legal_telefone: "",
         },
       ],
-    });
+    }));
   };
 
   const removeHerdeiro = (index) => {
-    setFormData({
-      ...formData,
-      herdeiros: formData.herdeiros.filter((_, i) => i !== index),
-    });
+    setFormData((prev) => ({
+      ...prev,
+      herdeiros: prev.herdeiros.filter((_, i) => i !== index),
+    }));
   };
 
   const updateHerdeiro = (index, field, value) => {
-    const newHerdeiros = [...formData.herdeiros];
-    newHerdeiros[index] = { ...newHerdeiros[index], [field]: value };
-    setFormData({ ...formData, herdeiros: newHerdeiros });
+    setFormData((prev) => {
+      const newHerdeiros = [...prev.herdeiros];
+      newHerdeiros[index] = { ...newHerdeiros[index], [field]: value };
+      return { ...prev, herdeiros: newHerdeiros };
+    });
   };
 
   const totalPercentual = formData.herdeiros.reduce(
