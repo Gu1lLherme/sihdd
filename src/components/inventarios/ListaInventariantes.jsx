@@ -193,8 +193,13 @@ export default function ListaInventariantes() {
             {editingInv && (
                 <div className="space-y-4">
                     <FormInventariante 
-                        data={editingInv} 
-                        onChange={setEditingInv} 
+                        formData={{ inventariante: editingInv }} 
+                        setFormData={(updater) => {
+                          setEditingInv(prev => {
+                            const result = typeof updater === 'function' ? updater({ inventariante: prev }) : updater;
+                            return result.inventariante;
+                          });
+                        }}
                     />
                     <Button onClick={handleSave} className="w-full bg-blue-600 text-white">
                         {editingInv?.id ? "Salvar Alterações" : "Criar Inventariante"}
