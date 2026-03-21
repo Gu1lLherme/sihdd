@@ -20,12 +20,12 @@ export default function AddressInput({ prefix = "", values = {}, onChange, onAdd
   const handleAddressFound = (addressData) => {
     if (onAddressFound) {
       onAddressFound(addressData);
+    } else {
+      onChange("logradouro", addressData.logradouro);
+      onChange("bairro", addressData.bairro);
+      onChange("cidade", addressData.cidade);
+      onChange("uf", addressData.uf);
     }
-    // Always update fields individually as fallback
-    onChange("logradouro", addressData.logradouro);
-    onChange("bairro", addressData.bairro);
-    onChange("cidade", addressData.cidade);
-    onChange("uf", addressData.uf);
   };
 
   return (
