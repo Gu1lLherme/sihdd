@@ -23,7 +23,7 @@ const WrapperInventariante = ({ formData, setFormData }) => {
     return (
         <FormInventariante 
             data={formData.inventariante || {}} 
-            onChange={(data) => setFormData({...formData, inventariante: data})}
+            onChange={(newData) => setFormData(prev => ({...prev, inventariante: typeof newData === 'function' ? newData(prev.inventariante || {}) : newData}))}
             formData={formData}
         />
     );
