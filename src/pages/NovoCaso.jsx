@@ -3,7 +3,7 @@ import { base44 } from "@/api/base44Client";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { ArrowLeft, Save, ChevronRight, ChevronLeft } from "lucide-react";
+import { ArrowLeft, Save, ChevronRight, ChevronLeft, ShieldOff, ShieldCheck } from "lucide-react";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
 import { createPageUrl } from "@/utils";
@@ -49,6 +49,7 @@ export default function NovoCaso() {
 
   const [etapaAtual, setEtapaAtual] = useState(1);
   const [resultadoPartilha, setResultadoPartilha] = useState(null);
+  const [skipValidation, setSkipValidation] = useState(false);
   const [formData, setFormData] = useState({
     nome_falecido: "",
     cpf_falecido: "",
@@ -269,6 +270,8 @@ export default function NovoCaso() {
   });
 
   const validateStep = (step) => {
+    if (skipValidation) return true;
+
     // Helper: checa e retorna o primeiro campo com erro
     const checkField = (value, validatorName, fieldId, label, isRequired = false) => {
       if (isRequired && (!value || (typeof value === "string" && !value.trim()))) {
@@ -562,18 +565,32 @@ export default function NovoCaso() {
   return (
     <div className="p-4 md:p-8 min-h-screen">
       <div className="max-w-4xl mx-auto">
-        <div className="flex items-center gap-4 mb-8">
-          <Button
-            variant="outline"
-            size="icon"
-            onClick={() => navigate(createPageUrl("Dashboard"))}
-          >
-            <ArrowLeft className="w-4 h-4" />
-          </Button>
-          <div>
-            <h1 className="text-3xl font-bold text-blue-900">{isEditing ? "Editar Inventário" : "Novo Caso de Inventário"}</h1>
-            <p className="text-slate-600 mt-1">{isEditing ? "Atualize as informações do processo" : "Preencha as informações do processo"}</p>
+        <div className="flex items-center justify-between mb-8">
+          <div className="flex items-center gap-4">
+            <Button
+              variant="outline"
+              size="icon"
+              onClick={() => navigate(createPageUrl("Dashboard"))}
+            >
+              <ArrowLeft className="w-4 h-4" />
+            </Button>
+            <div>
+              <h1 className="text-3xl font-bold text-blue-900">{isEditing ? "Editar Inventário" : "Novo Caso de Inventário"}</h1>
+              <p className="text-slate-600 mt-1">{isEditing ? "Atualize as informações do processo" : "Preencha as informações do processo"}</p>
+            </div>
           </div>
+          <Button
+            variant={skipValidation ? "destructive" : "outline"}
+            size="sm"
+            onClick={() => {
+              setSkipValidation(!skipValidation);
+              toast.info(skipValidation ? "Validação reativada" : "Validação desativada (modo teste)");
+            }}
+            className="gap-2 text-xs"
+          >
+            {skipValidation ? <ShieldOff className="w-4 h-4" /> : <ShieldCheck className="w-4 h-4" />}
+            {skipValidation ? "Validação OFF" : "Validação ON"}
+          </Button>
         </div>
 
         <div className="mb-8 overflow-x-auto">
