@@ -26,10 +26,10 @@ const bemIcons = {
 
 export default function Bens({ formData, setFormData }) {
   const addBem = () => {
-    setFormData({
-      ...formData,
+    setFormData((prev) => ({
+      ...prev,
       bens: [
-        ...formData.bens,
+        ...prev.bens,
         {
           tipo: "imovel",
           descricao: "",
@@ -40,20 +40,22 @@ export default function Bens({ formData, setFormData }) {
           origem_bem: "onerosa",
         },
       ],
-    });
+    }));
   };
 
   const removeBem = (index) => {
-    setFormData({
-      ...formData,
-      bens: formData.bens.filter((_, i) => i !== index),
-    });
+    setFormData((prev) => ({
+      ...prev,
+      bens: prev.bens.filter((_, i) => i !== index),
+    }));
   };
 
   const updateBem = (index, field, value) => {
-    const newBens = [...formData.bens];
-    newBens[index] = { ...newBens[index], [field]: value };
-    setFormData({ ...formData, bens: newBens });
+    setFormData((prev) => {
+      const newBens = [...prev.bens];
+      newBens[index] = { ...newBens[index], [field]: value };
+      return { ...prev, bens: newBens };
+    });
   };
 
   const totalPatrimonio = formData.bens.reduce(
@@ -137,9 +139,11 @@ export default function Bens({ formData, setFormData }) {
                           const raw = e.target.value.replace(/\D/g, "");
                           const display = raw === "" ? "" : masks.currency(raw);
                           const numValue = raw === "" ? 0 : Number(raw) / 100;
-                          const newBens = [...formData.bens];
-                          newBens[index] = { ...newBens[index], valor: numValue, _valorDisplay: display };
-                          setFormData({ ...formData, bens: newBens });
+                          setFormData((prev) => {
+                            const newBens = [...prev.bens];
+                            newBens[index] = { ...newBens[index], valor: numValue, _valorDisplay: display };
+                            return { ...prev, bens: newBens };
+                          });
                         }}
                         placeholder="0,00"
                       />
@@ -195,13 +199,15 @@ export default function Bens({ formData, setFormData }) {
                             cepValue={bem.cep_imovel}
                             onCepChange={(val) => updateBem(index, "cep_imovel", val)}
                             onAddressFound={({ logradouro, bairro, cidade, uf }) => {
-                              const newBens = [...formData.bens];
-                              newBens[index] = {
-                                ...newBens[index],
-                                endereco_bem: `${logradouro}, ${bairro}, ${cidade} - ${uf}`,
-                                municipio_bem: cidade
-                              };
-                              setFormData({ ...formData, bens: newBens });
+                              setFormData((prev) => {
+                                const newBens = [...prev.bens];
+                                newBens[index] = {
+                                  ...newBens[index],
+                                  endereco_bem: `${logradouro}, ${bairro}, ${cidade} - ${uf}`,
+                                  municipio_bem: cidade
+                                };
+                                return { ...prev, bens: newBens };
+                              });
                             }}
                           />
                         </div>
