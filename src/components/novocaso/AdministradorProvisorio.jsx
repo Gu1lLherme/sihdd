@@ -34,8 +34,8 @@ export default function AdministradorProvisorio({ formData, setFormData }) {
             id="admin_nome"
             value={data.nome || ''}
             onChange={(e) => handleChange('nome', masks.onlyLetters(e.target.value))}
-            placeholder="Nome do administrador"
-          />
+            placeholder="Nome do administrador" />
+          
         </div>
         <div className="space-y-2">
           <Label htmlFor="admin_cpf">CPF</Label>
@@ -44,8 +44,8 @@ export default function AdministradorProvisorio({ formData, setFormData }) {
             value={data.cpf || ''}
             onChange={(e) => handleChange('cpf', masks.cpf(e.target.value))}
             placeholder="000.000.000-00"
-            maxLength={14}
-          />
+            maxLength={14} />
+          
           <FieldError value={data.cpf} validator="cpf" />
           <CpfUnicoValidator cpf={data.cpf} formData={formData} ownerLabel="admin" />
         </div>
@@ -59,22 +59,22 @@ export default function AdministradorProvisorio({ formData, setFormData }) {
           numero: data.numero,
           bairro: data.bairro,
           cidade: data.cidade,
-          uf: data.uf,
+          uf: data.uf
         }}
         onChange={(field, value) => handleChange(field, value)}
         onAddressFound={({ logradouro, bairro, cidade, uf }) => {
-          setFormData(prev => ({
+          setFormData((prev) => ({
             ...prev,
             administrador_provisorio: {
               ...prev.administrador_provisorio,
               logradouro,
               bairro,
               cidade,
-              uf,
+              uf
             }
           }));
-        }}
-      />
+        }} />
+      
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div className="space-y-2">
@@ -87,8 +87,8 @@ export default function AdministradorProvisorio({ formData, setFormData }) {
               className="pl-10"
               value={data.email || ''}
               onChange={(e) => handleChange('email', e.target.value)}
-              placeholder="email@exemplo.com"
-            />
+              placeholder="email@exemplo.com" />
+            
             <FieldError value={data.email} validator="email" />
           </div>
         </div>
@@ -102,42 +102,42 @@ export default function AdministradorProvisorio({ formData, setFormData }) {
               value={data.telefone || ''}
               onChange={(e) => handleChange('telefone', masks.phone(e.target.value))}
               placeholder="(00) 00000-0000"
-              maxLength={15}
-            />
+              maxLength={15} />
+            
             <FieldError value={data.telefone} validator="phone" />
           </div>
         </div>
       </div>
 
-      <div className="space-y-4 pt-4 border-t border-slate-100">
-        <div className="flex items-center gap-2">
-          <Heart className="w-4 h-4 text-pink-500" />
-          <h4 className="font-semibold text-slate-700">Cônjuge do Administrador</h4>
-        </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div className="space-y-2">
-            <Label htmlFor="admin_conjuge_nome">Nome do Cônjuge</Label>
-            <Input
-              id="admin_conjuge_nome"
-              value={data.conjuge_nome || ''}
-              onChange={(e) => handleChange('conjuge_nome', masks.onlyLetters(e.target.value))}
-              placeholder="Nome completo"
-            />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="admin_conjuge_cpf">CPF do Cônjuge</Label>
-            <Input
-              id="admin_conjuge_cpf"
-              value={data.conjuge_cpf || ''}
-              onChange={(e) => handleChange('conjuge_cpf', masks.cpf(e.target.value))}
-              placeholder="000.000.000-00"
-              maxLength={14}
-            />
-            <FieldError value={data.conjuge_cpf} validator="cpf" />
-            <CpfUnicoValidator cpf={data.conjuge_cpf} formData={formData} ownerLabel="admin_conjuge" />
-          </div>
-        </div>
-      </div>
-    </div>
-  );
+      
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      
+    </div>);
+
 }
