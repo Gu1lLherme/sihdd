@@ -16,6 +16,7 @@ export default function CepInput({
   const [loading, setLoading] = useState(false);
   const [found, setFound] = useState(false);
   const [error, setError] = useState("");
+  const [touched, setTouched] = useState(false);
 
   const fetchAddress = useCallback(async (cep) => {
     const cleaned = cep.replace(/\D/g, "");
