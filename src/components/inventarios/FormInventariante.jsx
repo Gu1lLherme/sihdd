@@ -86,10 +86,10 @@ export default function FormInventariante({ data, onChange, readOnly = false, fo
               }}
               onChange={(field, value) => handleChange(field, value)}
               onAddressFound={({ logradouro, bairro, cidade, uf }) => {
-                handleChange("logradouro", logradouro);
-                handleChange("bairro", bairro);
-                handleChange("cidade", cidade);
-                handleChange("uf", uf);
+                onChange(prev => ({
+                  ...(typeof prev === 'object' ? prev : data),
+                  logradouro, bairro, cidade, uf
+                }));
               }}
               readOnly={readOnly}
             />
