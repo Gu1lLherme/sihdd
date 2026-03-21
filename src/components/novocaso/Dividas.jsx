@@ -32,8 +32,10 @@ export default function Dividas({ formData, setFormData }) {
       valor: masks.currencyToNumber(novaDivida.valor)
     };
 
-    const novasDividas = [...(formData.dividas || []), dividaComValorNumerico];
-    setFormData({ ...formData, dividas: novasDividas });
+    setFormData((prev) => ({
+      ...prev,
+      dividas: [...(prev.dividas || []), dividaComValorNumerico]
+    }));
     setNovaDivida({
       titulo: "",
       descricao: "",
@@ -44,9 +46,10 @@ export default function Dividas({ formData, setFormData }) {
   };
 
   const handleRemoveDivida = (index) => {
-    const novasDividas = [...formData.dividas];
-    novasDividas.splice(index, 1);
-    setFormData({ ...formData, dividas: novasDividas });
+    setFormData((prev) => ({
+      ...prev,
+      dividas: prev.dividas.filter((_, i) => i !== index),
+    }));
   };
 
   return (
