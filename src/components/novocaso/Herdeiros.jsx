@@ -9,7 +9,7 @@ import { masks } from "@/components/Masks";
 import { FieldError } from "@/components/validations";
 import CpfUnicoValidator from "@/components/novocaso/CpfUnicoValidator";
 import DateAfterBirthValidator from "@/components/novocaso/DateAfterBirthValidator";
-import CepInput from "@/components/novocaso/CepInput";
+import AddressInput from "@/components/AddressInput";
 
 const TODAY = new Date().toISOString().split('T')[0];
 const MIN_DATE = "1600-01-01";
@@ -38,8 +38,12 @@ export default function Herdeiros({ formData, setFormData }) {
           nacionalidade: "Brasileira",
           profissao: "",
           estado_civil: "solteiro",
-          endereco: "",
           cep: "",
+          logradouro: "",
+          numero: "",
+          bairro: "",
+          cidade: "",
+          uf: "",
           parentesco: "filho",
           condicao_especial: "nenhuma",
           percentual_partilha: 0,
@@ -196,29 +200,29 @@ export default function Herdeiros({ formData, setFormData }) {
                     </Select>
                   </div>
 
-                  <div className="space-y-2">
-                    <CepInput
-                      id={`herdeiro_${index}_cep`}
-                      label="CEP"
-                      cepValue={herdeiro.cep}
-                      onCepChange={(val) => updateHerdeiro(index, "cep", val)}
+                  <div className="md:col-span-2">
+                    <AddressInput
+                      prefix={`herdeiro_${index}`}
+                      values={{
+                        cep: herdeiro.cep,
+                        logradouro: herdeiro.logradouro,
+                        numero: herdeiro.numero,
+                        bairro: herdeiro.bairro,
+                        cidade: herdeiro.cidade,
+                        uf: herdeiro.uf,
+                      }}
+                      onChange={(field, value) => updateHerdeiro(index, field, value)}
                       onAddressFound={({ logradouro, bairro, cidade, uf }) => {
                         const newHerdeiros = [...formData.herdeiros];
                         newHerdeiros[index] = {
                           ...newHerdeiros[index],
-                          endereco: `${logradouro}, ${bairro}, ${cidade} - ${uf}`
+                          logradouro,
+                          bairro,
+                          cidade,
+                          uf,
                         };
                         setFormData({ ...formData, herdeiros: newHerdeiros });
                       }}
-                    />
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label>Endereço</Label>
-                    <Input
-                      value={herdeiro.endereco || ''}
-                      onChange={(e) => updateHerdeiro(index, "endereco", e.target.value)}
-                      placeholder="Endereço completo"
                     />
                   </div>
 

@@ -3,9 +3,9 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { masks } from "@/components/Masks";
 import { validators, FieldError } from "@/components/validations";
-import { User, CreditCard, MapPin, Mail, Phone, Heart } from "lucide-react";
+import { User, CreditCard, Mail, Phone, Heart } from "lucide-react";
 import CpfUnicoValidator from "@/components/novocaso/CpfUnicoValidator";
-import CepInput from "@/components/novocaso/CepInput";
+import AddressInput from "@/components/AddressInput";
 
 export default function AdministradorProvisorio({ formData, setFormData }) {
   const data = formData.administrador_provisorio || {};
@@ -51,78 +51,30 @@ export default function AdministradorProvisorio({ formData, setFormData }) {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <CepInput
-          id="admin_cep"
-          label="CEP"
-          cepValue={data.cep}
-          onCepChange={(val) => handleChange('cep', val)}
-          onAddressFound={({ logradouro, bairro, cidade, uf }) => {
-            setFormData(prev => ({
-              ...prev,
-              administrador_provisorio: {
-                ...prev.administrador_provisorio,
-                logradouro,
-                bairro,
-                cidade,
-                uf,
-              }
-            }));
-          }}
-        />
-        <div className="space-y-2 md:col-span-2">
-          <Label htmlFor="admin_logradouro">Logradouro</Label>
-          <div className="relative">
-            <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-            <Input
-              id="admin_logradouro"
-              className="pl-10"
-              value={data.logradouro || ''}
-              onChange={(e) => handleChange('logradouro', e.target.value)}
-              placeholder="Rua, Avenida..."
-            />
-          </div>
-        </div>
-        <div className="space-y-2">
-          <Label htmlFor="admin_numero">Número</Label>
-          <Input
-            id="admin_numero"
-            value={data.numero || ''}
-            onChange={(e) => handleChange('numero', e.target.value)}
-            placeholder="Nº"
-          />
-        </div>
-      </div>
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div className="space-y-2">
-          <Label htmlFor="admin_bairro">Bairro</Label>
-          <Input
-            id="admin_bairro"
-            value={data.bairro || ''}
-            onChange={(e) => handleChange('bairro', e.target.value)}
-            placeholder="Bairro"
-          />
-        </div>
-        <div className="space-y-2">
-          <Label htmlFor="admin_cidade">Cidade</Label>
-          <Input
-            id="admin_cidade"
-            value={data.cidade || ''}
-            onChange={(e) => handleChange('cidade', e.target.value)}
-            placeholder="Cidade"
-          />
-        </div>
-        <div className="space-y-2">
-          <Label htmlFor="admin_uf">UF</Label>
-          <Input
-            id="admin_uf"
-            value={data.uf || ''}
-            onChange={(e) => handleChange('uf', e.target.value.toUpperCase())}
-            placeholder="SP"
-            maxLength={2}
-          />
-        </div>
-      </div>
+      <AddressInput
+        prefix="admin"
+        values={{
+          cep: data.cep,
+          logradouro: data.logradouro,
+          numero: data.numero,
+          bairro: data.bairro,
+          cidade: data.cidade,
+          uf: data.uf,
+        }}
+        onChange={(field, value) => handleChange(field, value)}
+        onAddressFound={({ logradouro, bairro, cidade, uf }) => {
+          setFormData(prev => ({
+            ...prev,
+            administrador_provisorio: {
+              ...prev.administrador_provisorio,
+              logradouro,
+              bairro,
+              cidade,
+              uf,
+            }
+          }));
+        }}
+      />
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div className="space-y-2">

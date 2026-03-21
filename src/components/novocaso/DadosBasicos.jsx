@@ -7,7 +7,7 @@ import { validators, FieldError } from "@/components/validations";
 import { Calendar, Clock, MapPin, User, FileText, Phone, Mail, Briefcase, Users2, ScrollText, AlertCircle } from "lucide-react";
 import FileUpload from "@/components/FileUpload";
 import OrgaoExpedidorSelect from "@/components/novocaso/OrgaoExpedidorSelect";
-import CepInput from "@/components/novocaso/CepInput";
+import AddressInput from "@/components/AddressInput";
 import CpfUnicoValidator from "@/components/novocaso/CpfUnicoValidator";
 
 const TODAY = new Date().toISOString().split('T')[0];
@@ -206,70 +206,30 @@ export default function DadosBasicos({ formData, setFormData }) {
         </div>
 
         {/* Localidade */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-          <CepInput
-            id="cep"
-            label="CEP"
-            cepValue={formData.cep}
-            onCepChange={(val) => handleChange('cep', val)}
-            onAddressFound={({ logradouro, bairro, cidade, uf }) => {
-              setFormData(prev => ({
-                ...prev,
-                endereco_logradouro: logradouro,
-                endereco_bairro: bairro,
-                endereco_cidade: cidade,
-                endereco_uf: uf,
-              }));
-            }}
-          />
-          <div className="space-y-2 md:col-span-2">
-            <Label htmlFor="endereco_logradouro">Logradouro</Label>
-            <div className="relative">
-              <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-              <Input
-                id="endereco_logradouro"
-                className="pl-10"
-                value={formData.endereco_logradouro || ''}
-                onChange={(e) => handleChange('endereco_logradouro', e.target.value)}
-                placeholder="Rua, Avenida..." />
-            </div>
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="endereco_numero">Número</Label>
-            <Input
-              id="endereco_numero"
-              value={formData.endereco_numero || ''}
-              onChange={(e) => handleChange('endereco_numero', e.target.value)}
-              placeholder="Nº" />
-          </div>
-        </div>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div className="space-y-2">
-            <Label htmlFor="endereco_bairro">Bairro</Label>
-            <Input
-              id="endereco_bairro"
-              value={formData.endereco_bairro || ''}
-              onChange={(e) => handleChange('endereco_bairro', e.target.value)}
-              placeholder="Bairro" />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="endereco_cidade">Cidade</Label>
-            <Input
-              id="endereco_cidade"
-              value={formData.endereco_cidade || ''}
-              onChange={(e) => handleChange('endereco_cidade', e.target.value)}
-              placeholder="Cidade" />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="endereco_uf">UF</Label>
-            <Input
-              id="endereco_uf"
-              value={formData.endereco_uf || ''}
-              onChange={(e) => handleChange('endereco_uf', e.target.value.toUpperCase())}
-              placeholder="SP"
-              maxLength={2} />
-          </div>
-        </div>
+        <AddressInput
+          prefix="endereco"
+          values={{
+            cep: formData.cep,
+            logradouro: formData.endereco_logradouro,
+            numero: formData.endereco_numero,
+            bairro: formData.endereco_bairro,
+            cidade: formData.endereco_cidade,
+            uf: formData.endereco_uf,
+          }}
+          onChange={(field, value) => {
+            const fieldMap = { cep: 'cep', logradouro: 'endereco_logradouro', numero: 'endereco_numero', bairro: 'endereco_bairro', cidade: 'endereco_cidade', uf: 'endereco_uf' };
+            handleChange(fieldMap[field], value);
+          }}
+          onAddressFound={({ logradouro, bairro, cidade, uf }) => {
+            setFormData(prev => ({
+              ...prev,
+              endereco_logradouro: logradouro,
+              endereco_bairro: bairro,
+              endereco_cidade: cidade,
+              endereco_uf: uf,
+            }));
+          }}
+        />
 
         {/* Certidão de Óbito */}
         <div className="space-y-4 p-4 bg-slate-50 border border-slate-200 rounded-lg">
@@ -508,66 +468,30 @@ export default function DadosBasicos({ formData, setFormData }) {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-          <CepInput
-            id="conjuge_cep"
-            label="CEP"
-            cepValue={formData.conjuge_cep}
-            onCepChange={(val) => handleChange('conjuge_cep', val)}
-            onAddressFound={({ logradouro, bairro, cidade, uf }) => {
-              setFormData(prev => ({
-                ...prev,
-                conjuge_logradouro: logradouro,
-                conjuge_bairro: bairro,
-                conjuge_cidade: cidade,
-                conjuge_uf: uf,
-              }));
-            }}
-          />
-          <div className="space-y-2 md:col-span-2">
-            <Label htmlFor="conjuge_logradouro">Logradouro</Label>
-            <Input
-              id="conjuge_logradouro"
-              value={formData.conjuge_logradouro || ''}
-              onChange={(e) => handleChange('conjuge_logradouro', e.target.value)}
-              placeholder="Rua, Avenida..." />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="conjuge_numero">Número</Label>
-            <Input
-              id="conjuge_numero"
-              value={formData.conjuge_numero || ''}
-              onChange={(e) => handleChange('conjuge_numero', e.target.value)}
-              placeholder="Nº" />
-          </div>
-        </div>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div className="space-y-2">
-            <Label htmlFor="conjuge_bairro">Bairro</Label>
-            <Input
-              id="conjuge_bairro"
-              value={formData.conjuge_bairro || ''}
-              onChange={(e) => handleChange('conjuge_bairro', e.target.value)}
-              placeholder="Bairro" />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="conjuge_cidade">Cidade</Label>
-            <Input
-              id="conjuge_cidade"
-              value={formData.conjuge_cidade || ''}
-              onChange={(e) => handleChange('conjuge_cidade', e.target.value)}
-              placeholder="Cidade" />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="conjuge_uf">UF</Label>
-            <Input
-              id="conjuge_uf"
-              value={formData.conjuge_uf || ''}
-              onChange={(e) => handleChange('conjuge_uf', e.target.value.toUpperCase())}
-              placeholder="SP"
-              maxLength={2} />
-          </div>
-        </div>
+        <AddressInput
+          prefix="conjuge"
+          values={{
+            cep: formData.conjuge_cep,
+            logradouro: formData.conjuge_logradouro,
+            numero: formData.conjuge_numero,
+            bairro: formData.conjuge_bairro,
+            cidade: formData.conjuge_cidade,
+            uf: formData.conjuge_uf,
+          }}
+          onChange={(field, value) => {
+            const fieldMap = { cep: 'conjuge_cep', logradouro: 'conjuge_logradouro', numero: 'conjuge_numero', bairro: 'conjuge_bairro', cidade: 'conjuge_cidade', uf: 'conjuge_uf' };
+            handleChange(fieldMap[field], value);
+          }}
+          onAddressFound={({ logradouro, bairro, cidade, uf }) => {
+            setFormData(prev => ({
+              ...prev,
+              conjuge_logradouro: logradouro,
+              conjuge_bairro: bairro,
+              conjuge_cidade: cidade,
+              conjuge_uf: uf,
+            }));
+          }}
+        />
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div className="space-y-2">
