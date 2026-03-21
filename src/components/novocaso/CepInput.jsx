@@ -68,6 +68,7 @@ export default function CepInput({
           id={id}
           value={cepValue || ""}
           onChange={handleChange}
+          onBlur={() => setTouched(true)}
           placeholder="00000-000"
           maxLength={9}
           className={found ? "border-green-400 pr-9" : error ? "border-red-400 pr-9" : ""}
@@ -79,7 +80,7 @@ export default function CepInput({
           <CheckCircle2 className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-green-500" />
         )}
       </div>
-      <FieldError value={cepValue} validator="cep" />
+      {touched && <FieldError value={cepValue} validator="cep" />}
       {error && <p className="text-xs text-red-500">{error}</p>}
       {found && <p className="text-xs text-green-600">Endereço preenchido automaticamente</p>}
     </div>
