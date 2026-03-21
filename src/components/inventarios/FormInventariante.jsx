@@ -14,7 +14,7 @@ const MIN_DATE = "1600-01-01";
 
 export default function FormInventariante({ data, onChange, readOnly = false, formData }) {
   const handleChange = (field, value) => {
-    onChange({ ...data, [field]: value });
+    onChange((prev) => ({ ...prev, [field]: value }));
   };
 
   return (
