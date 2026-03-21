@@ -4,7 +4,7 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { masks } from "@/components/Masks";
 import { validators, FieldError } from "@/components/validations";
-import { Calendar, Clock, MapPin, User, FileText, Phone, Mail, Briefcase, Users2, ScrollText, AlertCircle } from "lucide-react";
+import { Calendar, Clock, User, FileText, Phone, Mail, Briefcase, Users2, ScrollText, AlertCircle } from "lucide-react";
 import FileUpload from "@/components/FileUpload";
 import OrgaoExpedidorSelect from "@/components/novocaso/OrgaoExpedidorSelect";
 import AddressInput from "@/components/AddressInput";
