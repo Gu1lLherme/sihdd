@@ -19,22 +19,14 @@ import Dividas from "../components/novocaso/Dividas";
 import Resumo from "../components/novocaso/Resumo";
 import FormInventariante from "@/components/inventarios/FormInventariante";
 
-const WrapperInventariante = ({ formData, setFormData }) => {
-    return (
-        <FormInventariante 
-            data={formData.inventariante || {}} 
-            onChange={(newData) => setFormData(prev => ({...prev, inventariante: typeof newData === 'function' ? newData(prev.inventariante || {}) : newData}))}
-            formData={formData}
-        />
-    );
-};
+
 
 const ETAPAS = [
   { id: 1, titulo: "Dados Iniciais", componente: DadosBasicos },
   { id: 2, titulo: "Tipo Inventário", componente: DadosInventario },
   { id: 3, titulo: "Adm. Provisório", componente: AdministradorProvisorio },
   { id: 4, titulo: "Herdeiros", componente: Herdeiros },
-  { id: 5, titulo: "Inventariante", componente: WrapperInventariante },
+  { id: 5, titulo: "Inventariante", componente: FormInventariante },
   { id: 6, titulo: "Bens", componente: Bens },
   { id: 7, titulo: "Dívidas", componente: Dividas },
   { id: 8, titulo: "Resumo", componente: Resumo },

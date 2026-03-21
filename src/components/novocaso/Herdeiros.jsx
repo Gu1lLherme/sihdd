@@ -213,15 +213,17 @@ export default function Herdeiros({ formData, setFormData }) {
                       }}
                       onChange={(field, value) => updateHerdeiro(index, field, value)}
                       onAddressFound={({ logradouro, bairro, cidade, uf }) => {
-                        const newHerdeiros = [...formData.herdeiros];
-                        newHerdeiros[index] = {
-                          ...newHerdeiros[index],
-                          logradouro,
-                          bairro,
-                          cidade,
-                          uf,
-                        };
-                        setFormData({ ...formData, herdeiros: newHerdeiros });
+                        setFormData(prev => {
+                          const newHerdeiros = [...prev.herdeiros];
+                          newHerdeiros[index] = {
+                            ...newHerdeiros[index],
+                            logradouro,
+                            bairro,
+                            cidade,
+                            uf,
+                          };
+                          return { ...prev, herdeiros: newHerdeiros };
+                        });
                       }}
                     />
                   </div>

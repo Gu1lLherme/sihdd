@@ -3,7 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { UserCheck, Calendar as CalendarIcon } from "lucide-react";
+import { UserCheck } from "lucide-react";
 import { masks } from "@/components/Masks";
 import { FieldError } from "@/components/validations";
 import DateAfterBirthValidator from "@/components/novocaso/DateAfterBirthValidator";
@@ -12,9 +12,17 @@ import AddressInput from "@/components/AddressInput";
 const TODAY = new Date().toISOString().split('T')[0];
 const MIN_DATE = "1600-01-01";
 
-export default function FormInventariante({ data, onChange, readOnly = false, formData }) {
+export default function FormInventariante({ formData, setFormData, readOnly = false }) {
+  const data = formData.inventariante || {};
+
   const handleChange = (field, value) => {
-    onChange({ ...data, [field]: value });
+    setFormData((prev) => ({
+      ...prev,
+      inventariante: {
+        ...prev.inventariante,
+        [field]: value
+      }
+    }));
   };
 
   return (
@@ -86,9 +94,15 @@ export default function FormInventariante({ data, onChange, readOnly = false, fo
               }}
               onChange={(field, value) => handleChange(field, value)}
               onAddressFound={({ logradouro, bairro, cidade, uf }) => {
-                onChange(prev => ({
-                  ...(typeof prev === 'object' ? prev : data),
-                  logradouro, bairro, cidade, uf
+                setFormData(prev => ({
+                  ...prev,
+                  inventariante: {
+                    ...prev.inventariante,
+                    logradouro,
+                    bairro,
+                    cidade,
+                    uf,
+                  }
                 }));
               }}
               readOnly={readOnly}
