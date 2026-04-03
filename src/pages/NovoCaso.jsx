@@ -693,47 +693,59 @@ export default function NovoCaso() {
       {/* Barra de etapas — fica fixa ao rolar */}
       <div className="sticky top-16 z-40 bg-white border-b border-slate-200 shadow-sm">
         <div className="max-w-4xl mx-auto px-4 md:px-8 py-3 overflow-x-auto">
-          <div className="flex justify-between items-center min-w-[700px]">
-            {ETAPAS.map((etapa, index) => (
-              <div key={etapa.id} className="flex items-center flex-1">
-                <button
-                  type="button"
-                  onClick={() => navegarParaEtapa(etapa.id)}
-                  disabled={etapa.id > etapaAtual && !canNavigateToStep(etapa.id)}
-                  className={`flex flex-col items-center flex-1 group ${
-                    etapa.id > etapaAtual && !canNavigateToStep(etapa.id) 
-                      ? "cursor-not-allowed opacity-50" 
-                      : "cursor-pointer"
-                  }`}
-                >
-                  <div
-                    className={`w-8 h-8 md:w-10 md:h-10 rounded-full flex items-center justify-center font-semibold text-sm transition-all ${
+          <div className="min-w-[700px]">
+            {/* Linha dos círculos + conectores */}
+            <div className="flex items-center">
+              {ETAPAS.map((etapa, index) => (
+                <React.Fragment key={etapa.id}>
+                  <button
+                    type="button"
+                    onClick={() => navegarParaEtapa(etapa.id)}
+                    disabled={etapa.id > etapaAtual && !canNavigateToStep(etapa.id)}
+                    className={`shrink-0 w-8 h-8 md:w-9 md:h-9 rounded-full flex items-center justify-center font-semibold text-sm transition-all ${
                       etapaAtual === etapa.id
                         ? "bg-blue-900 text-white ring-4 ring-blue-200 scale-110"
                         : etapaAtual > etapa.id
-                        ? "bg-blue-900 text-white group-hover:ring-2 group-hover:ring-blue-300"
+                        ? "bg-blue-900 text-white hover:ring-2 hover:ring-blue-300"
                         : "bg-slate-200 text-slate-500"
+                    } ${
+                      etapa.id > etapaAtual && !canNavigateToStep(etapa.id)
+                        ? "cursor-not-allowed opacity-50"
+                        : "cursor-pointer"
                     }`}
                   >
                     {etapa.id}
+                  </button>
+                  {index < ETAPAS.length - 1 && (
+                    <div
+                      className={`flex-1 h-1 mx-1 rounded transition-colors ${
+                        etapaAtual > etapa.id ? "bg-blue-900" : "bg-slate-200"
+                      }`}
+                    />
+                  )}
+                </React.Fragment>
+              ))}
+            </div>
+            {/* Linha dos labels — alinhados individualmente sob cada círculo */}
+            <div className="flex items-start mt-1">
+              {ETAPAS.map((etapa, index) => (
+                <React.Fragment key={etapa.id}>
+                  <div className="shrink-0 w-8 md:w-9 flex justify-center">
+                    <p
+                      className={`text-[9px] md:text-[10px] font-medium text-center leading-tight transition-colors ${
+                        etapaAtual >= etapa.id ? "text-blue-900" : "text-slate-400"
+                      }`}
+                      style={{ maxWidth: "52px" }}
+                    >
+                      {etapa.titulo}
+                    </p>
                   </div>
-                  <p
-                    className={`text-[10px] md:text-xs mt-1 font-medium text-center leading-tight transition-colors ${
-                      etapaAtual >= etapa.id ? "text-blue-900" : "text-slate-500"
-                    }`}
-                  >
-                    {etapa.titulo}
-                  </p>
-                </button>
-                {index < ETAPAS.length - 1 && (
-                  <div
-                    className={`h-1 flex-1 mx-1 rounded transition-colors ${
-                      etapaAtual > etapa.id ? "bg-blue-900" : "bg-slate-200"
-                    }`}
-                  />
-                )}
-              </div>
-            ))}
+                  {index < ETAPAS.length - 1 && (
+                    <div className="flex-1 mx-1" />
+                  )}
+                </React.Fragment>
+              ))}
+            </div>
           </div>
         </div>
       </div>
