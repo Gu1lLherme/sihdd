@@ -42,6 +42,13 @@ export default function NovoCaso() {
   const [etapaAtual, setEtapaAtual] = useState(1);
   const [resultadoPartilha, setResultadoPartilha] = useState(null);
   const [skipValidation, setSkipValidation] = useState(false);
+
+  // Listener para navegação a partir do Resumo (botão "Editar")
+  React.useEffect(() => {
+    const handler = (e) => setEtapaAtual(e.detail.etapa);
+    window.addEventListener('resumo-navigate', handler);
+    return () => window.removeEventListener('resumo-navigate', handler);
+  }, []);
   const [formData, setFormData] = useState({
     nome_falecido: "",
     cpf_falecido: "",
