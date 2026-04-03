@@ -11,6 +11,14 @@ import DateAfterObitoValidator from "@/components/novocaso/DateAfterObitoValidat
 const TODAY = new Date().toISOString().split('T')[0];
 const MIN_DATE = "1600-01-01";
 
+function getNextDay(dateStr) {
+  if (!dateStr) return null;
+  const d = new Date(dateStr);
+  if (isNaN(d.getTime())) return null;
+  d.setDate(d.getDate() + 1);
+  return d.toISOString().split('T')[0];
+}
+
 export default function DadosInventario({ formData, setFormData }) {
   const handleChange = (field, value) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
@@ -60,7 +68,7 @@ export default function DadosInventario({ formData, setFormData }) {
               <Label>Data de Abertura do Inventário</Label>
               <Input
                 type="date"
-                min={formData.data_obito || formData.data_nascimento || MIN_DATE}
+                min={getNextDay(formData.data_obito) || formData.data_nascimento || MIN_DATE}
                 max={TODAY}
                 value={formData.data_abertura_inventario || ''}
                 onChange={(e) => handleChange('data_abertura_inventario', e.target.value)}
@@ -84,7 +92,7 @@ export default function DadosInventario({ formData, setFormData }) {
                 <Label>Data de Distribuição</Label>
                 <Input
                   type="date"
-                  min={formData.data_obito || formData.data_nascimento || MIN_DATE}
+                  min={getNextDay(formData.data_obito) || formData.data_nascimento || MIN_DATE}
                   max={TODAY}
                   value={formData.data_distribuicao || ''}
                   onChange={(e) => handleChange('data_distribuicao', e.target.value)}
