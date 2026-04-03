@@ -658,9 +658,10 @@ export default function NovoCaso() {
   const EtapaComponente = ETAPAS[etapaAtual - 1].componente;
 
   return (
-    <div className="p-4 md:p-8 min-h-screen">
-      <div className="max-w-4xl mx-auto">
-        <div className="flex items-center justify-between mb-8">
+    <div className="min-h-screen">
+      {/* Cabeçalho — visível apenas no topo, some ao rolar */}
+      <div className="max-w-4xl mx-auto px-4 md:px-8 pt-4 md:pt-8 pb-4">
+        <div className="flex items-center justify-between">
           <div className="flex items-center gap-4">
             <Button
               variant="outline"
@@ -687,8 +688,11 @@ export default function NovoCaso() {
             {skipValidation ? "Validação OFF" : "Validação ON"}
           </Button>
         </div>
+      </div>
 
-        <div className="mb-8 overflow-x-auto">
+      {/* Barra de etapas — fica fixa ao rolar */}
+      <div className="sticky top-16 z-40 bg-white border-b border-slate-200 shadow-sm">
+        <div className="max-w-4xl mx-auto px-4 md:px-8 py-3 overflow-x-auto">
           <div className="flex justify-between items-center min-w-[700px]">
             {ETAPAS.map((etapa, index) => (
               <div key={etapa.id} className="flex items-center flex-1">
@@ -732,7 +736,10 @@ export default function NovoCaso() {
             ))}
           </div>
         </div>
+      </div>
 
+      {/* Conteúdo principal */}
+      <div className="max-w-4xl mx-auto px-4 md:px-8 pb-8 pt-4">
         <Card id="etapa-content" className="border-slate-200 shadow-lg">
           <CardHeader className="border-b border-slate-200">
             <CardTitle className="text-xl text-blue-900">
