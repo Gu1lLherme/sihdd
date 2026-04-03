@@ -6,6 +6,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Plus, Trash2, Home, Car, Wallet, TrendingUp, Building2, Package } from "lucide-react";
+import { Switch } from "@/components/ui/switch";
 import { masks } from "@/components/Masks";
 import { FieldError } from "@/components/validations";
 import FileUpload from "@/components/FileUpload";
@@ -253,6 +254,16 @@ export default function Bens({ formData, setFormData }) {
                             value={bem.oficio_cartorio || ''}
                             onChange={(e) => updateBem(index, "oficio_cartorio", e.target.value)}
                             placeholder="Ofício do cartório"
+                          />
+                        </div>
+                        <div className="md:col-span-2 flex items-center justify-between p-4 bg-slate-50 rounded-lg border border-slate-200">
+                          <div>
+                            <Label className="text-sm font-medium">Imóvel Regular</Label>
+                            <p className="text-xs text-slate-500 mt-0.5">Imóveis irregulares poderão ser regularizados posteriormente</p>
+                          </div>
+                          <Switch
+                            checked={bem.imovel_regular ?? true}
+                            onCheckedChange={(checked) => updateBem(index, "imovel_regular", checked)}
                           />
                         </div>
                       </>
