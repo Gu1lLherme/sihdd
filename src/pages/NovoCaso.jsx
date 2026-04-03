@@ -690,16 +690,18 @@ export default function NovoCaso() {
           </Button>
 
           <div className="flex items-center gap-3">
-            {/* Botão Salvar visível em todas as etapas */}
-            <Button
-              onClick={salvar}
-              disabled={mutation.isPending || mutation.isSuccess}
-              variant="outline"
-              className={mutation.isSuccess ? "bg-emerald-50 border-emerald-300 text-emerald-700" : "border-green-300 text-green-700 hover:bg-green-50"}
-            >
-              <Save className="w-4 h-4 mr-2" />
-              {mutation.isPending ? "Salvando..." : mutation.isSuccess ? "Salvo ✓" : "Salvar"}
-            </Button>
+            {/* Botão Salvar só aparece em modo edição (caso já existente) */}
+            {isEditing && (
+              <Button
+                onClick={salvar}
+                disabled={mutation.isPending || mutation.isSuccess}
+                variant="outline"
+                className={mutation.isSuccess ? "bg-emerald-50 border-emerald-300 text-emerald-700" : "border-green-300 text-green-700 hover:bg-green-50"}
+              >
+                <Save className="w-4 h-4 mr-2" />
+                {mutation.isPending ? "Salvando..." : mutation.isSuccess ? "Salvo ✓" : "Salvar"}
+              </Button>
+            )}
 
             {etapaAtual < ETAPAS.length ? (
               <Button
