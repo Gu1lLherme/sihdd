@@ -85,5 +85,12 @@ module.exports = {
   		}
   	}
   },
+  safelist: [
+    // StepNavigator dynamic color classes
+    'bg-blue-900', 'text-blue-900', 'ring-blue-900/20', 'hover:ring-blue-900/30',
+    'bg-purple-600', 'text-purple-600', 'ring-purple-600/20', 'hover:ring-purple-600/30',
+    'bg-green-600', 'text-green-600', 'ring-green-600/20', 'hover:ring-green-600/30',
+    'bg-amber-600', 'text-amber-600', 'ring-amber-600/20', 'hover:ring-amber-600/30',
+  ],
   plugins: [require("tailwindcss-animate")],
 }

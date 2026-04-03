@@ -2,11 +2,16 @@ import React, { useState } from "react";
 import { base44 } from "@/api/base44Client";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { ArrowLeft, Save, ChevronRight, ChevronLeft, ShieldOff, ShieldCheck, Home } from "lucide-react";
+// Card é utilizado via StepContent
+import { Save, ShieldOff, ShieldCheck } from "lucide-react";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
 import { createPageUrl } from "@/utils";
+
+import StepHeader from "@/components/steps/StepHeader";
+import StepNavigator from "@/components/steps/StepNavigator";
+import StepContent from "@/components/steps/StepContent";
+import StepActions from "@/components/steps/StepActions";
 
 import { validators } from "@/components/validations";
 import { scrollToError } from "@/components/novocaso/scrollToError";
@@ -659,173 +664,61 @@ export default function NovoCaso() {
 
   return (
     <div className="min-h-screen">
-      {/* Cabeçalho — visível apenas no topo, some ao rolar */}
+      {/* Cabeçalho */}
       <div className="max-w-4xl mx-auto px-4 md:px-8 pt-4 md:pt-8 pb-4">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-4">
+        <StepHeader
+          titulo={isEditing ? "Editar Inventário" : "Novo Caso de Inventário"}
+          subtitulo={isEditing ? "Atualize as informações do processo" : "Preencha as informações do processo"}
+          backPath="Dashboard"
+          rightContent={
             <Button
-              variant="outline"
-              size="icon"
-              onClick={() => navigate(createPageUrl("Dashboard"))}
+              variant={skipValidation ? "destructive" : "outline"}
+              size="sm"
+              onClick={() => {
+                setSkipValidation(!skipValidation);
+                toast.info(skipValidation ? "Validação reativada" : "Validação desativada (modo teste)");
+              }}
+              className="gap-2 text-xs"
             >
-              <ArrowLeft className="w-4 h-4" />
+              {skipValidation ? <ShieldOff className="w-4 h-4" /> : <ShieldCheck className="w-4 h-4" />}
+              {skipValidation ? "Validação OFF" : "Validação ON"}
             </Button>
-            <div>
-              <h1 className="text-3xl font-bold text-blue-900">{isEditing ? "Editar Inventário" : "Novo Caso de Inventário"}</h1>
-              <p className="text-slate-600 mt-1">{isEditing ? "Atualize as informações do processo" : "Preencha as informações do processo"}</p>
-            </div>
-          </div>
-          <Button
-            variant={skipValidation ? "destructive" : "outline"}
-            size="sm"
-            onClick={() => {
-              setSkipValidation(!skipValidation);
-              toast.info(skipValidation ? "Validação reativada" : "Validação desativada (modo teste)");
-            }}
-            className="gap-2 text-xs"
-          >
-            {skipValidation ? <ShieldOff className="w-4 h-4" /> : <ShieldCheck className="w-4 h-4" />}
-            {skipValidation ? "Validação OFF" : "Validação ON"}
-          </Button>
-        </div>
+          }
+        />
       </div>
 
-      {/* Barra de etapas — fica fixa ao rolar */}
-      <div className="sticky top-16 z-40 bg-white border-b border-slate-200 shadow-sm">
-        <div className="max-w-4xl mx-auto px-4 md:px-8 py-3 overflow-x-auto">
-          <div className="min-w-[700px]">
-            {/* Linha dos círculos + conectores */}
-            <div className="flex items-center">
-              {ETAPAS.map((etapa, index) => (
-                <React.Fragment key={etapa.id}>
-                  <button
-                    type="button"
-                    onClick={() => navegarParaEtapa(etapa.id)}
-                    disabled={etapa.id > etapaAtual && !canNavigateToStep(etapa.id)}
-                    className={`shrink-0 w-8 h-8 md:w-9 md:h-9 rounded-full flex items-center justify-center font-semibold text-sm transition-all ${
-                      etapaAtual === etapa.id
-                        ? "bg-blue-900 text-white ring-4 ring-blue-200 scale-110"
-                        : etapaAtual > etapa.id
-                        ? "bg-blue-900 text-white hover:ring-2 hover:ring-blue-300"
-                        : "bg-slate-200 text-slate-500"
-                    } ${
-                      etapa.id > etapaAtual && !canNavigateToStep(etapa.id)
-                        ? "cursor-not-allowed opacity-50"
-                        : "cursor-pointer"
-                    }`}
-                  >
-                    {etapa.id}
-                  </button>
-                  {index < ETAPAS.length - 1 && (
-                    <div
-                      className={`flex-1 h-1 mx-1 rounded transition-colors ${
-                        etapaAtual > etapa.id ? "bg-blue-900" : "bg-slate-200"
-                      }`}
-                    />
-                  )}
-                </React.Fragment>
-              ))}
-            </div>
-            {/* Linha dos labels — alinhados individualmente sob cada círculo */}
-            <div className="flex items-start mt-1">
-              {ETAPAS.map((etapa, index) => (
-                <React.Fragment key={etapa.id}>
-                  <div className="shrink-0 w-8 md:w-9 flex justify-center">
-                    <p
-                      className={`text-[9px] md:text-[10px] font-medium text-center leading-tight transition-colors ${
-                        etapaAtual >= etapa.id ? "text-blue-900" : "text-slate-400"
-                      }`}
-                      style={{ maxWidth: "52px" }}
-                    >
-                      {etapa.titulo}
-                    </p>
-                  </div>
-                  {index < ETAPAS.length - 1 && (
-                    <div className="flex-1 mx-1" />
-                  )}
-                </React.Fragment>
-              ))}
-            </div>
-          </div>
-        </div>
-      </div>
+      {/* Barra de etapas */}
+      <StepNavigator
+        etapas={ETAPAS}
+        etapaAtual={etapaAtual}
+        onNavigate={navegarParaEtapa}
+        canNavigateTo={canNavigateToStep}
+        colorClass="blue-900"
+        sticky
+      />
 
       {/* Conteúdo principal */}
       <div className="max-w-4xl mx-auto px-4 md:px-8 pb-8 pt-4">
-        <Card id="etapa-content" className="border-slate-200 shadow-lg">
-          <CardHeader className="border-b border-slate-200">
-            <CardTitle className="text-xl text-blue-900">
-              {ETAPAS[etapaAtual - 1].titulo}
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="p-6">
-            <EtapaComponente 
-              formData={formData} 
-              setFormData={setFormData} 
-              isCalculating={isCalculating} 
-              resultadoPartilha={resultadoPartilha}
-            />
-          </CardContent>
-        </Card>
+        <StepContent id="etapa-content" titulo={ETAPAS[etapaAtual - 1].titulo}>
+          <EtapaComponente 
+            formData={formData} 
+            setFormData={setFormData} 
+            isCalculating={isCalculating} 
+            resultadoPartilha={resultadoPartilha}
+          />
+        </StepContent>
 
-        <div className="flex justify-between items-center mt-6">
-          <div className="flex items-center gap-3">
-            <Button
-              variant="outline"
-              onClick={voltar}
-              disabled={etapaAtual === 1}
-            >
-              <ChevronLeft className="w-4 h-4 mr-2" />
-              Voltar
-            </Button>
-            <Button
-              variant="ghost"
-              onClick={() => navigate(createPageUrl("Dashboard"))}
-              className="text-slate-600 hover:text-slate-800"
-            >
-              <Home className="w-4 h-4 mr-2" />
-              Dashboard
-            </Button>
-          </div>
-
-          <div className="flex items-center gap-3">
-            {/* Botão "Salvar Alterações" — modo edição, etapas 1 a N-1 */}
-            {isEditing && etapaAtual < ETAPAS.length && (
-              <Button
-                onClick={() => {
-                  salvar();
-                  setEtapaAtual(ETAPAS.length);
-                  scrollToTop();
-                }}
-                disabled={mutation.isPending}
-                variant="outline"
-                className="border-green-300 text-green-700 hover:bg-green-50"
-              >
-                <Save className="w-4 h-4 mr-2" />
-                {mutation.isPending ? "Salvando..." : "Salvar Alterações"}
-              </Button>
-            )}
-
-            {etapaAtual < ETAPAS.length ? (
-              <Button
-                onClick={avancar}
-                className="bg-blue-900 hover:bg-blue-800 text-white"
-              >
-                Próximo
-                <ChevronRight className="w-4 h-4 ml-2" />
-              </Button>
-            ) : (
-              <Button
-                onClick={salvar}
-                disabled={mutation.isPending || mutation.isSuccess}
-                className={mutation.isSuccess ? "bg-emerald-700 text-white cursor-default" : "bg-green-600 hover:bg-green-700 text-white"}
-              >
-                <Save className="w-4 h-4 mr-2" />
-                {mutation.isPending ? "Salvando..." : mutation.isSuccess ? "Caso Salvo ✓" : "Salvar Caso"}
-              </Button>
-            )}
-          </div>
-        </div>
+        <StepActions
+          etapaAtual={etapaAtual}
+          totalEtapas={ETAPAS.length}
+          onAvancar={avancar}
+          onVoltar={voltar}
+          onSalvar={salvar}
+          isSaving={mutation.isPending}
+          isSaved={mutation.isSuccess}
+          isEditing={isEditing}
+          saveLabel="Salvar Caso"
+        />
       </div>
     </div>
   );
