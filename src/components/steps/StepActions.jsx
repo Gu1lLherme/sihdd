@@ -59,19 +59,6 @@ export default function StepActions({
       </div>
 
       <div className="flex items-center gap-3">
-        {/* Salvar Alterações no modo edição (etapas intermediárias) */}
-        {isEditing && etapaAtual < totalEtapas && (
-          <Button
-            onClick={onSalvar}
-            disabled={isSaving}
-            variant="outline"
-            className="border-green-300 text-green-700 hover:bg-green-50"
-          >
-            <Save className="w-4 h-4 mr-2" />
-            {isSaving ? "Salvando..." : "Salvar Alterações"}
-          </Button>
-        )}
-
         {/* Ações extras (ex: Gerar Guia) */}
         {etapaAtual === totalEtapas && extraActions}
 
