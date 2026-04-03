@@ -14,8 +14,13 @@ import { createPageUrl } from "@/utils";
  * - colorClass?: string (ex: "text-blue-900")
  * - rightContent?: React.ReactNode (conteúdo extra à direita)
  */
-export default function StepHeader({ titulo, subtitulo, backPath, colorClass = "text-blue-900", rightContent }) {
+export default function StepHeader({ titulo, subtitulo, backPath, backQuery, colorClass = "text-blue-900", rightContent }) {
   const navigate = useNavigate();
+
+  const handleBack = () => {
+    const url = createPageUrl(backPath);
+    navigate(backQuery ? `${url}?${backQuery}` : url);
+  };
 
   return (
     <div className="flex items-center justify-between">
@@ -23,7 +28,7 @@ export default function StepHeader({ titulo, subtitulo, backPath, colorClass = "
         <Button
           variant="outline"
           size="icon"
-          onClick={() => navigate(createPageUrl(backPath))}
+          onClick={handleBack}
         >
           <ArrowLeft className="w-4 h-4" />
         </Button>

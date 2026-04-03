@@ -153,7 +153,8 @@ export default function NovaDoacao() {
         <StepHeader
           titulo={isEditing ? "Editar Doação" : "Nova Doação"}
           subtitulo={isEditing ? "Atualize as informações" : "Preencha as etapas da doação"}
-          backPath="Doacoes"
+          backPath="FatoJuridico"
+          backQuery="tab=doacoes"
         />
       </div>
 

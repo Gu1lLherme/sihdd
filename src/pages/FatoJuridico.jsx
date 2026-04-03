@@ -7,7 +7,9 @@ import Doacoes from "./Doacoes";
 import Divorcios from "./Divorcios";
 
 export default function FatoJuridico() {
-  const [activeTab, setActiveTab] = useState("inventarios");
+  const urlParams = new URLSearchParams(window.location.search);
+  const tabParam = urlParams.get("tab");
+  const [activeTab, setActiveTab] = useState(tabParam || "inventarios");
 
   return (
     <div className="min-h-screen bg-slate-50">

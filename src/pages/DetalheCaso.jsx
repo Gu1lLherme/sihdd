@@ -2,7 +2,7 @@ import React from "react";
 import { base44 } from "@/api/base44Client";
 import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Home } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 
@@ -113,6 +113,18 @@ export default function DetalheCaso() {
           </div>
           
           <GuiasDAE guias={guias} herdeiros={herdeiros} isLoading={loadingGuias} />
+
+          {/* Botão Home */}
+          <div className="flex justify-center pt-4 pb-2">
+            <Button
+              variant="outline"
+              onClick={() => navigate(createPageUrl("Dashboard"))}
+              className="gap-2"
+            >
+              <Home className="w-4 h-4" />
+              Voltar ao Dashboard
+            </Button>
+          </div>
         </div>
       </div>
     </div>

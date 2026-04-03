@@ -148,7 +148,8 @@ export default function NovoDivorcio() {
         <StepHeader
           titulo={isEditing ? "Editar Divórcio" : "Novo Divórcio"}
           subtitulo={isEditing ? "Atualize as informações" : "Preencha as etapas do divórcio"}
-          backPath="Divorcios"
+          backPath="FatoJuridico"
+          backQuery="tab=divorcios"
           colorClass="text-[#333333]"
         />
       </div>

@@ -669,7 +669,8 @@ export default function NovoCaso() {
         <StepHeader
           titulo={isEditing ? "Editar Inventário" : "Novo Caso de Inventário"}
           subtitulo={isEditing ? "Atualize as informações do processo" : "Preencha as informações do processo"}
-          backPath="Dashboard"
+          backPath="FatoJuridico"
+          backQuery="tab=inventarios"
           rightContent={
             <Button
               variant={skipValidation ? "destructive" : "outline"}
