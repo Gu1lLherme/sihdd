@@ -3,7 +3,7 @@ import { base44 } from "@/api/base44Client";
 import { Button } from "@/components/ui/button";
 import { Upload, X, FileText, Loader2, CheckCircle2, ExternalLink } from "lucide-react";
 
-export default function FileUpload({ value, onChange, label, accept, multiple = false, className = "" }) {
+export default function FileUpload({ value, onChange, label, accept, multiple = false, maxFiles, className = "" }) {
   const [uploading, setUploading] = useState(false);
   const fileInputRef = useRef(null);
 
@@ -79,7 +79,7 @@ export default function FileUpload({ value, onChange, label, accept, multiple = 
         type="button"
         variant="outline"
         className="w-full border-dashed"
-        disabled={uploading}
+        disabled={uploading || (maxFiles && urls.length >= maxFiles)}
         onClick={() => fileInputRef.current?.click()}
       >
         {uploading ? (

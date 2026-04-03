@@ -11,6 +11,7 @@ import { masks } from "@/components/Masks";
 import { FieldError } from "@/components/validations";
 import FileUpload from "@/components/FileUpload";
 import DateAfterBirthValidator from "@/components/novocaso/DateAfterBirthValidator";
+import DateBeforeObitoValidator from "@/components/novocaso/DateBeforeObitoValidator";
 import AddressInput from "@/components/AddressInput";
 
 const TODAY = new Date().toISOString().split('T')[0];
@@ -155,12 +156,13 @@ export default function Bens({ formData, setFormData }) {
                       <Input
                         type="date"
                         min={formData.data_nascimento || MIN_DATE}
-                        max={TODAY}
+                        max={formData.data_obito || TODAY}
                         value={bem.data_aquisicao || ''}
                         onChange={(e) => updateBem(index, "data_aquisicao", e.target.value)}
                       />
                       <FieldError value={bem.data_aquisicao} validator="datePastOnly" />
                       <DateAfterBirthValidator date={bem.data_aquisicao} dataNascimento={formData.data_nascimento} label="Data de aquisição" />
+                      <DateBeforeObitoValidator date={bem.data_aquisicao} dataObito={formData.data_obito} label="Data de aquisição" />
                       <p className="text-xs text-slate-500">Define se o bem é comum ou particular</p>
                     </div>
 

@@ -2,7 +2,7 @@ import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { CheckCircle2, Calculator, Scale, AlertTriangle, Heart, FileText } from "lucide-react";
-import { PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip } from 'recharts';
+import { PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Legend, Tooltip } from 'recharts';
 
 import RevisaoDadosBasicos from "./resumo/RevisaoDadosBasicos";
 import RevisaoInventario from "./resumo/RevisaoInventario";
@@ -203,7 +203,7 @@ export default function Resumo({ formData, setFormData, isCalculating, resultado
         </CardContent>
       </Card>
 
-      {/* Gráfico */}
+      {/* Gráfico - Pizza se ≤5 membros, Barras se >5 */}
       {chartData.length > 0 && (
         <Card className="border-slate-200">
           <CardHeader className="bg-slate-50 border-b">
@@ -213,19 +213,33 @@ export default function Resumo({ formData, setFormData, isCalculating, resultado
             </CardTitle>
           </CardHeader>
           <CardContent className="p-4">
-            <ResponsiveContainer width="100%" height={300}>
-              <PieChart>
-                <Pie data={chartData} cx="50%" cy="50%" labelLine={false}
-                  label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(1)}%`}
-                  outerRadius={100} fill="#8884d8" dataKey="value">
-                  {chartData.map((entry, index) => (
-                    <Cell key={`cell-${index}`}
-                      fill={entry.tipo === 'meacao' ? '#f59e0b' : entry.tipo === 'heranca_conjuge' ? '#10b981' : COLORS[index % COLORS.length]} />
-                  ))}
-                </Pie>
-                <Tooltip formatter={(value) => `R$ ${value.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`} />
-                <Legend />
-              </PieChart>
+            <ResponsiveContainer width="100%" height={320}>
+              {chartData.length <= 5 ? (
+                <PieChart>
+                  <Pie data={chartData} cx="50%" cy="50%" labelLine={false}
+                    label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(1)}%`}
+                    outerRadius={100} fill="#8884d8" dataKey="value">
+                    {chartData.map((entry, index) => (
+                      <Cell key={`cell-${index}`}
+                        fill={entry.tipo === 'meacao' ? '#f59e0b' : entry.tipo === 'heranca_conjuge' ? '#10b981' : COLORS[index % COLORS.length]} />
+                    ))}
+                  </Pie>
+                  <Tooltip formatter={(value) => `R$ ${value.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`} />
+                  <Legend />
+                </PieChart>
+              ) : (
+                <BarChart data={chartData} layout="vertical" margin={{ left: 20, right: 30, top: 5, bottom: 5 }}>
+                  <XAxis type="number" tickFormatter={(v) => `R$ ${(v / 1000).toFixed(0)}k`} />
+                  <YAxis type="category" dataKey="name" width={120} tick={{ fontSize: 12 }} />
+                  <Tooltip formatter={(value) => `R$ ${value.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`} />
+                  <Bar dataKey="value" radius={[0, 4, 4, 0]}>
+                    {chartData.map((entry, index) => (
+                      <Cell key={`cell-${index}`}
+                        fill={entry.tipo === 'meacao' ? '#f59e0b' : entry.tipo === 'heranca_conjuge' ? '#10b981' : COLORS[index % COLORS.length]} />
+                    ))}
+                  </Bar>
+                </BarChart>
+              )}
             </ResponsiveContainer>
           </CardContent>
         </Card>

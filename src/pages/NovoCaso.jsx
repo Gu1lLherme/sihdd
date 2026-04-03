@@ -39,13 +39,18 @@ export default function NovoCaso() {
   const casoId = urlParams.get("id");
   const isEditing = !!casoId;
 
-  const [etapaAtual, setEtapaAtual] = useState(1);
+  const [etapaAtual, setEtapaAtual] = useState(isEditing ? 8 : 1);
   const [resultadoPartilha, setResultadoPartilha] = useState(null);
   const [skipValidation, setSkipValidation] = useState(false);
 
   // Listener para navegação a partir do Resumo (botão "Editar")
   React.useEffect(() => {
-    const handler = (e) => setEtapaAtual(e.detail.etapa);
+    const handler = (e) => {
+      setEtapaAtual(e.detail.etapa);
+      setTimeout(() => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }, 100);
+    };
     window.addEventListener('resumo-navigate', handler);
     return () => window.removeEventListener('resumo-navigate', handler);
   }, []);
@@ -306,6 +311,14 @@ export default function NovoCaso() {
           scrollToError(firstError.fieldId);
           return false;
         }
+        // Validar nascimento < óbito
+        if (formData.data_nascimento && formData.data_obito) {
+          if (new Date(formData.data_nascimento) > new Date(formData.data_obito)) {
+            toast.error("Data de nascimento não pode ser posterior à data do óbito.");
+            scrollToError("data_nascimento");
+            return false;
+          }
+        }
         return true;
       }
 
@@ -535,11 +548,23 @@ export default function NovoCaso() {
     }
   };
 
+  const scrollToTop = () => {
+    setTimeout(() => {
+      const el = document.getElementById('etapa-content');
+      if (el) {
+        el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      } else {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+    }, 100);
+  };
+
   const avancar = async () => {
     if (validateStep(etapaAtual)) {
       if (etapaAtual < ETAPAS.length) {
         const proximaEtapa = etapaAtual + 1;
         setEtapaAtual(proximaEtapa);
+        scrollToTop();
         
         // Se for para o Resumo (Etapa 8), calcula a partilha
         if (proximaEtapa === 8) {
@@ -552,7 +577,13 @@ export default function NovoCaso() {
   const voltar = () => {
     if (etapaAtual > 1) {
       setEtapaAtual(etapaAtual - 1);
+      scrollToTop();
     }
+  };
+
+  const navegarParaEtapa = (etapaId) => {
+    setEtapaAtual(etapaId);
+    scrollToTop();
   };
 
   const salvar = () => {
@@ -596,24 +627,30 @@ export default function NovoCaso() {
           <div className="flex justify-between items-center min-w-[700px]">
             {ETAPAS.map((etapa, index) => (
               <div key={etapa.id} className="flex items-center flex-1">
-                <div className="flex flex-col items-center flex-1">
+                <button
+                  type="button"
+                  onClick={() => navegarParaEtapa(etapa.id)}
+                  className="flex flex-col items-center flex-1 group cursor-pointer"
+                >
                   <div
-                    className={`w-8 h-8 md:w-10 md:h-10 rounded-full flex items-center justify-center font-semibold text-sm transition-colors ${
-                      etapaAtual >= etapa.id
-                        ? "bg-blue-900 text-white"
-                        : "bg-slate-200 text-slate-500"
+                    className={`w-8 h-8 md:w-10 md:h-10 rounded-full flex items-center justify-center font-semibold text-sm transition-all ${
+                      etapaAtual === etapa.id
+                        ? "bg-blue-900 text-white ring-4 ring-blue-200 scale-110"
+                        : etapaAtual > etapa.id
+                        ? "bg-blue-900 text-white group-hover:ring-2 group-hover:ring-blue-300"
+                        : "bg-slate-200 text-slate-500 group-hover:bg-slate-300 group-hover:text-slate-700"
                     }`}
                   >
                     {etapa.id}
                   </div>
                   <p
-                    className={`text-[10px] md:text-xs mt-1 font-medium text-center leading-tight ${
-                      etapaAtual >= etapa.id ? "text-blue-900" : "text-slate-500"
+                    className={`text-[10px] md:text-xs mt-1 font-medium text-center leading-tight transition-colors ${
+                      etapaAtual >= etapa.id ? "text-blue-900" : "text-slate-500 group-hover:text-slate-700"
                     }`}
                   >
                     {etapa.titulo}
                   </p>
-                </div>
+                </button>
                 {index < ETAPAS.length - 1 && (
                   <div
                     className={`h-1 flex-1 mx-1 rounded transition-colors ${
@@ -626,7 +663,7 @@ export default function NovoCaso() {
           </div>
         </div>
 
-        <Card className="border-slate-200 shadow-lg">
+        <Card id="etapa-content" className="border-slate-200 shadow-lg">
           <CardHeader className="border-b border-slate-200">
             <CardTitle className="text-xl text-blue-900">
               {ETAPAS[etapaAtual - 1].titulo}
@@ -642,7 +679,7 @@ export default function NovoCaso() {
           </CardContent>
         </Card>
 
-        <div className="flex justify-between mt-6">
+        <div className="flex justify-between items-center mt-6">
           <Button
             variant="outline"
             onClick={voltar}
@@ -652,24 +689,37 @@ export default function NovoCaso() {
             Voltar
           </Button>
 
-          {etapaAtual < ETAPAS.length ? (
-            <Button
-              onClick={avancar}
-              className="bg-blue-900 hover:bg-blue-800 text-white"
-            >
-              Próximo
-              <ChevronRight className="w-4 h-4 ml-2" />
-            </Button>
-          ) : (
+          <div className="flex items-center gap-3">
+            {/* Botão Salvar visível em todas as etapas */}
             <Button
               onClick={salvar}
               disabled={mutation.isPending || mutation.isSuccess}
-              className={mutation.isSuccess ? "bg-emerald-700 text-white cursor-default" : "bg-green-600 hover:bg-green-700 text-white"}
+              variant="outline"
+              className={mutation.isSuccess ? "bg-emerald-50 border-emerald-300 text-emerald-700" : "border-green-300 text-green-700 hover:bg-green-50"}
             >
               <Save className="w-4 h-4 mr-2" />
-              {mutation.isPending ? "Salvando..." : mutation.isSuccess ? "Caso Salvo ✓" : (isEditing ? "Atualizar Caso" : "Salvar Caso")}
+              {mutation.isPending ? "Salvando..." : mutation.isSuccess ? "Salvo ✓" : "Salvar"}
             </Button>
-          )}
+
+            {etapaAtual < ETAPAS.length ? (
+              <Button
+                onClick={avancar}
+                className="bg-blue-900 hover:bg-blue-800 text-white"
+              >
+                Próximo
+                <ChevronRight className="w-4 h-4 ml-2" />
+              </Button>
+            ) : (
+              <Button
+                onClick={salvar}
+                disabled={mutation.isPending || mutation.isSuccess}
+                className={mutation.isSuccess ? "bg-emerald-700 text-white cursor-default" : "bg-green-600 hover:bg-green-700 text-white"}
+              >
+                <Save className="w-4 h-4 mr-2" />
+                {mutation.isPending ? "Salvando..." : mutation.isSuccess ? "Caso Salvo ✓" : (isEditing ? "Atualizar Caso" : "Finalizar Caso")}
+              </Button>
+            )}
+          </div>
         </div>
       </div>
     </div>

@@ -20,6 +20,7 @@ export default function RevisaoDividas({ formData, onNavigate }) {
                   <p className="font-medium text-sm text-slate-900">{d.credor || d.titulo || "—"}</p>
                   {d.identificacao && <p className="text-xs text-slate-500 line-clamp-1">{d.identificacao}</p>}
                   <div className="flex gap-3 text-xs text-slate-400 mt-0.5">
+                    {d.data_origem && <span>Origem: {d.data_origem}</span>}
                     {d.data_vencimento && <span>Venc: {d.data_vencimento}</span>}
                     {d.juros && <span>Juros: {d.juros}</span>}
                     {d.prazo_prescricional && <span>Prescrição: {d.prazo_prescricional}</span>}

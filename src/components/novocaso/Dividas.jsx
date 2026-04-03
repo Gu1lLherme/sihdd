@@ -9,6 +9,7 @@ import { Trash2, Plus, TrendingDown } from "lucide-react";
 import { masks } from "@/components/Masks";
 import { FieldError } from "@/components/validations";
 import DateAfterBirthValidator from "@/components/novocaso/DateAfterBirthValidator";
+import DateBeforeObitoValidator from "@/components/novocaso/DateBeforeObitoValidator";
 
 const TODAY = new Date().toISOString().split('T')[0];
 const MIN_DATE = "1600-01-01";
@@ -18,6 +19,7 @@ export default function Dividas({ formData, setFormData }) {
     identificacao: "",
     credor: "",
     valor: "",
+    data_origem: "",
     data_vencimento: "",
     juros: "",
     prazo_prescricional: "",
@@ -50,6 +52,7 @@ export default function Dividas({ formData, setFormData }) {
       identificacao: "",
       credor: "",
       valor: "",
+      data_origem: "",
       data_vencimento: "",
       juros: "",
       prazo_prescricional: "",
@@ -100,6 +103,19 @@ export default function Dividas({ formData, setFormData }) {
               />
             </div>
             <div className="space-y-2">
+              <Label>Data de Origem</Label>
+              <Input
+                type="date"
+                min={formData.data_nascimento || MIN_DATE}
+                max={formData.data_obito || TODAY}
+                value={novaDivida.data_origem}
+                onChange={(e) => setNovaDivida({...novaDivida, data_origem: e.target.value})}
+              />
+              <DateAfterBirthValidator date={novaDivida.data_origem} dataNascimento={formData.data_nascimento} label="Data de origem" />
+              <DateBeforeObitoValidator date={novaDivida.data_origem} dataObito={formData.data_obito} label="Data de origem" />
+              <p className="text-xs text-slate-500">Não pode ser posterior à data do óbito</p>
+            </div>
+            <div className="space-y-2">
               <Label>Data Vencimento</Label>
               <Input
                 type="date"
@@ -107,8 +123,8 @@ export default function Dividas({ formData, setFormData }) {
                 value={novaDivida.data_vencimento}
                 onChange={(e) => setNovaDivida({...novaDivida, data_vencimento: e.target.value})}
               />
-              <FieldError value={novaDivida.data_vencimento} validator="datePastOnly" />
               <DateAfterBirthValidator date={novaDivida.data_vencimento} dataNascimento={formData.data_nascimento} label="Data de vencimento" />
+              <p className="text-xs text-slate-500">Pode ser posterior à data do óbito</p>
             </div>
             <div className="space-y-2">
               <Label>Juros</Label>
@@ -144,6 +160,7 @@ export default function Dividas({ formData, setFormData }) {
                   <TableHead>Identificação / Natureza</TableHead>
                   <TableHead>Credor</TableHead>
                   <TableHead>Valor</TableHead>
+                  <TableHead>Origem</TableHead>
                   <TableHead>Vencimento</TableHead>
                   <TableHead>Juros</TableHead>
                   <TableHead>Prazo Presc.</TableHead>
@@ -159,6 +176,7 @@ export default function Dividas({ formData, setFormData }) {
                     <TableCell className="font-semibold text-red-600 whitespace-nowrap">
                       {Number(divida.valor).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
                     </TableCell>
+                    <TableCell className="whitespace-nowrap">{divida.data_origem ? masks.date(divida.data_origem.split('-').reverse().join('')) : '-'}</TableCell>
                     <TableCell className="whitespace-nowrap">{divida.data_vencimento ? masks.date(divida.data_vencimento.split('-').reverse().join('')) : '-'}</TableCell>
                     <TableCell>{divida.juros || '-'}</TableCell>
                     <TableCell>{divida.prazo_prescricional || '-'}</TableCell>

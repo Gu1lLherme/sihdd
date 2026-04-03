@@ -9,6 +9,7 @@ import FileUpload from "@/components/FileUpload";
 import OrgaoExpedidorSelect from "@/components/novocaso/OrgaoExpedidorSelect";
 import AddressInput from "@/components/AddressInput";
 import CpfUnicoValidator from "@/components/novocaso/CpfUnicoValidator";
+import DateBeforeObitoValidator from "@/components/novocaso/DateBeforeObitoValidator";
 
 const TODAY = new Date().toISOString().split('T')[0];
 const MIN_DATE = "1600-01-01";
@@ -125,10 +126,11 @@ export default function DadosBasicos({ formData, setFormData }) {
               id="data_nascimento"
               type="date"
               min={MIN_DATE}
-              max={TODAY}
+              max={formData.data_obito || TODAY}
               value={formData.data_nascimento || ''}
               onChange={(e) => handleChange('data_nascimento', e.target.value)} />
             <FieldError value={formData.data_nascimento} validator="datePastOnly" />
+            <DateBeforeObitoValidator date={formData.data_nascimento} dataObito={formData.data_obito} label="Data de nascimento" />
           </div>
         </div>
 
@@ -269,12 +271,13 @@ export default function DadosBasicos({ formData, setFormData }) {
             </div>
           </div>
           <div className="pt-2">
-            <Label className="text-slate-600 mb-2 block">Anexar Certidão de Óbito (PDF/Imagem)</Label>
+            <Label className="text-slate-600 mb-2 block">Anexar Certidão de Óbito (apenas 1 documento)</Label>
             <FileUpload
               value={formData.certidao_obito_url || ""}
               onChange={(url) => handleChange("certidao_obito_url", url)}
               label="Anexar Certidão de Óbito"
               accept=".pdf,.jpg,.jpeg,.png"
+              maxFiles={1}
             />
           </div>
         </div>
@@ -342,6 +345,22 @@ export default function DadosBasicos({ formData, setFormData }) {
               </div>
             </div>
           )}
+        </div>
+
+        {/* Certidão de Casamento */}
+        <div className="space-y-4 p-4 bg-slate-50 border border-slate-200 rounded-lg">
+          <div className="flex items-center gap-2">
+            <FileText className="w-4 h-4 text-slate-600" />
+            <Label className="font-semibold text-slate-700">Certidão de Casamento</Label>
+          </div>
+          <Label className="text-slate-600 mb-2 block text-sm">Anexar Certidão de Casamento (apenas 1 documento)</Label>
+          <FileUpload
+            value={formData.certidao_casamento_url || ""}
+            onChange={(url) => handleChange("certidao_casamento_url", url)}
+            label="Anexar Certidão de Casamento"
+            accept=".pdf,.jpg,.jpeg,.png"
+            maxFiles={1}
+          />
         </div>
 
         {/* Regime de Bens e Data do Casamento */}
