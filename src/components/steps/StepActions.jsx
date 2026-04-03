@@ -38,46 +38,46 @@ export default function StepActions({
   const navigate = useNavigate();
 
   return (
-    <div className="flex justify-between items-center mt-6">
-      <div className="flex items-center gap-3">
+    <div className="flex flex-col sm:flex-row justify-between items-stretch sm:items-center mt-6 gap-3">
+      <div className="flex flex-wrap items-center gap-2">
         <Button
           variant="outline"
           onClick={onVoltar}
           disabled={etapaAtual === 1}
+          className="min-w-0"
         >
-          <ChevronLeft className="w-4 h-4 mr-2" />
-          Voltar
+          <ChevronLeft className="w-4 h-4 mr-1 shrink-0" />
+          <span className="truncate">Voltar</span>
         </Button>
         <Button
           variant="ghost"
           onClick={() => navigate(createPageUrl(dashboardPath))}
-          className="text-slate-600 hover:text-slate-800"
+          className="text-slate-600 hover:text-slate-800 min-w-0"
         >
-          <Home className="w-4 h-4 mr-2" />
-          Dashboard
+          <Home className="w-4 h-4 mr-1 shrink-0" />
+          <span className="truncate">Dashboard</span>
         </Button>
       </div>
 
-      <div className="flex items-center gap-3">
-        {/* Ações extras (ex: Gerar Guia) */}
+      <div className="flex flex-wrap items-center justify-end gap-2">
         {etapaAtual === totalEtapas && extraActions}
 
         {etapaAtual < totalEtapas ? (
           <Button
             onClick={onAvancar}
-            className={`${nextColorClass} text-white`}
+            className={`${nextColorClass} text-white min-w-0`}
           >
-            Próximo
-            <ChevronRight className="w-4 h-4 ml-2" />
+            <span className="truncate">Próximo</span>
+            <ChevronRight className="w-4 h-4 ml-1 shrink-0" />
           </Button>
         ) : (
           <Button
             onClick={onSalvar}
             disabled={isSaving || isSaved}
-            className={isSaved ? "bg-emerald-700 text-white cursor-default" : "bg-green-600 hover:bg-green-700 text-white"}
+            className={`min-w-0 ${isSaved ? "bg-emerald-700 text-white cursor-default" : "bg-green-600 hover:bg-green-700 text-white"}`}
           >
-            <Save className="w-4 h-4 mr-2" />
-            {isSaving ? "Salvando..." : isSaved ? `${saveLabel} ✓` : saveLabel}
+            <Save className="w-4 h-4 mr-1 shrink-0" />
+            <span className="truncate">{isSaving ? "Salvando..." : isSaved ? `${saveLabel} ✓` : saveLabel}</span>
           </Button>
         )}
       </div>
