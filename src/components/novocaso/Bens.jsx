@@ -10,7 +10,7 @@ import { masks } from "@/components/Masks";
 import { FieldError } from "@/components/validations";
 import FileUpload from "@/components/FileUpload";
 import DateAfterBirthValidator from "@/components/novocaso/DateAfterBirthValidator";
-import CepInput from "@/components/novocaso/CepInput";
+import AddressInput from "@/components/AddressInput";
 
 const TODAY = new Date().toISOString().split('T')[0];
 const MIN_DATE = "1600-01-01";
@@ -192,31 +192,42 @@ export default function Bens({ formData, setFormData }) {
 
                     {bem.tipo === 'imovel' && (
                       <>
-                        <div className="space-y-2">
-                          <CepInput
-                            id={`bem_${index}_cep`}
-                            label="CEP do Imóvel"
-                            cepValue={bem.cep_imovel}
-                            onCepChange={(val) => updateBem(index, "cep_imovel", val)}
+                        <div className="md:col-span-2">
+                          <AddressInput
+                            prefix={`bem_${index}`}
+                            values={{
+                              cep: bem.cep_imovel,
+                              logradouro: bem.logradouro_imovel,
+                              numero: bem.numero_imovel,
+                              bairro: bem.bairro_imovel,
+                              cidade: bem.municipio_bem,
+                              uf: bem.uf_imovel,
+                            }}
+                            onChange={(field, value) => {
+                              const fieldMap = {
+                                cep: "cep_imovel",
+                                logradouro: "logradouro_imovel",
+                                numero: "numero_imovel",
+                                bairro: "bairro_imovel",
+                                cidade: "municipio_bem",
+                                uf: "uf_imovel",
+                              };
+                              updateBem(index, fieldMap[field] || field, value);
+                            }}
                             onAddressFound={({ logradouro, bairro, cidade, uf }) => {
                               setFormData((prev) => {
                                 const newBens = [...prev.bens];
                                 newBens[index] = {
                                   ...newBens[index],
+                                  logradouro_imovel: logradouro,
+                                  bairro_imovel: bairro,
+                                  municipio_bem: cidade,
+                                  uf_imovel: uf,
                                   endereco_bem: `${logradouro}, ${bairro}, ${cidade} - ${uf}`,
-                                  municipio_bem: cidade
                                 };
                                 return { ...prev, bens: newBens };
                               });
                             }}
-                          />
-                        </div>
-                        <div className="space-y-2">
-                          <Label>Endereço do Imóvel</Label>
-                          <Input
-                            value={bem.endereco_bem || ''}
-                            onChange={(e) => updateBem(index, "endereco_bem", e.target.value)}
-                            placeholder="Rua, Número, Bairro, Cidade - UF"
                           />
                         </div>
                         <div className="space-y-2">
@@ -242,14 +253,6 @@ export default function Bens({ formData, setFormData }) {
                             value={bem.oficio_cartorio || ''}
                             onChange={(e) => updateBem(index, "oficio_cartorio", e.target.value)}
                             placeholder="Ofício do cartório"
-                          />
-                        </div>
-                        <div className="space-y-2">
-                          <Label>Município do Bem</Label>
-                          <Input
-                            value={bem.municipio_bem || ''}
-                            onChange={(e) => updateBem(index, "municipio_bem", e.target.value)}
-                            placeholder="Município onde está localizado"
                           />
                         </div>
                       </>
