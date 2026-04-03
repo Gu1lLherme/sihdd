@@ -311,6 +311,10 @@ export default function Bens({ formData, setFormData }) {
               </Card>
             );
           })}
+          <Button onClick={addBem} variant="outline" className="w-full gap-2 mt-2">
+            <Plus className="w-4 h-4" />
+            Adicionar Bem
+          </Button>
         </div>
       )}
 
