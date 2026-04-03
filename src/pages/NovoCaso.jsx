@@ -612,7 +612,9 @@ export default function NovoCaso() {
     setTimeout(() => {
       const el = document.getElementById('etapa-content');
       if (el) {
-        el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        const offset = 160; // compensar header sticky
+        const top = el.getBoundingClientRect().top + window.scrollY - offset;
+        window.scrollTo({ top: Math.max(0, top), behavior: 'smooth' });
       } else {
         window.scrollTo({ top: 0, behavior: 'smooth' });
       }
@@ -658,88 +660,106 @@ export default function NovoCaso() {
   const EtapaComponente = ETAPAS[etapaAtual - 1].componente;
 
   return (
-    <div className="p-4 md:p-8 min-h-screen">
-      <div className="max-w-4xl mx-auto">
-        <div className="flex items-center justify-between mb-8">
-          <div className="flex items-center gap-4">
-            <Button
-              variant="outline"
-              size="icon"
-              onClick={() => navigate(createPageUrl("Dashboard"))}
-            >
-              <ArrowLeft className="w-4 h-4" />
-            </Button>
-            <div>
-              <h1 className="text-3xl font-bold text-blue-900">{isEditing ? "Editar Inventário" : "Novo Caso de Inventário"}</h1>
-              <p className="text-slate-600 mt-1">{isEditing ? "Atualize as informações do processo" : "Preencha as informações do processo"}</p>
+    <div className="min-h-screen -m-4 md:-m-6">
+      {/* === HEADER FIXO (sticky) === */}
+      <div className="sticky top-16 z-40 bg-[#F8F9FA] border-b border-slate-200 shadow-sm">
+        <div className="max-w-5xl mx-auto px-4 py-3">
+          {/* Linha 1: Título + Ações */}
+          <div className="flex items-center justify-between mb-3">
+            <div className="flex items-center gap-3 min-w-0">
+              <Button
+                variant="outline"
+                size="icon"
+                className="h-8 w-8 shrink-0"
+                onClick={() => navigate(createPageUrl("Dashboard"))}
+              >
+                <ArrowLeft className="w-4 h-4" />
+              </Button>
+              <div className="min-w-0">
+                <h1 className="text-lg md:text-xl font-bold text-blue-900 truncate">
+                  {isEditing ? "Editar Inventário" : "Novo Inventário"}
+                </h1>
+                <p className="text-xs text-slate-500 hidden md:block">
+                  Etapa {etapaAtual} de {ETAPAS.length} — {ETAPAS[etapaAtual - 1].titulo}
+                </p>
+              </div>
+            </div>
+            <div className="flex items-center gap-2 shrink-0">
+              <Button
+                variant={skipValidation ? "destructive" : "ghost"}
+                size="sm"
+                onClick={() => {
+                  setSkipValidation(!skipValidation);
+                  toast.info(skipValidation ? "Validação reativada" : "Validação desativada");
+                }}
+                className="gap-1 text-xs h-7 px-2"
+              >
+                {skipValidation ? <ShieldOff className="w-3 h-3" /> : <ShieldCheck className="w-3 h-3" />}
+                <span className="hidden sm:inline">{skipValidation ? "Val. OFF" : "Val. ON"}</span>
+              </Button>
             </div>
           </div>
-          <Button
-            variant={skipValidation ? "destructive" : "outline"}
-            size="sm"
-            onClick={() => {
-              setSkipValidation(!skipValidation);
-              toast.info(skipValidation ? "Validação reativada" : "Validação desativada (modo teste)");
-            }}
-            className="gap-2 text-xs"
-          >
-            {skipValidation ? <ShieldOff className="w-4 h-4" /> : <ShieldCheck className="w-4 h-4" />}
-            {skipValidation ? "Validação OFF" : "Validação ON"}
-          </Button>
-        </div>
 
-        <div className="mb-8 overflow-x-auto">
-          <div className="flex justify-between items-center min-w-[700px]">
-            {ETAPAS.map((etapa, index) => (
-              <div key={etapa.id} className="flex items-center flex-1">
-                <button
-                  type="button"
-                  onClick={() => navegarParaEtapa(etapa.id)}
-                  disabled={etapa.id > etapaAtual && !canNavigateToStep(etapa.id)}
-                  className={`flex flex-col items-center flex-1 group ${
-                    etapa.id > etapaAtual && !canNavigateToStep(etapa.id) 
-                      ? "cursor-not-allowed opacity-50" 
-                      : "cursor-pointer"
-                  }`}
-                >
-                  <div
-                    className={`w-8 h-8 md:w-10 md:h-10 rounded-full flex items-center justify-center font-semibold text-sm transition-all ${
-                      etapaAtual === etapa.id
-                        ? "bg-blue-900 text-white ring-4 ring-blue-200 scale-110"
-                        : etapaAtual > etapa.id
-                        ? "bg-blue-900 text-white group-hover:ring-2 group-hover:ring-blue-300"
-                        : "bg-slate-200 text-slate-500"
-                    }`}
-                  >
-                    {etapa.id}
+          {/* Linha 2: Stepper compacto */}
+          <div className="overflow-x-auto -mx-4 px-4 pb-1">
+            <div className="flex items-center min-w-[600px]">
+              {ETAPAS.map((etapa, index) => {
+                const isActive = etapaAtual === etapa.id;
+                const isCompleted = etapaAtual > etapa.id;
+                const isDisabled = etapa.id > etapaAtual && !canNavigateToStep(etapa.id);
+                return (
+                  <div key={etapa.id} className="flex items-center flex-1">
+                    <button
+                      type="button"
+                      onClick={() => navegarParaEtapa(etapa.id)}
+                      disabled={isDisabled}
+                      className={`flex flex-col items-center flex-1 group ${
+                        isDisabled ? "cursor-not-allowed opacity-40" : "cursor-pointer"
+                      }`}
+                    >
+                      <div
+                        className={`w-7 h-7 rounded-full flex items-center justify-center font-semibold text-xs transition-all ${
+                          isActive
+                            ? "bg-blue-900 text-white ring-2 ring-blue-300 scale-110"
+                            : isCompleted
+                            ? "bg-blue-900 text-white group-hover:ring-2 group-hover:ring-blue-200"
+                            : "bg-slate-200 text-slate-500"
+                        }`}
+                      >
+                        {isCompleted ? "✓" : etapa.id}
+                      </div>
+                      <p
+                        className={`text-[9px] md:text-[10px] mt-0.5 font-medium text-center leading-tight ${
+                          isActive ? "text-blue-900 font-bold" : isCompleted ? "text-blue-800" : "text-slate-400"
+                        }`}
+                      >
+                        {etapa.titulo}
+                      </p>
+                    </button>
+                    {index < ETAPAS.length - 1 && (
+                      <div
+                        className={`h-0.5 flex-1 mx-0.5 rounded transition-colors ${
+                          isCompleted ? "bg-blue-900" : "bg-slate-200"
+                        }`}
+                      />
+                    )}
                   </div>
-                  <p
-                    className={`text-[10px] md:text-xs mt-1 font-medium text-center leading-tight transition-colors ${
-                      etapaAtual >= etapa.id ? "text-blue-900" : "text-slate-500"
-                    }`}
-                  >
-                    {etapa.titulo}
-                  </p>
-                </button>
-                {index < ETAPAS.length - 1 && (
-                  <div
-                    className={`h-1 flex-1 mx-1 rounded transition-colors ${
-                      etapaAtual > etapa.id ? "bg-blue-900" : "bg-slate-200"
-                    }`}
-                  />
-                )}
-              </div>
-            ))}
+                );
+              })}
+            </div>
           </div>
         </div>
+      </div>
 
-        <Card id="etapa-content" className="border-slate-200 shadow-lg">
-          <CardHeader className="border-b border-slate-200">
-            <CardTitle className="text-xl text-blue-900">
+      {/* === CONTEÚDO === */}
+      <div className="max-w-5xl mx-auto px-4 py-4">
+        <Card id="etapa-content" className="border-slate-200 shadow-sm">
+          <CardHeader className="border-b border-slate-100 py-3 px-5">
+            <CardTitle className="text-base text-blue-900">
               {ETAPAS[etapaAtual - 1].titulo}
             </CardTitle>
           </CardHeader>
-          <CardContent className="p-6">
+          <CardContent className="p-4 md:p-5">
             <EtapaComponente 
               formData={formData} 
               setFormData={setFormData} 
@@ -749,30 +769,33 @@ export default function NovoCaso() {
           </CardContent>
         </Card>
 
-        <div className="flex justify-between items-center mt-6">
-          <div className="flex items-center gap-3">
+        {/* === RODAPÉ DE NAVEGAÇÃO === */}
+        <div className="flex justify-between items-center mt-4 pb-4">
+          <div className="flex items-center gap-2">
             <Button
               variant="outline"
+              size="sm"
               onClick={voltar}
               disabled={etapaAtual === 1}
             >
-              <ChevronLeft className="w-4 h-4 mr-2" />
+              <ChevronLeft className="w-4 h-4 mr-1" />
               Voltar
             </Button>
             <Button
               variant="ghost"
+              size="sm"
               onClick={() => navigate(createPageUrl("Dashboard"))}
-              className="text-slate-600 hover:text-slate-800"
+              className="text-slate-500 hover:text-slate-700"
             >
-              <Home className="w-4 h-4 mr-2" />
-              Dashboard
+              <Home className="w-4 h-4 mr-1" />
+              <span className="hidden sm:inline">Dashboard</span>
             </Button>
           </div>
 
-          <div className="flex items-center gap-3">
-            {/* Botão "Salvar Alterações" — modo edição, etapas 1 a N-1 */}
+          <div className="flex items-center gap-2">
             {isEditing && etapaAtual < ETAPAS.length && (
               <Button
+                size="sm"
                 onClick={() => {
                   salvar();
                   setEtapaAtual(ETAPAS.length);
@@ -782,27 +805,29 @@ export default function NovoCaso() {
                 variant="outline"
                 className="border-green-300 text-green-700 hover:bg-green-50"
               >
-                <Save className="w-4 h-4 mr-2" />
-                {mutation.isPending ? "Salvando..." : "Salvar Alterações"}
+                <Save className="w-4 h-4 mr-1" />
+                {mutation.isPending ? "Salvando..." : "Salvar"}
               </Button>
             )}
 
             {etapaAtual < ETAPAS.length ? (
               <Button
+                size="sm"
                 onClick={avancar}
                 className="bg-blue-900 hover:bg-blue-800 text-white"
               >
                 Próximo
-                <ChevronRight className="w-4 h-4 ml-2" />
+                <ChevronRight className="w-4 h-4 ml-1" />
               </Button>
             ) : (
               <Button
+                size="sm"
                 onClick={salvar}
                 disabled={mutation.isPending || mutation.isSuccess}
                 className={mutation.isSuccess ? "bg-emerald-700 text-white cursor-default" : "bg-green-600 hover:bg-green-700 text-white"}
               >
-                <Save className="w-4 h-4 mr-2" />
-                {mutation.isPending ? "Salvando..." : mutation.isSuccess ? "Caso Salvo ✓" : "Salvar Caso"}
+                <Save className="w-4 h-4 mr-1" />
+                {mutation.isPending ? "Salvando..." : mutation.isSuccess ? "Salvo ✓" : "Salvar Caso"}
               </Button>
             )}
           </div>
