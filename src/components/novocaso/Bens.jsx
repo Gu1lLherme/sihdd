@@ -182,11 +182,11 @@ export default function Bens({ formData, setFormData }) {
                     </div>
 
                     <div className="space-y-2">
-                      <Label>Identificação</Label>
+                      <Label>Matrícula</Label>
                       <Input
                         value={bem.identificacao || ''}
                         onChange={(e) => updateBem(index, "identificacao", e.target.value)}
-                        placeholder="Matrícula, placa, número da conta..."
+                        placeholder="Nº da matrícula"
                       />
                     </div>
 
