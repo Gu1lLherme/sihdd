@@ -144,25 +144,25 @@ export default function Dashboard() {
   return (
     <div className="space-y-6">
       {/* Header Section */}
-      <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 min-w-0">
         <div>
           <p className="text-slate-500 text-sm mb-1">Bem-vindo de volta, {user?.full_name ? `Dr. ${user.full_name.split(' ')[0]}` : 'Dr. Ricardo'}</p>
           <h1 className="text-3xl font-serif font-bold text-[#1a237e]">Visão Geral do Escritório</h1>
         </div>
-        <div className="flex gap-3">
+        <div className="flex flex-wrap gap-3">
           <Button 
             variant="outline" 
-            className="text-blue-600 border-blue-200 bg-white hover:bg-blue-50"
+            className="text-blue-600 border-blue-200 bg-white hover:bg-blue-50 shrink-0"
             onClick={handleExportReport}
           >
-            <Download className="w-4 h-4 mr-2" />
-            Exportar Relatório
+            <Download className="w-4 h-4 mr-2 shrink-0" />
+            <span className="truncate">Exportar Relatório</span>
           </Button>
           <Dialog>
             <DialogTrigger asChild>
-              <Button className="bg-[#1a237e] hover:bg-[#151b60] text-white">
-                <Plus className="w-4 h-4 mr-2" />
-                Novo Fato Jurídico
+              <Button className="bg-[#1a237e] hover:bg-[#151b60] text-white shrink-0">
+                <Plus className="w-4 h-4 mr-2 shrink-0" />
+                <span className="truncate">Novo Fato Jurídico</span>
               </Button>
             </DialogTrigger>
             <DialogContent className="sm:max-w-3xl bg-white">
