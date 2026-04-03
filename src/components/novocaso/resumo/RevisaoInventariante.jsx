@@ -23,7 +23,7 @@ export default function RevisaoInventariante({ formData, onNavigate }) {
   if (!d.data_nomeacao) missingFields.push("Data de Nomeação");
 
   return (
-    <RevisaoSection number={5} title="Inventariante" icon={Building2} onNavigate={() => onNavigate(5)} missingFields={missingFields}>
+    <RevisaoSection number={6} title="Inventariante" icon={Building2} onNavigate={() => onNavigate(6)} missingFields={missingFields}>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8">
         <div>
           <Row label="Nome" value={d.nome} />

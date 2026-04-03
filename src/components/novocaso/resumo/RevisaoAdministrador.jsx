@@ -17,7 +17,7 @@ export default function RevisaoAdministrador({ formData, onNavigate }) {
   const preenchido = d.nome || d.cpf;
 
   return (
-    <RevisaoSection number={3} title="Administrador Provisório" icon={UserCheck} onNavigate={() => onNavigate(3)}>
+    <RevisaoSection number={4} title="Administrador Provisório" icon={UserCheck} onNavigate={() => onNavigate(4)}>
       {!preenchido ? (
         <p className="text-sm text-slate-400 italic py-2">Nenhum administrador provisório informado</p>
       ) : (

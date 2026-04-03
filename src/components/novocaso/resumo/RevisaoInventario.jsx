@@ -27,7 +27,7 @@ export default function RevisaoInventario({ formData, onNavigate }) {
   const tipoProc = d.tipo_processo || 'inventario';
 
   return (
-    <RevisaoSection number={2} title="Tipo de Inventário" icon={ClipboardList} onNavigate={() => onNavigate(2)}>
+    <RevisaoSection number={3} title="Tipo de Inventário" icon={ClipboardList} onNavigate={() => onNavigate(3)}>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8">
         <div>
           <Row label="Tipo Inventário" value={TIPO_INV[tipoInv]} />

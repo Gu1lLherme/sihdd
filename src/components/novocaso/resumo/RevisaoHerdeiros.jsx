@@ -20,7 +20,7 @@ export default function RevisaoHerdeiros({ formData, onNavigate }) {
   const missingFields = herdeiros.length === 0 ? ["Ao menos 1 herdeiro"] : [];
 
   return (
-    <RevisaoSection number={4} title={`Herdeiros (${herdeiros.length})`} icon={Users} onNavigate={() => onNavigate(4)} missingFields={missingFields}>
+    <RevisaoSection number={5} title={`Herdeiros (${herdeiros.length})`} icon={Users} onNavigate={() => onNavigate(5)} missingFields={missingFields}>
       {herdeiros.length === 0 ? (
         <p className="text-sm text-slate-400 italic py-2">Nenhum herdeiro cadastrado</p>
       ) : (

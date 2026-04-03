@@ -5,6 +5,7 @@ import { CheckCircle2, Calculator, Scale, AlertTriangle, Heart, FileText } from 
 import { PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Legend, Tooltip } from 'recharts';
 
 import RevisaoDadosBasicos from "./resumo/RevisaoDadosBasicos";
+import RevisaoConjuge from "./resumo/RevisaoConjuge";
 import RevisaoInventario from "./resumo/RevisaoInventario";
 import RevisaoAdministrador from "./resumo/RevisaoAdministrador";
 import RevisaoHerdeiros from "./resumo/RevisaoHerdeiros";
@@ -83,6 +84,7 @@ export default function Resumo({ formData, setFormData, isCalculating, resultado
 
       {/* === REVISÃO DAS 7 ETAPAS === */}
       <RevisaoDadosBasicos formData={formData} onNavigate={handleNavigate} />
+      <RevisaoConjuge formData={formData} onNavigate={handleNavigate} />
       <RevisaoInventario formData={formData} onNavigate={handleNavigate} />
       <RevisaoAdministrador formData={formData} onNavigate={handleNavigate} />
       <RevisaoHerdeiros formData={formData} onNavigate={handleNavigate} />

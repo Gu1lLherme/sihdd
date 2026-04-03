@@ -7,7 +7,7 @@ export default function RevisaoDividas({ formData, onNavigate }) {
   const total = dividas.reduce((s, d) => s + (Number(d.valor) || 0), 0);
 
   return (
-    <RevisaoSection number={7} title={`Dívidas do Espólio (${dividas.length})`} icon={Banknote} onNavigate={() => onNavigate(7)}>
+    <RevisaoSection number={8} title={`Dívidas do Espólio (${dividas.length})`} icon={Banknote} onNavigate={() => onNavigate(8)}>
       {dividas.length === 0 ? (
         <p className="text-sm text-slate-400 italic py-2">Nenhuma dívida cadastrada</p>
       ) : (

@@ -3,7 +3,7 @@ import { base44 } from "@/api/base44Client";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { ArrowLeft, Save, ChevronRight, ChevronLeft, ShieldOff, ShieldCheck } from "lucide-react";
+import { ArrowLeft, Save, ChevronRight, ChevronLeft, ShieldOff, ShieldCheck, Home } from "lucide-react";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
 import { createPageUrl } from "@/utils";
@@ -11,6 +11,7 @@ import { createPageUrl } from "@/utils";
 import { validators } from "@/components/validations";
 import { scrollToError } from "@/components/novocaso/scrollToError";
 import DadosBasicos from "../components/novocaso/DadosBasicos";
+import DadosConjuge from "../components/novocaso/DadosConjuge";
 import DadosInventario from "../components/novocaso/DadosInventario";
 import AdministradorProvisorio from "../components/novocaso/AdministradorProvisorio";
 import Herdeiros from "../components/novocaso/Herdeiros";
@@ -22,14 +23,15 @@ import FormInventariante from "@/components/inventarios/FormInventariante";
 
 
 const ETAPAS = [
-  { id: 1, titulo: "Dados Iniciais", componente: DadosBasicos },
-  { id: 2, titulo: "Tipo Inventário", componente: DadosInventario },
-  { id: 3, titulo: "Adm. Provisório", componente: AdministradorProvisorio },
-  { id: 4, titulo: "Herdeiros", componente: Herdeiros },
-  { id: 5, titulo: "Inventariante", componente: FormInventariante },
-  { id: 6, titulo: "Bens", componente: Bens },
-  { id: 7, titulo: "Dívidas", componente: Dividas },
-  { id: 8, titulo: "Resumo", componente: Resumo },
+  { id: 1, titulo: "Dados Falecido", componente: DadosBasicos },
+  { id: 2, titulo: "Dados Cônjuge", componente: DadosConjuge },
+  { id: 3, titulo: "Tipo Inventário", componente: DadosInventario },
+  { id: 4, titulo: "Adm. Provisório", componente: AdministradorProvisorio },
+  { id: 5, titulo: "Herdeiros", componente: Herdeiros },
+  { id: 6, titulo: "Inventariante", componente: FormInventariante },
+  { id: 7, titulo: "Bens", componente: Bens },
+  { id: 8, titulo: "Dívidas", componente: Dividas },
+  { id: 9, titulo: "Resumo", componente: Resumo },
 ];
 
 export default function NovoCaso() {
@@ -39,7 +41,7 @@ export default function NovoCaso() {
   const casoId = urlParams.get("id");
   const isEditing = !!casoId;
 
-  const [etapaAtual, setEtapaAtual] = useState(isEditing ? 8 : 1);
+  const [etapaAtual, setEtapaAtual] = useState(isEditing ? 9 : 1);
   const [resultadoPartilha, setResultadoPartilha] = useState(null);
   const [skipValidation, setSkipValidation] = useState(false);
 
@@ -276,7 +278,6 @@ export default function NovoCaso() {
   const validateStep = (step) => {
     if (skipValidation) return true;
 
-    // Helper: checa e retorna o primeiro campo com erro
     const checkField = (value, validatorName, fieldId, label, isRequired = false) => {
       if (isRequired && (!value || (typeof value === "string" && !value.trim()))) {
         return { fieldId, message: `${label} é obrigatório` };
@@ -291,13 +292,44 @@ export default function NovoCaso() {
     let firstError = null;
 
     switch (step) {
-      case 1: { // Dados Iniciais
+      case 1: { // Dados do Falecido
         const checks = [
           checkField(formData.nome_falecido, "nome", "nome_falecido", "Nome do Falecido", true),
           checkField(formData.cpf_falecido, "cpf", "cpf_falecido", "CPF do Falecido", true),
           checkField(formData.data_obito, null, "data_obito", "Data do Óbito", true),
           checkField(formData.rg, "rg", "rg", "RG do Falecido"),
           checkField(formData.cep, "cep", "cep", "CEP do Falecido"),
+        ];
+        firstError = checks.find(Boolean);
+        if (firstError) {
+          toast.error(firstError.message);
+          scrollToError(firstError.fieldId);
+          return false;
+        }
+        // Validar data do óbito não futura
+        if (formData.data_obito) {
+          const dataObito = new Date(formData.data_obito);
+          const hoje = new Date();
+          hoje.setHours(23, 59, 59, 999);
+          if (dataObito > hoje) {
+            toast.error("A data do óbito não pode ser uma data futura.");
+            scrollToError("data_obito");
+            return false;
+          }
+        }
+        // Validar nascimento < óbito
+        if (formData.data_nascimento && formData.data_obito) {
+          if (new Date(formData.data_nascimento) > new Date(formData.data_obito)) {
+            toast.error("Data de nascimento não pode ser posterior à data do óbito.");
+            scrollToError("data_nascimento");
+            return false;
+          }
+        }
+        return true;
+      }
+
+      case 2: { // Dados do Cônjuge
+        const checks = [
           checkField(formData.conjuge_nome, "nome", "conjuge_nome", "Nome do Cônjuge"),
           checkField(formData.conjuge_cpf, "cpf", "conjuge_cpf", "CPF do Cônjuge"),
           checkField(formData.conjuge_rg, "rg", "conjuge_rg", "RG do Cônjuge"),
@@ -311,21 +343,13 @@ export default function NovoCaso() {
           scrollToError(firstError.fieldId);
           return false;
         }
-        // Validar nascimento < óbito
-        if (formData.data_nascimento && formData.data_obito) {
-          if (new Date(formData.data_nascimento) > new Date(formData.data_obito)) {
-            toast.error("Data de nascimento não pode ser posterior à data do óbito.");
-            scrollToError("data_nascimento");
-            return false;
-          }
-        }
         return true;
       }
 
-      case 2: // Tipo Inventário
+      case 3: // Tipo Inventário
         return true;
 
-      case 3: { // Administrador Provisório
+      case 4: { // Administrador Provisório
         const adm = formData.administrador_provisorio || {};
         const checksAdm = [
           checkField(adm.cpf, "cpf", "admin_cpf", "CPF do Administrador"),
@@ -340,7 +364,6 @@ export default function NovoCaso() {
           scrollToError(firstError.fieldId);
           return false;
         }
-        // Verificar CPF duplicado do administrador
         const admCpfClean = adm.cpf?.replace(/\D/g, "");
         if (admCpfClean?.length === 11) {
           const allCpfs = [
@@ -358,12 +381,11 @@ export default function NovoCaso() {
         return true;
       }
 
-      case 4: { // Herdeiros
+      case 5: { // Herdeiros
         if (formData.herdeiros.length === 0) {
           toast.error("Adicione pelo menos um herdeiro para prosseguir.");
           return false;
         }
-
         for (let i = 0; i < formData.herdeiros.length; i++) {
           const h = formData.herdeiros[i];
           const checksH = [
@@ -384,7 +406,7 @@ export default function NovoCaso() {
         return true;
       }
 
-      case 5: { // Inventariante
+      case 6: { // Inventariante
         const inv = formData.inventariante || {};
         const checksInv = [
           checkField(inv.nome, "nome", "inv_nome", "Nome do Inventariante", true),
@@ -402,7 +424,7 @@ export default function NovoCaso() {
         return true;
       }
 
-      case 6: { // Bens
+      case 7: { // Bens
         if (formData.bens.length === 0) {
             toast.warning("Atenção: Nenhum bem foi adicionado ao espólio.");
         }
@@ -417,9 +439,47 @@ export default function NovoCaso() {
         return true;
       }
 
-      case 7: // Dívidas
+      case 8: // Dívidas
         return true;
 
+      default:
+        return true;
+    }
+  };
+
+  // Validar todas as etapas até a etapa alvo (para navegação clicável)
+  const canNavigateToStep = (targetStep) => {
+    if (skipValidation) return true;
+    for (let s = 1; s < targetStep; s++) {
+      if (!validateStepSilent(s)) return false;
+    }
+    return true;
+  };
+
+  // Validação silenciosa (sem toast/scroll) para checar se pode navegar
+  const validateStepSilent = (step) => {
+    if (skipValidation) return true;
+    const checkRequired = (value) => !!(value && (typeof value !== "string" || value.trim()));
+    
+    switch (step) {
+      case 1:
+        return checkRequired(formData.nome_falecido) && checkRequired(formData.cpf_falecido) && checkRequired(formData.data_obito);
+      case 2:
+        return true; // Cônjuge é opcional
+      case 3:
+        return true; // Inventário é opcional
+      case 4:
+        return true; // Administrador é opcional  
+      case 5:
+        return formData.herdeiros.length > 0;
+      case 6: {
+        const inv = formData.inventariante || {};
+        return checkRequired(inv.nome) && checkRequired(inv.cpf_cnpj) && checkRequired(inv.data_nomeacao);
+      }
+      case 7:
+        return true;
+      case 8:
+        return true;
       default:
         return true;
     }
@@ -566,8 +626,8 @@ export default function NovoCaso() {
         setEtapaAtual(proximaEtapa);
         scrollToTop();
         
-        // Se for para o Resumo (Etapa 8), calcula a partilha
-        if (proximaEtapa === 8) {
+        // Se for para o Resumo (Etapa 9), calcula a partilha
+        if (proximaEtapa === 9) {
             await calcularPartilha();
         }
       }
@@ -582,6 +642,11 @@ export default function NovoCaso() {
   };
 
   const navegarParaEtapa = (etapaId) => {
+    // Só permite navegar se todas as etapas anteriores estão válidas
+    if (etapaId > etapaAtual && !canNavigateToStep(etapaId)) {
+      toast.error("Preencha os campos obrigatórios das etapas anteriores para avançar.");
+      return;
+    }
     setEtapaAtual(etapaId);
     scrollToTop();
   };
@@ -630,7 +695,12 @@ export default function NovoCaso() {
                 <button
                   type="button"
                   onClick={() => navegarParaEtapa(etapa.id)}
-                  className="flex flex-col items-center flex-1 group cursor-pointer"
+                  disabled={etapa.id > etapaAtual && !canNavigateToStep(etapa.id)}
+                  className={`flex flex-col items-center flex-1 group ${
+                    etapa.id > etapaAtual && !canNavigateToStep(etapa.id) 
+                      ? "cursor-not-allowed opacity-50" 
+                      : "cursor-pointer"
+                  }`}
                 >
                   <div
                     className={`w-8 h-8 md:w-10 md:h-10 rounded-full flex items-center justify-center font-semibold text-sm transition-all ${
@@ -638,14 +708,14 @@ export default function NovoCaso() {
                         ? "bg-blue-900 text-white ring-4 ring-blue-200 scale-110"
                         : etapaAtual > etapa.id
                         ? "bg-blue-900 text-white group-hover:ring-2 group-hover:ring-blue-300"
-                        : "bg-slate-200 text-slate-500 group-hover:bg-slate-300 group-hover:text-slate-700"
+                        : "bg-slate-200 text-slate-500"
                     }`}
                   >
                     {etapa.id}
                   </div>
                   <p
                     className={`text-[10px] md:text-xs mt-1 font-medium text-center leading-tight transition-colors ${
-                      etapaAtual >= etapa.id ? "text-blue-900" : "text-slate-500 group-hover:text-slate-700"
+                      etapaAtual >= etapa.id ? "text-blue-900" : "text-slate-500"
                     }`}
                   >
                     {etapa.titulo}
@@ -680,26 +750,40 @@ export default function NovoCaso() {
         </Card>
 
         <div className="flex justify-between items-center mt-6">
-          <Button
-            variant="outline"
-            onClick={voltar}
-            disabled={etapaAtual === 1}
-          >
-            <ChevronLeft className="w-4 h-4 mr-2" />
-            Voltar
-          </Button>
+          <div className="flex items-center gap-3">
+            <Button
+              variant="outline"
+              onClick={voltar}
+              disabled={etapaAtual === 1}
+            >
+              <ChevronLeft className="w-4 h-4 mr-2" />
+              Voltar
+            </Button>
+            <Button
+              variant="ghost"
+              onClick={() => navigate(createPageUrl("Dashboard"))}
+              className="text-slate-600 hover:text-slate-800"
+            >
+              <Home className="w-4 h-4 mr-2" />
+              Dashboard
+            </Button>
+          </div>
 
           <div className="flex items-center gap-3">
-            {/* Botão Salvar só aparece em modo edição (caso já existente) */}
-            {isEditing && (
+            {/* Botão "Salvar Alterações" — modo edição, etapas 1 a N-1 */}
+            {isEditing && etapaAtual < ETAPAS.length && (
               <Button
-                onClick={salvar}
-                disabled={mutation.isPending || mutation.isSuccess}
+                onClick={() => {
+                  salvar();
+                  setEtapaAtual(ETAPAS.length);
+                  scrollToTop();
+                }}
+                disabled={mutation.isPending}
                 variant="outline"
-                className={mutation.isSuccess ? "bg-emerald-50 border-emerald-300 text-emerald-700" : "border-green-300 text-green-700 hover:bg-green-50"}
+                className="border-green-300 text-green-700 hover:bg-green-50"
               >
                 <Save className="w-4 h-4 mr-2" />
-                {mutation.isPending ? "Salvando..." : mutation.isSuccess ? "Salvo ✓" : "Salvar"}
+                {mutation.isPending ? "Salvando..." : "Salvar Alterações"}
               </Button>
             )}
 
@@ -718,7 +802,7 @@ export default function NovoCaso() {
                 className={mutation.isSuccess ? "bg-emerald-700 text-white cursor-default" : "bg-green-600 hover:bg-green-700 text-white"}
               >
                 <Save className="w-4 h-4 mr-2" />
-                {mutation.isPending ? "Salvando..." : mutation.isSuccess ? "Caso Salvo ✓" : (isEditing ? "Atualizar Caso" : "Finalizar Caso")}
+                {mutation.isPending ? "Salvando..." : mutation.isSuccess ? "Caso Salvo ✓" : "Salvar Caso"}
               </Button>
             )}
           </div>

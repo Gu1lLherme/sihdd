@@ -3,7 +3,7 @@ import { base44 } from "@/api/base44Client";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { ArrowLeft, Save, ChevronRight, ChevronLeft } from "lucide-react";
+import { ArrowLeft, Save, ChevronRight, ChevronLeft, Home } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { createPageUrl } from "@/utils";
@@ -167,7 +167,15 @@ export default function NovaDoacao() {
           <div className="flex justify-between items-center">
             {ETAPAS.map((etapa, index) => (
               <div key={etapa.id} className="flex items-center flex-1">
-                <div className="flex flex-col items-center flex-1">
+                <button
+                  type="button"
+                  onClick={() => {
+                    if (etapa.id <= etapaAtual) setEtapaAtual(etapa.id);
+                    else if (validateStep(etapaAtual)) setEtapaAtual(etapa.id);
+                  }}
+                  disabled={etapa.id > etapaAtual + 1}
+                  className={`flex flex-col items-center flex-1 ${etapa.id > etapaAtual + 1 ? "cursor-not-allowed opacity-50" : "cursor-pointer"}`}
+                >
                   <div
                     className={`w-10 h-10 rounded-full flex items-center justify-center font-semibold transition-colors ${
                       etapaAtual >= etapa.id
@@ -184,7 +192,7 @@ export default function NovaDoacao() {
                   >
                     {etapa.titulo}
                   </p>
-                </div>
+                </button>
                 {index < ETAPAS.length - 1 && (
                   <div
                     className={`h-1 flex-1 mx-2 rounded transition-colors ${
@@ -209,33 +217,57 @@ export default function NovaDoacao() {
         </Card>
 
         <div className="flex justify-between">
-          <Button
-            variant="outline"
-            onClick={voltar}
-            disabled={etapaAtual === 1}
-          >
-            <ChevronLeft className="w-4 h-4 mr-2" />
-            Voltar
-          </Button>
+          <div className="flex items-center gap-3">
+            <Button
+              variant="outline"
+              onClick={voltar}
+              disabled={etapaAtual === 1}
+            >
+              <ChevronLeft className="w-4 h-4 mr-2" />
+              Voltar
+            </Button>
+            <Button
+              variant="ghost"
+              onClick={() => navigate(createPageUrl("Dashboard"))}
+              className="text-slate-600 hover:text-slate-800"
+            >
+              <Home className="w-4 h-4 mr-2" />
+              Dashboard
+            </Button>
+          </div>
 
-          {etapaAtual < ETAPAS.length ? (
-            <Button
-              onClick={avancar}
-              className="bg-blue-900 hover:bg-blue-800 text-white"
-            >
-              Próximo
-              <ChevronRight className="w-4 h-4 ml-2" />
-            </Button>
-          ) : (
-            <Button
-              onClick={salvar}
-              disabled={mutation.isPending}
-              className="bg-green-600 hover:bg-green-700 text-white"
-            >
-              <Save className="w-4 h-4 mr-2" />
-              {mutation.isPending ? "Salvando..." : (isEditing ? "Atualizar Doação" : "Salvar Doação")}
-            </Button>
-          )}
+          <div className="flex items-center gap-3">
+            {isEditing && etapaAtual < ETAPAS.length && (
+              <Button
+                onClick={() => { salvar(); setEtapaAtual(ETAPAS.length); }}
+                disabled={mutation.isPending}
+                variant="outline"
+                className="border-green-300 text-green-700 hover:bg-green-50"
+              >
+                <Save className="w-4 h-4 mr-2" />
+                {mutation.isPending ? "Salvando..." : "Salvar Alterações"}
+              </Button>
+            )}
+
+            {etapaAtual < ETAPAS.length ? (
+              <Button
+                onClick={avancar}
+                className="bg-blue-900 hover:bg-blue-800 text-white"
+              >
+                Próximo
+                <ChevronRight className="w-4 h-4 ml-2" />
+              </Button>
+            ) : (
+              <Button
+                onClick={salvar}
+                disabled={mutation.isPending}
+                className="bg-green-600 hover:bg-green-700 text-white"
+              >
+                <Save className="w-4 h-4 mr-2" />
+                {mutation.isPending ? "Salvando..." : "Salvar Doação"}
+              </Button>
+            )}
+          </div>
         </div>
       </div>
     </div>

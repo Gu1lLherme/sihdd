@@ -14,7 +14,7 @@ export default function RevisaoBens({ formData, onNavigate }) {
   const total = bens.reduce((s, b) => s + (Number(b.valor) || 0), 0);
 
   return (
-    <RevisaoSection number={6} title={`Bens do Espólio (${bens.length})`} icon={Home} onNavigate={() => onNavigate(6)}>
+    <RevisaoSection number={7} title={`Bens do Espólio (${bens.length})`} icon={Home} onNavigate={() => onNavigate(7)}>
       {bens.length === 0 ? (
         <p className="text-sm text-slate-400 italic py-2">Nenhum bem cadastrado</p>
       ) : (
