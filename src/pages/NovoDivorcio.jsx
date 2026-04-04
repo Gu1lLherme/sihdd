@@ -86,8 +86,14 @@ export default function NovoDivorcio() {
     const missing = [];
     switch (step) {
       case 1:
-        if (!formData.conjuge_doador_nome) missing.push("Nome do Cônjuge Doador");
-        if (!formData.conjuge_doador_cpf) missing.push("CPF do Cônjuge Doador");
+        if (!formData.conjuge_doador_nome || !formData.conjuge_doador_nome.trim()) {
+          toast.error("Nome do Cônjuge Doador (Interessado) é obrigatório para criar um divórcio.");
+          return false;
+        }
+        if (!formData.conjuge_doador_cpf || !formData.conjuge_doador_cpf.trim()) {
+          toast.error("CPF do Cônjuge Doador (Interessado) é obrigatório para criar um divórcio.");
+          return false;
+        }
         if (!formData.conjuge_donatario_nome) missing.push("Nome do Cônjuge Donatário");
         if (!formData.conjuge_donatario_cpf) missing.push("CPF do Cônjuge Donatário");
         if (!formData.regime_bens) missing.push("Regime de Bens");

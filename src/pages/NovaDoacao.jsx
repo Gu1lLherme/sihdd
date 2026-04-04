@@ -90,8 +90,14 @@ export default function NovaDoacao() {
     const missing = [];
     switch (step) {
       case 1:
-        if (!formData.doador_nome) missing.push("Nome do Doador");
-        if (!formData.doador_cpf) missing.push("CPF do Doador");
+        if (!formData.doador_nome || !formData.doador_nome.trim()) {
+          toast.error("Nome do Doador (Interessado) é obrigatório para criar uma doação.");
+          return false;
+        }
+        if (!formData.doador_cpf || !formData.doador_cpf.trim()) {
+          toast.error("CPF do Doador (Interessado) é obrigatório para criar uma doação.");
+          return false;
+        }
         if (!formData.donatario_nome) missing.push("Nome do Donatário");
         if (!formData.donatario_cpf) missing.push("CPF do Donatário");
         if (missing.length > 0) {
