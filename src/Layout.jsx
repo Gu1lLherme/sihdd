@@ -148,7 +148,7 @@ export default function Layout({ children }) {
         <div className="flex items-center gap-8">
           <Link to={createPageUrl("Dashboard")} className="flex items-center">
             <img
-              src="https://media.base44.com/images/public/690dfe3076922dca90cee92f/72f83fc83_logo_completa_sihdd_v2.png"
+              src="https://media.base44.com/images/public/690dfe3076922dca90cee92f/1dfc4385b_logo_navbar_sihdd.png"
               alt="SIHDD"
               className="h-12 w-auto object-contain drop-shadow-lg"
               style={{ minWidth: '120px' }}
