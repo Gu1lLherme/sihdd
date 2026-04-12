@@ -146,11 +146,12 @@ export default function Layout({ children }) {
       <nav className="bg-theme-primary text-white h-16 px-4 md:px-6 flex items-center justify-between sticky top-0 z-50 shadow-md transition-colors duration-500">
         {/* Logo & Nav Links */}
         <div className="flex items-center gap-8">
-          <Link to={createPageUrl("Dashboard")} className="flex items-center gap-2 group">
-            <div className="bg-[#D4AF37] p-1.5 rounded-lg group-hover:bg-[#e5c147] transition-colors">
-              <Scale className="w-5 h-5 text-[#0f172a]" />
-            </div>
-            <span className="text-xl font-serif font-bold tracking-wide">SIHDD</span>
+          <Link to={createPageUrl("Dashboard")} className="flex items-center">
+            <img
+              src="https://media.base44.com/images/public/690dfe3076922dca90cee92f/72f83fc83_logo_completa_sihdd_v2.png"
+              alt="SIHDD"
+              className="h-10 w-auto object-contain"
+            />
           </Link>
 
           <div className="hidden lg:flex items-center gap-6 text-sm font-medium">
