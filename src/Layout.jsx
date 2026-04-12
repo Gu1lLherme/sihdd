@@ -150,7 +150,8 @@ export default function Layout({ children }) {
             <img
               src="https://media.base44.com/images/public/690dfe3076922dca90cee92f/72f83fc83_logo_completa_sihdd_v2.png"
               alt="SIHDD"
-              className="h-10 w-auto object-contain"
+              className="h-12 w-auto object-contain drop-shadow-lg"
+              style={{ minWidth: '120px' }}
             />
           </Link>
 
