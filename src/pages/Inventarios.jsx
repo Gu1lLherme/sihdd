@@ -21,7 +21,6 @@ import {
   User,
   Eye,
   TrendingUp,
-  UserCheck,
   Calculator,
   FileText,
   Trash2,
@@ -29,8 +28,7 @@ import {
 } from "lucide-react";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import ListaInventariantes from "@/components/inventarios/ListaInventariantes";
+
 
 const statusConfig = {
   rascunho: { label: "Rascunho", color: "bg-slate-100 text-slate-700", icon: Clock },
@@ -136,19 +134,7 @@ export default function Inventarios() {
           </div>
         </div>
 
-        <Tabs defaultValue="casos" className="space-y-6">
-          <TabsList className="bg-white border border-slate-200 p-1">
-            <TabsTrigger value="casos" className="data-[state=active]:bg-blue-100 data-[state=active]:text-blue-900">
-                <FolderOpen className="w-4 h-4 mr-2" />
-                Lista de Casos
-            </TabsTrigger>
-            <TabsTrigger value="inventariantes" className="data-[state=active]:bg-emerald-100 data-[state=active]:text-emerald-900">
-                <UserCheck className="w-4 h-4 mr-2" />
-                Cadastro de Inventariantes
-            </TabsTrigger>
-          </TabsList>
 
-          <TabsContent value="casos">
             {/* Stats Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 mb-6">
           <Card className="border-slate-200 shadow-md">
@@ -431,12 +417,7 @@ export default function Inventarios() {
             })}
           </div>
         )}
-          </TabsContent>
 
-          <TabsContent value="inventariantes">
-            <ListaInventariantes />
-          </TabsContent>
-        </Tabs>
       </div>
     </div>
   );
