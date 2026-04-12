@@ -212,10 +212,12 @@ export default function NovoCaso() {
           });
 
           // Automação: Criar Tarefas
-          const dataNomeacao = new Date(data.inventariante.data_nomeacao);
-          const due5Days = new Date(dataNomeacao); due5Days.setDate(due5Days.getDate() + 5);
-          const due10Days = new Date(dataNomeacao); due10Days.setDate(due10Days.getDate() + 10);
-          const due12Months = new Date(dataNomeacao); due12Months.setMonth(due12Months.getMonth() + 12);
+          const baseDate = data.inventariante.data_nomeacao ? new Date(data.inventariante.data_nomeacao + 'T00:00:00') : new Date();
+          // Se a data for inválida, usar data atual
+          const safeBase = isNaN(baseDate.getTime()) ? new Date() : baseDate;
+          const due5Days = new Date(safeBase); due5Days.setDate(due5Days.getDate() + 5);
+          const due10Days = new Date(safeBase); due10Days.setDate(due10Days.getDate() + 10);
+          const due12Months = new Date(safeBase); due12Months.setMonth(due12Months.getMonth() + 12);
 
           await base44.entities.Task.bulkCreate([
               {
