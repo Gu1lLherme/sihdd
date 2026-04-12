@@ -1,13 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import { CheckCircle2, Calendar as CalendarIcon, Shield, LayoutDashboard } from "lucide-react";
+import { CheckCircle2, Calendar as CalendarIcon, LayoutDashboard } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { useQuery } from "@tanstack/react-query";
 import { base44 } from "@/api/base44Client";
 
 import Tasks from "./Tasks";
 import CalendarPage from "./Calendar";
-import PortalCliente from "./PortalCliente";
 import VisaoGeral from "@/components/gestaoprazos/VisaoGeral";
 
 export default function GestaoPrazos() {
@@ -92,10 +91,7 @@ export default function GestaoPrazos() {
                 </Badge>
               )}
             </TabsTrigger>
-            <TabsTrigger value="portal" className="gap-2">
-              <Shield className="w-4 h-4" />
-              Portal do Cliente
-            </TabsTrigger>
+
           </TabsList>
 
           <TabsContent value="visao_geral">
@@ -107,9 +103,7 @@ export default function GestaoPrazos() {
           <TabsContent value="calendar">
             <CalendarPage />
           </TabsContent>
-          <TabsContent value="portal">
-            <PortalCliente />
-          </TabsContent>
+
         </Tabs>
       </div>
     </div>
