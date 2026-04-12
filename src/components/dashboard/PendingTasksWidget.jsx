@@ -105,7 +105,7 @@ export default function PendingTasksWidget({ tasks = [], onToggleTask }) {
                   </p>
                   {task.data_vencimento && (
                      <p className="text-[10px] text-red-500 mt-0.5">
-                       Vence: {new Date(task.data_vencimento + 'T00:00:00').toLocaleDateString('pt-BR')}
+                       Vence: {(() => { const d = new Date(task.data_vencimento); return isNaN(d) ? task.data_vencimento : d.toLocaleDateString('pt-BR'); })()}
                      </p>
                   )}
                 </div>
