@@ -10,6 +10,7 @@ import { FieldError } from "@/components/validations";
 import CpfUnicoValidator from "@/components/novocaso/CpfUnicoValidator";
 import DateAfterBirthValidator from "@/components/novocaso/DateAfterBirthValidator";
 import AddressInput from "@/components/AddressInput";
+import OrgaoExpedidorSelect from "@/components/novocaso/OrgaoExpedidorSelect";
 
 const TODAY = new Date().toISOString().split('T')[0];
 const MIN_DATE = "1600-01-01";
@@ -33,7 +34,11 @@ export default function Herdeiros({ formData, setFormData }) {
         {
           nome: "",
           cpf: "",
+          tipo_documento: "rg",
           rg: "",
+          orgao_expedidor: "",
+          data_expedicao: "",
+          cnh: "",
           data_nascimento: "",
           nacionalidade: "Brasileira",
           profissao: "",
@@ -142,16 +147,62 @@ export default function Herdeiros({ formData, setFormData }) {
                   </div>
 
                   <div className="space-y-2">
-                    <Label>RG</Label>
-                    <Input
-                      id={`herdeiro_${index}_rg`}
-                      value={herdeiro.rg || ''}
-                      onChange={(e) => updateHerdeiro(index, "rg", masks.rg(e.target.value))}
-                      placeholder="00.000.000-0"
-                      maxLength={12}
-                    />
-                    <FieldError value={herdeiro.rg} validator="rg" />
+                    <Label>Tipo de Documento</Label>
+                    <Select
+                      value={herdeiro.tipo_documento || "rg"}
+                      onValueChange={(value) => updateHerdeiro(index, "tipo_documento", value)}
+                    >
+                      <SelectTrigger><SelectValue /></SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="rg">RG</SelectItem>
+                        <SelectItem value="cnh">CNH</SelectItem>
+                      </SelectContent>
+                    </Select>
                   </div>
+
+                  {(herdeiro.tipo_documento || "rg") === "rg" ? (
+                    <>
+                      <div className="space-y-2">
+                        <Label>RG</Label>
+                        <Input
+                          id={`herdeiro_${index}_rg`}
+                          value={herdeiro.rg || ''}
+                          onChange={(e) => updateHerdeiro(index, "rg", masks.rg(e.target.value))}
+                          placeholder="00.000.000-0"
+                          maxLength={12}
+                        />
+                        <FieldError value={herdeiro.rg} validator="rg" />
+                      </div>
+                      <div className="space-y-2">
+                        <OrgaoExpedidorSelect
+                          value={herdeiro.orgao_expedidor || ''}
+                          onChange={(val) => updateHerdeiro(index, "orgao_expedidor", val)}
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label>Data de Expedição</Label>
+                        <Input
+                          type="date"
+                          min={herdeiro.data_nascimento || MIN_DATE}
+                          max={TODAY}
+                          value={herdeiro.data_expedicao || ''}
+                          onChange={(e) => updateHerdeiro(index, "data_expedicao", e.target.value)}
+                        />
+                      </div>
+                    </>
+                  ) : (
+                    <div className="space-y-2">
+                      <Label>CNH</Label>
+                      <Input
+                        id={`herdeiro_${index}_cnh`}
+                        value={herdeiro.cnh || ''}
+                        onChange={(e) => updateHerdeiro(index, "cnh", masks.cnh(e.target.value))}
+                        placeholder="00000000000"
+                        maxLength={11}
+                      />
+                      <p className="text-xs text-slate-500">Número de registro da CNH (11 dígitos)</p>
+                    </div>
+                  )}
 
                   <div className="space-y-2">
                     <Label>Data de Nascimento</Label>
@@ -381,6 +432,10 @@ export default function Herdeiros({ formData, setFormData }) {
               </CardContent>
             </Card>
           ))}
+          <Button onClick={addHerdeiro} variant="outline" className="w-full gap-2 mt-2">
+            <Plus className="w-4 h-4" />
+            Adicionar Herdeiro
+          </Button>
         </div>
       )}
 

@@ -72,12 +72,18 @@ export const masks = {
   },
 
   rg: (value) => {
-    return value
-      .replace(/\D/g, '')
-      .replace(/(\d{2})(\d)/, '$1.$2')
-      .replace(/(\d{3})(\d)/, '$1.$2')
-      .replace(/(\d{3})(\d{1})/, '$1-$2')
-      .replace(/(-\d{1})\d+?$/, '$1');
+    // Aceita dígitos e X (dígito verificador). Formato: XX.XXX.XXX-X
+    // Permite até 2 caracteres no verificador (alguns estados usam).
+    const cleaned = value.replace(/[^\dxX]/g, '').toUpperCase().slice(0, 10);
+    return cleaned
+      .replace(/^(\w{2})(\w)/, '$1.$2')
+      .replace(/^(\w{2}\.\w{3})(\w)/, '$1.$2')
+      .replace(/^(\w{2}\.\w{3}\.\w{3})(\w)/, '$1-$2');
+  },
+
+  // Máscara para CNH: 11 dígitos numéricos
+  cnh: (value) => {
+    return value.replace(/\D/g, '').slice(0, 11);
   },
 
   matriculaCertidao: (value) => {

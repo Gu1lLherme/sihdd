@@ -40,12 +40,13 @@ export default function RevisaoHerdeiros({ formData, onNavigate }) {
                 <span className="text-sm font-bold text-blue-800">{(h.percentual_partilha || 0).toFixed(2)}%</span>
               </div>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-2 text-xs text-slate-600">
-                {h.cpf && <span>CPF: {h.cpf}</span>}
-                {h.rg && <span>RG: {h.rg}</span>}
-                {h.data_nascimento && <span>Nasc: {h.data_nascimento}</span>}
-                {h.email && <span>Email: {h.email}</span>}
-                {h.telefone && <span>Tel: {h.telefone}</span>}
-                {h.estado_civil && <span>Est. Civil: {h.estado_civil}</span>}
+                {h.cpf && <span className="truncate">CPF: {h.cpf}</span>}
+                {h.rg && <span className="truncate">RG: {h.rg}</span>}
+                {h.cnh && <span className="truncate">CNH: {h.cnh}</span>}
+                {h.data_nascimento && <span className="truncate">Nasc: {h.data_nascimento}</span>}
+                {h.email && <span className="truncate break-all" title={h.email}>Email: {h.email}</span>}
+                {h.telefone && <span className="truncate">Tel: {h.telefone}</span>}
+                {h.estado_civil && <span className="truncate">Est. Civil: {h.estado_civil}</span>}
               </div>
               {h.condicao_especial && h.condicao_especial !== 'nenhuma' && h.representante_legal_nome && (
                 <div className="mt-2 pt-2 border-t border-slate-200 text-xs text-slate-500">

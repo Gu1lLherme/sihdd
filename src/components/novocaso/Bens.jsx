@@ -243,20 +243,21 @@ export default function Bens({ formData, setFormData }) {
                           <p className="text-xs text-slate-500">Opcional - Número de registro no cartório</p>
                         </div>
                         <div className="space-y-2">
-                          <Label>Cartório de Registro</Label>
+                          <Label>Cartório Emissor</Label>
                           <Input
                             value={bem.cartorio_registro || ''}
                             onChange={(e) => updateBem(index, "cartorio_registro", e.target.value)}
-                            placeholder="Nome do Cartório"
+                            placeholder="Ex: CARTÓRIO DO 1º OFÍCIO"
                           />
                         </div>
                         <div className="space-y-2">
-                          <Label>Ofício</Label>
+                          <Label>Inscrição Municipal / INCRA</Label>
                           <Input
-                            value={bem.oficio_cartorio || ''}
-                            onChange={(e) => updateBem(index, "oficio_cartorio", e.target.value)}
-                            placeholder="Ofício do cartório"
+                            value={bem.inscricao_municipal || ''}
+                            onChange={(e) => updateBem(index, "inscricao_municipal", e.target.value)}
+                            placeholder="Nº da inscrição municipal ou INCRA"
                           />
+                          <p className="text-xs text-slate-500">Urbano: Inscrição Municipal / Rural: INCRA</p>
                         </div>
                         <div className="md:col-span-2 flex items-center justify-between p-4 bg-slate-50 rounded-lg border border-slate-200">
                           <div>
