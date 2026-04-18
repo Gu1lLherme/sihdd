@@ -371,16 +371,13 @@ export default function NovoCaso() {
           scrollToError(firstError.fieldId);
           return false;
         }
+        // Adm. Provisório pode ser o cônjuge, herdeiro ou terceiro → CPF duplicado é permitido.
+        // Apenas impede duplicata com o Falecido.
         const admCpfClean = adm.cpf?.replace(/\D/g, "");
         if (admCpfClean?.length === 11) {
-          const allCpfs = [
-            { label: "Falecido", cpf: formData.cpf_falecido },
-            { label: "Cônjuge", cpf: formData.conjuge_cpf },
-            ...formData.herdeiros.map((h, i) => ({ label: `Herdeiro ${i+1}`, cpf: h.cpf })),
-          ];
-          const dup = allCpfs.find(c => c.cpf?.replace(/\D/g, "") === admCpfClean);
-          if (dup) {
-            toast.error(`CPF do Administrador Provisório é igual ao CPF do ${dup.label}. CPFs devem ser únicos.`);
+          const falecidoCpf = formData.cpf_falecido?.replace(/\D/g, "");
+          if (falecidoCpf === admCpfClean) {
+            toast.error("CPF do Administrador Provisório não pode ser igual ao CPF do Falecido.");
             scrollToError("admin_cpf");
             return false;
           }

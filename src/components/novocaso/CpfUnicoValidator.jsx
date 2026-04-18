@@ -5,8 +5,10 @@ import { AlertCircle } from "lucide-react";
  * Valida se o CPF informado já está em uso por outra parte no caso.
  * Recebe o CPF atual e o formData completo para buscar duplicatas.
  * ownerLabel identifica quem é o "dono" deste campo para não comparar consigo mesmo.
+ * infoOnly=true → exibe como aviso neutro (azul), sem bloquear. Útil quando o Adm. Provisório
+ * pode ser o cônjuge, um herdeiro ou terceiro (CPF pode coincidir propositalmente).
  */
-export default function CpfUnicoValidator({ cpf, formData, ownerLabel }) {
+export default function CpfUnicoValidator({ cpf, formData, ownerLabel, infoOnly = false }) {
   if (!cpf || cpf.replace(/\D/g, "").length !== 11) return null;
 
   const cleaned = cpf.replace(/\D/g, "");
@@ -47,11 +49,16 @@ export default function CpfUnicoValidator({ cpf, formData, ownerLabel }) {
 
   if (duplicatas.length === 0) return null;
 
+  const colorClasses = infoOnly
+    ? { icon: "text-blue-500", text: "text-blue-600" }
+    : { icon: "text-red-500", text: "text-red-500" };
+  const prefix = infoOnly ? "Mesma pessoa que: " : "CPF já utilizado por: ";
+
   return (
     <div className="flex items-center gap-1.5 mt-1">
-      <AlertCircle className="w-3.5 h-3.5 text-red-500 shrink-0" />
-      <p className="text-xs text-red-500">
-        CPF já utilizado por: {duplicatas.join(", ")}
+      <AlertCircle className={`w-3.5 h-3.5 shrink-0 ${colorClasses.icon}`} />
+      <p className={`text-xs ${colorClasses.text}`}>
+        {prefix}{duplicatas.join(", ")}
       </p>
     </div>
   );
