@@ -68,7 +68,7 @@ import Inventarios from './pages/Inventarios';
 import LegislacaoAdmin from './pages/LegislacaoAdmin';
 import ModelagemPartilha from './pages/ModelagemPartilha';
 import NovaDoacao from './pages/NovaDoacao';
-import NovoCaso from './pages/NovoCaso';
+import NovoCaso from './pages/NovoCaso.jsx';
 import NovoDivorcio from './pages/NovoDivorcio';
 import PortalCliente from './pages/PortalCliente';
 import Relatorios from './pages/Relatorios';
