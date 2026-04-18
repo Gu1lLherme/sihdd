@@ -13,6 +13,7 @@ import FileUpload from "@/components/FileUpload";
 import DateAfterBirthValidator from "@/components/novocaso/DateAfterBirthValidator";
 import DateBeforeObitoValidator from "@/components/novocaso/DateBeforeObitoValidator";
 import AddressInput from "@/components/AddressInput";
+import CenarioBensIndicator from "@/components/novocaso/CenarioBensIndicator";
 
 const TODAY = new Date().toISOString().split('T')[0];
 const MIN_DATE = "1600-01-01";
@@ -77,6 +78,9 @@ export default function Bens({ formData, setFormData }) {
           Adicionar Bem
         </Button>
       </div>
+
+      {/* Regra de Ouro — Art. 1.829, I, CC/02 */}
+      <CenarioBensIndicator formData={formData} />
 
       {formData.bens.length === 0 ? (
         <Card className="border-dashed border-2 border-slate-300">

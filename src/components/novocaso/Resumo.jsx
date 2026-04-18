@@ -12,6 +12,7 @@ import RevisaoHerdeiros from "./resumo/RevisaoHerdeiros";
 import RevisaoInventariante from "./resumo/RevisaoInventariante";
 import RevisaoBens from "./resumo/RevisaoBens";
 import RevisaoDividas from "./resumo/RevisaoDividas";
+import CenarioBensIndicator from "./CenarioBensIndicator";
 
 const COLORS = ['#1e40af', '#3b82f6', '#60a5fa', '#93c5fd', '#dbeafe', '#f59e0b', '#10b981'];
 
@@ -96,6 +97,9 @@ export default function Resumo({ formData, setFormData, isCalculating, resultado
       <div className="border-l-4 border-emerald-600 pl-4 mt-8 mb-2">
         <h3 className="font-semibold text-lg text-emerald-800">Demonstrativo Financeiro</h3>
       </div>
+
+      {/* Regra de Ouro — Art. 1.829, I, CC/02 */}
+      <CenarioBensIndicator formData={formData} />
 
       {/* Resumo Rápido */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
