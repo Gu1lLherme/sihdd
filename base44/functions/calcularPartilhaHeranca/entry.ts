@@ -182,21 +182,42 @@ Deno.serve(async (req) => {
     // Parte de cada filho participante
     const valorPorFilho = temFilhos ? totalHerancaFilhos / qtdFilhos : 0;
 
-    // 5. UFP + Regra ITCMD
-    const anoObito = new Date(data_obito).getFullYear();
+    // 5. UFP + Regra ITCMD (legislação vigente na DATA DO ÓBITO)
+    if (!data_obito) {
+      return Response.json({
+        error: 'Data do óbito é obrigatória para determinar a legislação do ITCMD aplicável.'
+      }, { status: 400 });
+    }
+    const dataObito = new Date(data_obito);
+    const anoObito = dataObito.getFullYear();
+
     const ufps = await base44.entities.HistoricoUFP.filter({ ano: anoObito });
-    const valorUFP = ufps[0]?.valor || 100;
+    const valorUFP = ufps[0]?.valor;
+    if (!valorUFP) {
+      return Response.json({
+        error: `Valor da UFP não cadastrado para o ano ${anoObito} (ano do óbito). Cadastre em Legislação antes de calcular o ITCMD.`,
+        codigo: 'UFP_NAO_CADASTRADA',
+        ano: anoObito,
+      }, { status: 422 });
+    }
 
     const regras = await base44.entities.RegraITCMD.filter({ tipo_transmissao: 'causa_mortis' });
-    const dataObito = new Date(data_obito);
     const regraAplicavel = regras.find(r => {
       const inicio = new Date(r.data_inicio_vigencia);
       const fim = r.data_fim_vigencia ? new Date(r.data_fim_vigencia) : new Date('2100-01-01');
       return dataObito >= inicio && dataObito <= fim;
     });
 
+    if (!regraAplicavel || !regraAplicavel.faixas || regraAplicavel.faixas.length === 0) {
+      return Response.json({
+        error: `Nenhuma regra de ITCMD (causa mortis) cadastrada para a data do óbito (${dataObito.toLocaleDateString('pt-BR')}). Cadastre a legislação vigente em Legislação antes de calcular.`,
+        codigo: 'REGRA_ITCMD_NAO_CADASTRADA',
+        data_obito: data_obito,
+      }, { status: 422 });
+    }
+
     const calcularITCMD = (valor) => {
-      if (!regraAplicavel || !regraAplicavel.faixas) return 0;
+      if (valor <= 0) return 0;
       const valorEmUFP = valor / valorUFP;
       const faixa = regraAplicavel.faixas.find(f => {
         const min = f.min_ufp || 0;
@@ -273,6 +294,11 @@ Deno.serve(async (req) => {
 
     const valorPatrimonio = valorPatrimonioBruto;
     const monteMorLiquido = valorPatrimonioBruto - totalDividas;
+    // Alíquota EFETIVA média (ITCMD total / base tributável) — reflete tabela progressiva
+    const baseTributavel = totalHerancaConjuge + totalHerancaFilhos;
+    const aliquotaEfetiva = baseTributavel > 0
+      ? Number(((itcmdTotal / baseTributavel) * 100).toFixed(4))
+      : 0;
     await base44.asServiceRole.entities.Caso.update(caso_id, {
       valor_patrimonio: valorPatrimonio,
       valor_dividas_espolio: totalDividas,
@@ -280,7 +306,7 @@ Deno.serve(async (req) => {
       valor_heranca_conjuge: totalHerancaConjuge,
       valor_heranca_filhos: totalHerancaFilhos,
       valor_itcmd: itcmdTotal,
-      aliquota: regraAplicavel?.faixas?.[0]?.aliquota || 0,
+      aliquota: aliquotaEfetiva,
     });
 
     // 9. Resposta (inclui detalhamento das exclusões e base líquida)

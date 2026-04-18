@@ -8,6 +8,7 @@ import { Calendar, User, FileText, Phone, Mail, AlertCircle } from "lucide-react
 import FileUpload from "@/components/FileUpload";
 import AddressInput from "@/components/AddressInput";
 import CpfUnicoValidator from "@/components/novocaso/CpfUnicoValidator";
+import DateBeforeObitoValidator from "@/components/novocaso/DateBeforeObitoValidator";
 
 const TODAY = new Date().toISOString().split('T')[0];
 const MIN_DATE = "1600-01-01";
@@ -178,12 +179,13 @@ export default function DadosConjuge({ formData, setFormData }) {
               <Input
                 id="data_casamento"
                 type="date"
-                min={MIN_DATE}
-                max={TODAY}
+                min={formData.data_nascimento || MIN_DATE}
+                max={formData.data_obito || TODAY}
                 className="pl-10"
                 value={formData.data_casamento || ''}
                 onChange={(e) => handleChange('data_casamento', e.target.value)} />
               <FieldError value={formData.data_casamento} validator="datePastOnly" />
+              <DateBeforeObitoValidator date={formData.data_casamento} dataObito={formData.data_obito} label="Data do casamento" />
             </div>
             <p className="text-xs text-slate-500">Importante para classificar bens em comuns ou particulares</p>
           </div>

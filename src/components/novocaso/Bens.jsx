@@ -167,6 +167,15 @@ export default function Bens({ formData, setFormData }) {
                       <FieldError value={bem.data_aquisicao} validator="datePastOnly" />
                       <DateAfterBirthValidator date={bem.data_aquisicao} dataNascimento={formData.data_nascimento} label="Data de aquisição" />
                       <DateBeforeObitoValidator date={bem.data_aquisicao} dataObito={formData.data_obito} label="Data de aquisição" />
+                      {bem.data_aquisicao && formData.data_casamento &&
+                       ['comunhao_parcial', 'uniao_estavel'].includes(formData.regime_bens) &&
+                       bem.origem_bem === 'onerosa' && (
+                        <p className={`text-xs font-medium ${new Date(bem.data_aquisicao) > new Date(formData.data_casamento) ? 'text-emerald-600' : 'text-amber-600'}`}>
+                          {new Date(bem.data_aquisicao) > new Date(formData.data_casamento)
+                            ? '✓ Adquirido após o casamento → bem COMUM (meação do cônjuge)'
+                            : '⚠ Adquirido antes do casamento → bem PARTICULAR (sem meação)'}
+                        </p>
+                      )}
                       <p className="text-xs text-slate-500">Define se o bem é comum ou particular</p>
                     </div>
 

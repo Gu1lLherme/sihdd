@@ -11,6 +11,8 @@ import OrgaoExpedidorSelect from "@/components/novocaso/OrgaoExpedidorSelect";
 import AddressInput from "@/components/AddressInput";
 import CpfUnicoValidator from "@/components/novocaso/CpfUnicoValidator";
 import DateBeforeObitoValidator from "@/components/novocaso/DateBeforeObitoValidator";
+import DateFutureValidator from "@/components/novocaso/DateFutureValidator";
+import DateAfterObitoValidator from "@/components/novocaso/DateAfterObitoValidator";
 
 // Nota: Dados do Cônjuge foram movidos para DadosConjuge.jsx (etapa separada)
 
@@ -185,6 +187,10 @@ export default function DadosBasicos({ formData, setFormData }) {
                 onChange={(e) => handleChange('data_obito', e.target.value)} />
             </div>
             {dataObitoVazia && <p className="text-xs text-red-500">Campo obrigatório</p>}
+            <DateFutureValidator date={formData.data_obito} label="Data do óbito" />
+            <p className="text-[11px] text-slate-500 italic">
+              ⚖️ A legislação do ITCMD aplicada (alíquota e UFP) usa esta data como referência.
+            </p>
           </div>
           <div className="space-y-2">
             <Label htmlFor="horario_obito">Horário do Óbito</Label>
@@ -266,11 +272,12 @@ export default function DadosBasicos({ formData, setFormData }) {
               <Input
                 id="certidao_obito_data"
                 type="date"
-                min={MIN_DATE}
+                min={formData.data_obito || MIN_DATE}
                 max={TODAY}
                 value={formData.certidao_obito_data || ''}
                 onChange={(e) => handleChange('certidao_obito_data', e.target.value)} />
               <FieldError value={formData.certidao_obito_data} validator="datePastOnly" />
+              <DateAfterObitoValidator date={formData.certidao_obito_data} dataObito={formData.data_obito} label="Data de emissão da certidão" />
             </div>
           </div>
           <div className="pt-2">

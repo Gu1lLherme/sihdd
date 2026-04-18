@@ -353,8 +353,23 @@ export default function NovoCaso() {
         return true;
       }
 
-      case 3: // Tipo Inventário
+      case 3: { // Tipo Inventário — data de abertura/distribuição DEVE ser posterior ao óbito
+        if (formData.tipo_inventario === 'extrajudicial' && formData.data_abertura_inventario && formData.data_obito) {
+          if (new Date(formData.data_abertura_inventario) <= new Date(formData.data_obito)) {
+            toast.error("Data de abertura do inventário deve ser posterior à data do óbito.");
+            scrollToError("data_abertura_inventario");
+            return false;
+          }
+        }
+        if (formData.tipo_inventario === 'judicial' && formData.data_distribuicao && formData.data_obito) {
+          if (new Date(formData.data_distribuicao) <= new Date(formData.data_obito)) {
+            toast.error("Data de distribuição do processo deve ser posterior à data do óbito.");
+            scrollToError("data_distribuicao");
+            return false;
+          }
+        }
         return true;
+      }
 
       case 4: { // Administrador Provisório
         const adm = formData.administrador_provisorio || {};
@@ -535,6 +550,14 @@ export default function NovoCaso() {
             });
             
             const { data } = response;
+            if (data?.codigo === 'UFP_NAO_CADASTRADA') {
+                toast.error(data.error, { duration: 8000 });
+                return;
+            }
+            if (data?.codigo === 'REGRA_ITCMD_NAO_CADASTRADA') {
+                toast.error(data.error, { duration: 8000 });
+                return;
+            }
             if (data && data.sucesso) {
                 setResultadoPartilha(data);
                 setFormData(prev => ({
