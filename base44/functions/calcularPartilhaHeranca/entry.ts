@@ -25,9 +25,26 @@ Deno.serve(async (req) => {
 
     const { regime_bens, data_casamento, conjuge_e_ascendente_herdeiros, data_obito } = caso;
 
-    // 2. Bens e Herdeiros
+    // 2. Bens, Herdeiros e Dívidas
     const bens = await base44.entities.Bem.filter({ caso_id });
     const herdeirosRaw = await base44.entities.Herdeiro.filter({ caso_id });
+    const dividasRaw = await base44.entities.Divida.filter({ caso_id });
+
+    // ------------------------------------------------------------
+    // REGRA FISCAL — CTN art. 38 / Súmula 590 STF
+    // Base de cálculo do ITCMD = monte-mor LÍQUIDO (patrimônio − dívidas exigíveis)
+    // Dívidas pagas ou contestadas não são abatidas.
+    // ------------------------------------------------------------
+    const dividasExigiveis = (dividasRaw || []).filter(d => {
+      const status = d.status || (d.pago ? 'paga' : 'pendente');
+      return status === 'pendente';
+    });
+    const totalDividas = dividasExigiveis.reduce((s, d) => s + (Number(d.valor) || 0), 0);
+    const valorPatrimonioBruto = bens.reduce((s, b) => s + (Number(b.valor) || 0), 0);
+    // Fator redutor proporcional aplicado a cada bem
+    const fatorLiquido = valorPatrimonioBruto > 0
+      ? Math.max(0, (valorPatrimonioBruto - totalDividas) / valorPatrimonioBruto)
+      : 1;
 
     // ------------------------------------------------------------
     // REGRA 11.01 — EXCLUSÃO TRIBUTÁRIA
@@ -67,9 +84,10 @@ Deno.serve(async (req) => {
 
     const dataCasamento = data_casamento ? new Date(data_casamento) : null;
 
-    // 3. Partilha por bem
+    // 3. Partilha por bem (usando valor LÍQUIDO após dedução proporcional de dívidas)
     const bensCalculados = bens.map(bem => {
-      const valorBem = bem.valor || 0;
+      const valorBemBruto = bem.valor || 0;
+      const valorBem = valorBemBruto * fatorLiquido; // base de cálculo líquida
       const dataAquisicao = bem.data_aquisicao ? new Date(bem.data_aquisicao) : null;
       const origemBem = bem.origem_bem || 'onerosa';
 
@@ -134,6 +152,8 @@ Deno.serve(async (req) => {
 
       return {
         ...bem,
+        valor_bruto: valorBemBruto,
+        valor_liquido: valorBem,
         tipo_bem_partilha: tipoBemPartilha,
         valor_meacao_conjuge: meacaoConjuge,
         valor_heranca_conjuge: herancaConjuge,
@@ -251,9 +271,11 @@ Deno.serve(async (req) => {
       });
     }
 
-    const valorPatrimonio = bens.reduce((sum, b) => sum + (b.valor || 0), 0);
+    const valorPatrimonio = valorPatrimonioBruto;
+    const monteMorLiquido = valorPatrimonioBruto - totalDividas;
     await base44.asServiceRole.entities.Caso.update(caso_id, {
       valor_patrimonio: valorPatrimonio,
+      valor_dividas_espolio: totalDividas,
       valor_meacao_conjuge: totalMeacaoConjuge,
       valor_heranca_conjuge: totalHerancaConjuge,
       valor_heranca_filhos: totalHerancaFilhos,
@@ -261,18 +283,22 @@ Deno.serve(async (req) => {
       aliquota: regraAplicavel?.faixas?.[0]?.aliquota || 0,
     });
 
-    // 9. Resposta (inclui detalhamento das exclusões)
+    // 9. Resposta (inclui detalhamento das exclusões e base líquida)
     return Response.json({
       sucesso: true,
       resumo: {
         regime_bens,
         valor_patrimonio: valorPatrimonio,
+        total_dividas: totalDividas,
+        monte_mor_liquido: monteMorLiquido,
+        fator_liquido: fatorLiquido,
         meacao_conjuge: totalMeacaoConjuge,
         heranca_conjuge: totalHerancaConjuge,
         heranca_filhos: totalHerancaFilhos,
         itcmd_total: itcmdTotal,
         regra_25_aplicada: regra25Aplicada,
         qtd_herdeiros_participantes: qtdFilhos + (conjugeHerdeiro ? 1 : 0),
+        base_legal: "CTN art. 38; Súmula 590/STF — ITCMD sobre o monte-mor líquido (após dedução de dívidas exigíveis do espólio).",
       },
       bens: bensCalculados.map(b => ({
         id: b.id,

@@ -13,6 +13,7 @@ import RevisaoInventariante from "./resumo/RevisaoInventariante";
 import RevisaoBens from "./resumo/RevisaoBens";
 import RevisaoDividas from "./resumo/RevisaoDividas";
 import CenarioBensIndicator from "./CenarioBensIndicator";
+import PilaresITCMD from "./PilaresITCMD";
 
 const COLORS = ['#1e40af', '#3b82f6', '#60a5fa', '#93c5fd', '#dbeafe', '#f59e0b', '#10b981'];
 
@@ -101,6 +102,9 @@ export default function Resumo({ formData, setFormData, isCalculating, resultado
       {/* Regra de Ouro — Art. 1.829, I, CC/02 */}
       <CenarioBensIndicator formData={formData} />
 
+      {/* 3 Pilares do SIHDD: Dados + Legislação = Resultado */}
+      <PilaresITCMD formData={formData} resultadoPartilha={resultadoPartilha} />
+
       {/* Resumo Rápido */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         <Card className="bg-emerald-50 border-emerald-200">
@@ -127,6 +131,7 @@ export default function Resumo({ formData, setFormData, isCalculating, resultado
             <p className="text-lg font-bold text-blue-700">
               {isCalculating ? "..." : `R$ ${itcmdTotal.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`}
             </p>
+            <p className="text-[10px] text-slate-500 mt-1">sobre base líquida</p>
           </CardContent>
         </Card>
       </div>
