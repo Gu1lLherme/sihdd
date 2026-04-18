@@ -31,12 +31,16 @@ const AuthenticatedApp = () => {
     );
   }
 
+  // Rotas públicas que NÃO devem disparar redirect automático de login
+  const publicPaths = ['/', '/AcessoSistema'];
+  const isPublicPath = publicPaths.includes(window.location.pathname);
+
   // Handle authentication errors
   if (authError) {
     if (authError.type === 'user_not_registered') {
       return <UserNotRegisteredError />;
-    } else if (authError.type === 'auth_required') {
-      // Redirect to login automatically
+    } else if (authError.type === 'auth_required' && !isPublicPath) {
+      // Redirect to login automatically (apenas fora das rotas públicas)
       navigateToLogin();
       return null;
     }

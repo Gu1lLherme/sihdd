@@ -47,6 +47,7 @@
  *
  * The mainPage value must match a key in the PAGES object exactly.
  */
+import AcessoSistema from './pages/AcessoSistema';
 import Administracao from './pages/Administracao';
 import ArvoreGenealogica from './pages/ArvoreGenealogica';
 import Auditoria from './pages/Auditoria';
@@ -77,6 +78,7 @@ import __Layout from './Layout.jsx';
 
 
 export const PAGES = {
+    "AcessoSistema": AcessoSistema,
     "Administracao": Administracao,
     "ArvoreGenealogica": ArvoreGenealogica,
     "Auditoria": Auditoria,
@@ -106,7 +108,7 @@ export const PAGES = {
 }
 
 export const pagesConfig = {
-    mainPage: "Dashboard",
+    mainPage: "AcessoSistema",
     Pages: PAGES,
     Layout: __Layout,
 };
