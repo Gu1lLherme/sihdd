@@ -48,7 +48,7 @@ export default function DadosConjuge({ formData, setFormData }) {
               maxLength={14}
             />
             <FieldError value={formData.conjuge_cpf} validator="cpf" />
-            <CpfUnicoValidator cpf={formData.conjuge_cpf} formData={formData} ownerLabel="conjuge" />
+            <CpfUnicoValidator cpf={formData.conjuge_cpf} formData={formData} ownerLabel="conjuge" infoOnly />
           </div>
         </div>
 

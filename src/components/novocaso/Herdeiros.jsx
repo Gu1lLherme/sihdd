@@ -143,7 +143,7 @@ export default function Herdeiros({ formData, setFormData }) {
                       maxLength={14}
                     />
                     <FieldError value={herdeiro.cpf} validator="cpf" />
-                    <CpfUnicoValidator cpf={herdeiro.cpf} formData={formData} ownerLabel={`herdeiro_${index}`} />
+                    <CpfUnicoValidator cpf={herdeiro.cpf} formData={formData} ownerLabel={`herdeiro_${index}`} infoOnly />
                   </div>
 
                   <div className="space-y-2">
