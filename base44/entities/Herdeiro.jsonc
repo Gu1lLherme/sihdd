@@ -1,0 +1,214 @@
+{
+  "name": "Herdeiro",
+  "type": "object",
+  "properties": {
+    "caso_id": {
+      "type": "string",
+      "description": "ID do caso relacionado"
+    },
+    "nome": {
+      "type": "string",
+      "description": "Nome completo do herdeiro"
+    },
+    "cpf": {
+      "type": "string",
+      "description": "CPF do herdeiro"
+    },
+    "rg": {
+      "type": "string",
+      "description": "RG do herdeiro"
+    },
+    "data_nascimento": {
+      "type": "string",
+      "format": "date",
+      "description": "Data de nascimento do herdeiro"
+    },
+    "nacionalidade": {
+      "type": "string",
+      "description": "Nacionalidade do herdeiro"
+    },
+    "profissao": {
+      "type": "string",
+      "description": "Profiss\u00e3o do herdeiro"
+    },
+    "estado_civil": {
+      "type": "string",
+      "enum": [
+        "solteiro",
+        "casado",
+        "divorciado",
+        "viuvo",
+        "uniao_estavel",
+        "separado_judicialmente",
+        "menor"
+      ],
+      "description": "Estado civil do herdeiro"
+    },
+    "endereco": {
+      "type": "string",
+      "description": "Endere\u00e7o completo do herdeiro"
+    },
+    "cep": {
+      "type": "string",
+      "description": "CEP do herdeiro"
+    },
+    "parentesco": {
+      "type": "string",
+      "enum": [
+        "conjuge",
+        "filho",
+        "filha",
+        "pai",
+        "mae",
+        "irmao",
+        "irma",
+        "neto",
+        "neta",
+        "sobrinho",
+        "sobrinha",
+        "tio",
+        "tia",
+        "outro"
+      ],
+      "description": "Grau de parentesco"
+    },
+    "e_filho_conjuge": {
+      "type": "boolean",
+      "default": true,
+      "description": "Se este herdeiro \u00e9 filho do c\u00f4njuge sobrevivente (para regra dos 25%)"
+    },
+    "percentual_partilha": {
+      "type": "number",
+      "description": "Percentual da heran\u00e7a (0-100) - calculado automaticamente"
+    },
+    "valor_parte": {
+      "type": "number",
+      "description": "Valor da parte do herdeiro"
+    },
+    "valor_meacao_quinhao_real": {
+      "type": "number",
+      "description": "Mea\u00e7\u00e3o/Quinh\u00e3o Real (R$) para a declara\u00e7\u00e3o SEFAZ"
+    },
+    "valor_meacao_quinhao_legal": {
+      "type": "number",
+      "description": "Mea\u00e7\u00e3o/Quinh\u00e3o Legal (R$) para a declara\u00e7\u00e3o SEFAZ"
+    },
+    "valor_excedente_meacao": {
+      "type": "number",
+      "description": "Excedente de Mea\u00e7\u00e3o/Quinh\u00e3o (R$)"
+    },
+    "fracao_bens": {
+      "type": "string",
+      "description": "Percentual ou fra\u00e7\u00e3o dos bens/direitos (texto livre)"
+    },
+    "valor_itcmd": {
+      "type": "number",
+      "description": "Valor do ITCMD devido pelo herdeiro"
+    },
+    "email": {
+      "type": "string",
+      "description": "Email para notifica\u00e7\u00f5es"
+    },
+    "telefone": {
+      "type": "string",
+      "description": "Telefone de contato"
+    },
+    "condicao_especial": {
+      "type": "string",
+      "enum": [
+        "nenhuma",
+        "menor",
+        "menor_emancipado",
+        "incapacidade_temporaria",
+        "interditado",
+        "curatela",
+        "ausente",
+        "nascituro",
+        "herdeiro_excluido"
+      ],
+      "default": "nenhuma",
+      "description": "Condi\u00e7\u00e3o especial do herdeiro"
+    },
+    "representante_legal_nome": {
+      "type": "string",
+      "description": "Nome do representante legal (para menores/incapazes)"
+    },
+    "representante_legal_cpf": {
+      "type": "string",
+      "description": "CPF do representante legal"
+    },
+    "representante_legal_telefone": {
+      "type": "string",
+      "description": "Telefone do representante legal"
+    },
+    "cessao_tipo": {
+      "type": "string",
+      "enum": [
+        "nenhuma",
+        "onerosa",
+        "nao_onerosa"
+      ],
+      "default": "nenhuma",
+      "description": "Cess\u00e3o de direitos heredit\u00e1rios feita por este herdeiro"
+    },
+    "numero_escritura_cessao": {
+      "type": "string",
+      "description": "N\u00famero da Escritura P\u00fablica de cess\u00e3o (obrigat\u00f3rio quando houver cess\u00e3o)"
+    },
+    "documento_cessao_url": {
+      "type": "string",
+      "description": "URL do documento da cess\u00e3o (Escritura P\u00fablica)"
+    },
+    "cessionario_nome": {
+      "type": "string",
+      "description": "Nome do cession\u00e1rio (adquirente) - substitui o cedente em cess\u00e3o onerosa"
+    },
+    "cessionario_cpf": {
+      "type": "string",
+      "description": "CPF do cession\u00e1rio"
+    },
+    "cessionario_rg": {
+      "type": "string",
+      "description": "RG do cession\u00e1rio"
+    },
+    "cessionario_email": {
+      "type": "string",
+      "description": "Email do cession\u00e1rio"
+    },
+    "cessionario_telefone": {
+      "type": "string",
+      "description": "Telefone do cession\u00e1rio"
+    },
+    "cessionario_endereco": {
+      "type": "string",
+      "description": "Endere\u00e7o do cession\u00e1rio"
+    },
+    "cessionario_cep": {
+      "type": "string",
+      "description": "CEP do cession\u00e1rio"
+    },
+    "renuncia_tipo": {
+      "type": "string",
+      "enum": [
+        "nenhuma",
+        "termo_judicial",
+        "escritura_publica"
+      ],
+      "default": "nenhuma",
+      "description": "Ren\u00fancia abdicativa em favor do monte-mor feita por este herdeiro"
+    },
+    "numero_documento_renuncia": {
+      "type": "string",
+      "description": "N\u00famero do Termo Judicial ou Escritura P\u00fablica de ren\u00fancia (obrigat\u00f3rio quando houver ren\u00fancia)"
+    },
+    "documento_renuncia_url": {
+      "type": "string",
+      "description": "URL do documento da ren\u00fancia"
+    }
+  },
+  "required": [
+    "caso_id",
+    "nome",
+    "parentesco"
+  ]
+}

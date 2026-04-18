@@ -11,6 +11,7 @@ import CpfUnicoValidator from "@/components/novocaso/CpfUnicoValidator";
 import DateAfterBirthValidator from "@/components/novocaso/DateAfterBirthValidator";
 import AddressInput from "@/components/AddressInput";
 import OrgaoExpedidorSelect from "@/components/novocaso/OrgaoExpedidorSelect";
+import HerdeiroCessaoRenuncia from "@/components/novocaso/HerdeiroCessaoRenuncia";
 
 const TODAY = new Date().toISOString().split('T')[0];
 const MIN_DATE = "1600-01-01";
@@ -392,6 +393,14 @@ export default function Herdeiros({ formData, setFormData }) {
                     <FieldError value={herdeiro.telefone} validator="phone" />
                   </div>
                 </div>
+
+                {/* Cessão e Renúncia */}
+                <HerdeiroCessaoRenuncia
+                  herdeiro={herdeiro}
+                  index={index}
+                  updateHerdeiro={updateHerdeiro}
+                  setFormData={setFormData}
+                />
 
                 {/* Representante Legal - aparece para menores/incapazes */}
                 {['menor', 'menor_emancipado', 'interditado', 'curatela', 'nascituro'].includes(herdeiro.condicao_especial) && (

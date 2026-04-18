@@ -186,36 +186,10 @@ export default function DadosInventario({ formData, setFormData }) {
         </Card>
       )}
 
-      {/* Cessão de Direitos e Renúncia */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div className="space-y-2">
-          <Label>Cessão de Direitos Hereditários</Label>
-          <Select
-            value={formData.cessao_direitos || 'nenhuma'}
-            onValueChange={(val) => handleChange('cessao_direitos', val)}
-          >
-            <SelectTrigger><SelectValue /></SelectTrigger>
-            <SelectContent>
-              <SelectItem value="nenhuma">Nenhuma</SelectItem>
-              <SelectItem value="onerosa">Onerosa</SelectItem>
-              <SelectItem value="nao_onerosa">Não Onerosa</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
-        <div className="space-y-2">
-          <Label>Renúncia Abdicativa (Monte Mor)</Label>
-          <Select
-            value={formData.renuncia_abdicativa || 'nenhuma'}
-            onValueChange={(val) => handleChange('renuncia_abdicativa', val)}
-          >
-            <SelectTrigger><SelectValue /></SelectTrigger>
-            <SelectContent>
-              <SelectItem value="nenhuma">Nenhuma</SelectItem>
-              <SelectItem value="termo_judicial">Por Termo Judicial</SelectItem>
-              <SelectItem value="escritura_publica">Por Escritura Pública</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
+      {/* Cessão e Renúncia agora são individuais por herdeiro (ver etapa "Herdeiros") */}
+      <div className="p-3 bg-slate-50 border border-slate-200 rounded text-xs text-slate-600">
+        ℹ️ <b>Cessão de Direitos</b> e <b>Renúncia Abdicativa</b> agora são informadas individualmente para
+        cada herdeiro, na etapa <b>"Herdeiros"</b>.
       </div>
 
       {/* Dados do Cartório (Extrajudicial) */}

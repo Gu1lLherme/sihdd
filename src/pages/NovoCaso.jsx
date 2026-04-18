@@ -406,6 +406,31 @@ export default function NovoCaso() {
             scrollToError(firstError.fieldId);
             return false;
           }
+
+          // Cessão: exige nº da escritura
+          if (h.cessao_tipo && h.cessao_tipo !== "nenhuma" && !h.numero_escritura_cessao?.trim()) {
+            toast.error(`Herdeiro ${i + 1}: informe o nº da Escritura Pública de cessão.`);
+            scrollToError(`herdeiro_${i}_escritura_cessao`);
+            return false;
+          }
+          // Cessão onerosa: exige dados do cessionário
+          if (h.cessao_tipo === "onerosa") {
+            if (!h.cessionario_nome?.trim() || !h.cessionario_cpf?.trim()) {
+              toast.error(`Herdeiro ${i + 1}: informe nome e CPF do cessionário.`);
+              return false;
+            }
+            const cpfCheck = validators.cpf(h.cessionario_cpf);
+            if (!cpfCheck.valid) {
+              toast.error(`Herdeiro ${i + 1}: CPF do cessionário inválido.`);
+              return false;
+            }
+          }
+          // Renúncia: exige nº do documento
+          if (h.renuncia_tipo && h.renuncia_tipo !== "nenhuma" && !h.numero_documento_renuncia?.trim()) {
+            toast.error(`Herdeiro ${i + 1}: informe o nº do documento de renúncia.`);
+            scrollToError(`herdeiro_${i}_doc_renuncia`);
+            return false;
+          }
         }
         return true;
       }
