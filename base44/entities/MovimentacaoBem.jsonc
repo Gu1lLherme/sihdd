@@ -1,0 +1,86 @@
+{
+  "name": "MovimentacaoBem",
+  "type": "object",
+  "properties": {
+    "caso_id": {
+      "type": "string",
+      "description": "ID do caso (invent\u00e1rio) relacionado"
+    },
+    "bem_id": {
+      "type": "string",
+      "description": "ID do bem relacionado"
+    },
+    "tipo": {
+      "type": "string",
+      "enum": [
+        "receita",
+        "despesa",
+        "venda",
+        "onus"
+      ],
+      "description": "Tipo de movimenta\u00e7\u00e3o: receita (aluguel, dividendos), despesa (IPTU, manuten\u00e7\u00e3o), venda (aliena\u00e7\u00e3o) ou \u00f4nus (penhora, hipoteca)"
+    },
+    "categoria": {
+      "type": "string",
+      "description": "Categoria da movimenta\u00e7\u00e3o (ex: IPTU, IPVA, condom\u00ednio, aluguel, dividendos, taxa cartorial, venda, penhora, hipoteca, cau\u00e7\u00e3o, outros)"
+    },
+    "descricao": {
+      "type": "string",
+      "description": "Descri\u00e7\u00e3o detalhada da movimenta\u00e7\u00e3o"
+    },
+    "valor": {
+      "type": "number",
+      "description": "Valor em R$ (positivo)"
+    },
+    "data": {
+      "type": "string",
+      "format": "date",
+      "description": "Data do evento"
+    },
+    "responsavel": {
+      "type": "string",
+      "description": "Respons\u00e1vel pelo lan\u00e7amento (nome ou email)"
+    },
+    "comprovante_url": {
+      "type": "string",
+      "description": "URL do comprovante anexado"
+    },
+    "observacoes": {
+      "type": "string",
+      "description": "Observa\u00e7\u00f5es adicionais"
+    },
+    "comprador_nome": {
+      "type": "string",
+      "description": "Nome do comprador (apenas para venda)"
+    },
+    "comprador_cpf": {
+      "type": "string",
+      "description": "CPF/CNPJ do comprador (apenas para venda)"
+    },
+    "autorizacao_judicial": {
+      "type": "string",
+      "description": "N\u00ba de alvar\u00e1/autoriza\u00e7\u00e3o judicial (apenas para venda)"
+    },
+    "onus_credor": {
+      "type": "string",
+      "description": "Nome do credor (apenas para \u00f4nus)"
+    },
+    "onus_status": {
+      "type": "string",
+      "enum": [
+        "ativo",
+        "quitado",
+        "cancelado"
+      ],
+      "default": "ativo",
+      "description": "Status do \u00f4nus"
+    }
+  },
+  "required": [
+    "caso_id",
+    "bem_id",
+    "tipo",
+    "valor",
+    "data"
+  ]
+}

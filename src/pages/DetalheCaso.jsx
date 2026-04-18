@@ -2,9 +2,10 @@ import React from "react";
 import { base44 } from "@/api/base44Client";
 import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, Home } from "lucide-react";
+import { ArrowLeft, Home, LayoutDashboard, Wallet } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { createPageUrl } from "@/utils";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 import CasoHeader from "../components/detalhecaso/CasoHeader";
 import StatusTimeline from "../components/detalhecaso/StatusTimeline";
@@ -12,11 +13,19 @@ import HerdeirosList from "../components/detalhecaso/HerdeirosList";
 import BensList from "../components/detalhecaso/BensList";
 import GuiasDAE from "../components/detalhecaso/GuiasDAE";
 import BotaoDeclaracaoSEFAZ from "../components/detalhecaso/BotaoDeclaracaoSEFAZ";
+import GerenciaBens from "../components/gerenciabens/GerenciaBens";
 
 export default function DetalheCaso() {
   const navigate = useNavigate();
   const urlParams = new URLSearchParams(window.location.search);
   const casoId = urlParams.get('id');
+  const tabFromUrl = urlParams.get('tab') || 'visao-geral';
+
+  const { data: user } = useQuery({
+    queryKey: ['user'],
+    queryFn: () => base44.auth.me(),
+    retry: false,
+  });
 
   const { data: caso, isLoading: loadingCaso } = useQuery({
     queryKey: ['caso', casoId],
@@ -104,15 +113,34 @@ export default function DetalheCaso() {
 
         <div className="space-y-6">
           <CasoHeader caso={caso} />
-          
-          <StatusTimeline status={caso.status} />
-          
-          <div className="grid lg:grid-cols-2 gap-6">
-            <HerdeirosList herdeiros={herdeiros} isLoading={loadingHerdeiros} />
-            <BensList bens={bens} isLoading={loadingBens} />
-          </div>
-          
-          <GuiasDAE guias={guias} herdeiros={herdeiros} isLoading={loadingGuias} />
+
+          <Tabs defaultValue={tabFromUrl} className="w-full">
+            <TabsList className="grid w-full grid-cols-2 max-w-md">
+              <TabsTrigger value="visao-geral" className="gap-2">
+                <LayoutDashboard className="w-4 h-4" />
+                Visão Geral
+              </TabsTrigger>
+              <TabsTrigger value="gerencia-bens" className="gap-2">
+                <Wallet className="w-4 h-4" />
+                Gerência de Bens
+              </TabsTrigger>
+            </TabsList>
+
+            <TabsContent value="visao-geral" className="space-y-6 mt-6">
+              <StatusTimeline status={caso.status} />
+
+              <div className="grid lg:grid-cols-2 gap-6">
+                <HerdeirosList herdeiros={herdeiros} isLoading={loadingHerdeiros} />
+                <BensList bens={bens} isLoading={loadingBens} />
+              </div>
+
+              <GuiasDAE guias={guias} herdeiros={herdeiros} isLoading={loadingGuias} />
+            </TabsContent>
+
+            <TabsContent value="gerencia-bens" className="mt-6">
+              <GerenciaBens casoId={casoId} bens={bens} user={user} />
+            </TabsContent>
+          </Tabs>
 
           {/* Botão Home */}
           <div className="flex justify-center pt-4 pb-2">
