@@ -1,0 +1,76 @@
+{
+  "name": "Inventariante",
+  "type": "object",
+  "properties": {
+    "caso_id": {
+      "type": "string",
+      "description": "ID do caso vinculado"
+    },
+    "office_id": {
+      "type": "string",
+      "description": "ID do escrit\u00f3rio"
+    },
+    "nome": {
+      "type": "string",
+      "description": "Nome completo"
+    },
+    "cpf_cnpj": {
+      "type": "string",
+      "description": "CPF ou CNPJ"
+    },
+    "endereco": {
+      "type": "string",
+      "description": "Endere\u00e7o completo"
+    },
+    "cep": {
+      "type": "string",
+      "description": "CEP"
+    },
+    "email": {
+      "type": "string",
+      "description": "Email principal"
+    },
+    "telefone": {
+      "type": "string",
+      "description": "Telefone de contato"
+    },
+    "data_nomeacao": {
+      "type": "string",
+      "format": "date",
+      "description": "Data da nomea\u00e7\u00e3o"
+    },
+    "vinculo": {
+      "type": "string",
+      "enum": [
+        "conjuge",
+        "herdeiro",
+        "dativo",
+        "testamenteiro",
+        "outro"
+      ],
+      "description": "V\u00ednculo com o esp\u00f3lio"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "ativo",
+        "substituido",
+        "finalizado"
+      ],
+      "default": "ativo",
+      "description": "Status da representa\u00e7\u00e3o"
+    },
+    "observacoes": {
+      "type": "string",
+      "description": "Observa\u00e7\u00f5es gerais"
+    }
+  },
+  "required": [
+    "nome",
+    "cpf_cnpj",
+    "email",
+    "data_nomeacao",
+    "vinculo",
+    "status"
+  ]
+}

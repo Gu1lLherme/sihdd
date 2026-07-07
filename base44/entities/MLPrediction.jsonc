@@ -1,0 +1,60 @@
+{
+  "name": "MLPrediction",
+  "type": "object",
+  "properties": {
+    "caso_id": {
+      "type": "string",
+      "description": "ID do caso relacionado"
+    },
+    "office_id": {
+      "type": "string",
+      "description": "ID do escrit\u00f3rio (multi-tenant)"
+    },
+    "tipo_predicao": {
+      "type": "string",
+      "enum": [
+        "prazo_conclusao",
+        "valor_itcmd",
+        "complexidade",
+        "probabilidade_sucesso"
+      ],
+      "description": "Tipo de predi\u00e7\u00e3o"
+    },
+    "valor_previsto": {
+      "type": "number",
+      "description": "Valor predito"
+    },
+    "confianca": {
+      "type": "number",
+      "description": "N\u00edvel de confian\u00e7a (0-100%)"
+    },
+    "fatores": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "fator": {
+            "type": "string"
+          },
+          "peso": {
+            "type": "number"
+          }
+        }
+      },
+      "description": "Fatores que influenciaram a predi\u00e7\u00e3o"
+    },
+    "modelo_versao": {
+      "type": "string",
+      "description": "Vers\u00e3o do modelo ML usado"
+    },
+    "acuracia_real": {
+      "type": "number",
+      "description": "Acur\u00e1cia real ap\u00f3s conclus\u00e3o (para feedback)"
+    }
+  },
+  "required": [
+    "tipo_predicao",
+    "valor_previsto",
+    "confianca"
+  ]
+}

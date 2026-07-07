@@ -1,0 +1,52 @@
+{
+  "name": "GuiaDAE",
+  "type": "object",
+  "properties": {
+    "caso_id": {
+      "type": "string",
+      "description": "ID do caso relacionado"
+    },
+    "herdeiro_id": {
+      "type": "string",
+      "description": "ID do herdeiro respons\u00e1vel"
+    },
+    "numero_guia": {
+      "type": "string",
+      "description": "N\u00famero da guia DAE"
+    },
+    "valor": {
+      "type": "number",
+      "description": "Valor do imposto a pagar"
+    },
+    "data_vencimento": {
+      "type": "string",
+      "format": "date",
+      "description": "Data de vencimento da guia"
+    },
+    "codigo_barras": {
+      "type": "string",
+      "description": "C\u00f3digo de barras para pagamento"
+    },
+    "status_pagamento": {
+      "type": "string",
+      "enum": [
+        "pendente",
+        "pago",
+        "vencido"
+      ],
+      "default": "pendente",
+      "description": "Status do pagamento"
+    },
+    "data_pagamento": {
+      "type": "string",
+      "format": "date",
+      "description": "Data em que foi pago"
+    }
+  },
+  "required": [
+    "caso_id",
+    "numero_guia",
+    "valor",
+    "data_vencimento"
+  ]
+}

@@ -1,0 +1,370 @@
+{
+  "name": "Caso",
+  "type": "object",
+  "properties": {
+    "numero_caso": {
+      "type": "string",
+      "description": "N\u00famero \u00fanico do caso"
+    },
+    "nome_falecido": {
+      "type": "string",
+      "description": "Nome completo do falecido"
+    },
+    "cpf_falecido": {
+      "type": "string",
+      "description": "CPF do falecido"
+    },
+    "rg": {
+      "type": "string",
+      "description": "RG do falecido"
+    },
+    "orgao_expedidor": {
+      "type": "string",
+      "description": "\u00d3rg\u00e3o expedidor do RG"
+    },
+    "data_expedicao": {
+      "type": "string",
+      "format": "date",
+      "description": "Data de expedi\u00e7\u00e3o do RG"
+    },
+    "sexo": {
+      "type": "string",
+      "enum": [
+        "masculino",
+        "feminino"
+      ],
+      "description": "Sexo do falecido"
+    },
+    "nacionalidade": {
+      "type": "string",
+      "description": "Nacionalidade do falecido"
+    },
+    "profissao": {
+      "type": "string",
+      "description": "Profiss\u00e3o do falecido"
+    },
+    "filiacao_pai": {
+      "type": "string",
+      "description": "Nome do pai do falecido"
+    },
+    "filiacao_mae": {
+      "type": "string",
+      "description": "Nome da m\u00e3e do falecido"
+    },
+    "data_nascimento": {
+      "type": "string",
+      "format": "date",
+      "description": "Data de nascimento do falecido"
+    },
+    "data_obito": {
+      "type": "string",
+      "format": "date",
+      "description": "Data do \u00f3bito"
+    },
+    "horario_obito": {
+      "type": "string",
+      "description": "Hor\u00e1rio do \u00f3bito"
+    },
+    "local_obito": {
+      "type": "string",
+      "description": "Local do \u00f3bito"
+    },
+    "endereco": {
+      "type": "string",
+      "description": "Endere\u00e7o completo do falecido"
+    },
+    "cep": {
+      "type": "string",
+      "description": "CEP do endere\u00e7o do falecido"
+    },
+    "estado_civil": {
+      "type": "string",
+      "enum": [
+        "solteiro",
+        "casado",
+        "divorciado",
+        "viuvo",
+        "uniao_estavel",
+        "separado_judicialmente"
+      ],
+      "description": "Estado civil do falecido"
+    },
+    "certidao_obito_numero": {
+      "type": "string",
+      "description": "N\u00famero/matr\u00edcula da certid\u00e3o de \u00f3bito"
+    },
+    "certidao_obito_cartorio": {
+      "type": "string",
+      "description": "Cart\u00f3rio emissor da certid\u00e3o de \u00f3bito"
+    },
+    "certidao_obito_data": {
+      "type": "string",
+      "format": "date",
+      "description": "Data de emiss\u00e3o da certid\u00e3o de \u00f3bito"
+    },
+    "existencia_testamento": {
+      "type": "boolean",
+      "default": false,
+      "description": "Se existe testamento registrado"
+    },
+    "testamento_tipo": {
+      "type": "string",
+      "enum": [
+        "publico",
+        "cerrado",
+        "particular",
+        "nuncupativo"
+      ],
+      "description": "Tipo do testamento"
+    },
+    "testamento_cartorio": {
+      "type": "string",
+      "description": "Cart\u00f3rio de registro do testamento"
+    },
+    "testamento_data": {
+      "type": "string",
+      "format": "date",
+      "description": "Data de lavratura do testamento"
+    },
+    "tipo_inventario": {
+      "type": "string",
+      "enum": [
+        "extrajudicial",
+        "judicial"
+      ],
+      "default": "extrajudicial",
+      "description": "Tipo do invent\u00e1rio"
+    },
+    "tipo_processo": {
+      "type": "string",
+      "enum": [
+        "inventario",
+        "sobrepartilha"
+      ],
+      "default": "inventario",
+      "description": "Tipo de processo"
+    },
+    "data_abertura_inventario": {
+      "type": "string",
+      "format": "date",
+      "description": "Data de abertura do invent\u00e1rio extrajudicial"
+    },
+    "data_distribuicao": {
+      "type": "string",
+      "format": "date",
+      "description": "Data de distribui\u00e7\u00e3o (judicial)"
+    },
+    "numero_processo_judicial": {
+      "type": "string",
+      "description": "N\u00famero do processo judicial"
+    },
+    "vara_comarca": {
+      "type": "string",
+      "description": "Vara e Comarca"
+    },
+    "data_homologacao_partilha": {
+      "type": "string",
+      "format": "date",
+      "description": "Data da homologa\u00e7\u00e3o da partilha"
+    },
+    "data_transito_julgado": {
+      "type": "string",
+      "format": "date",
+      "description": "Data do tr\u00e2nsito em julgado"
+    },
+    "numero_sobrepartilha": {
+      "type": "string",
+      "description": "N\u00famero do processo de sobrepartilha"
+    },
+    "vara_comarca_sobrepartilha": {
+      "type": "string",
+      "description": "Vara e Comarca da sobrepartilha"
+    },
+    "data_homologacao_sobrepartilha": {
+      "type": "string",
+      "format": "date",
+      "description": "Data da homologa\u00e7\u00e3o da sobrepartilha"
+    },
+    "data_transito_julgado_sobrepartilha": {
+      "type": "string",
+      "format": "date",
+      "description": "Data do tr\u00e2nsito em julgado da sobrepartilha"
+    },
+    "cartorio_nome": {
+      "type": "string",
+      "description": "Nome do cart\u00f3rio (extrajudicial)"
+    },
+    "cartorio_municipio": {
+      "type": "string",
+      "description": "Munic\u00edpio do cart\u00f3rio"
+    },
+    "cartorio_comarca": {
+      "type": "string",
+      "description": "Comarca do cart\u00f3rio"
+    },
+    "conjuge_nome": {
+      "type": "string",
+      "description": "Nome do c\u00f4njuge sobrevivente"
+    },
+    "conjuge_cpf": {
+      "type": "string",
+      "description": "CPF do c\u00f4njuge"
+    },
+    "conjuge_rg": {
+      "type": "string",
+      "description": "RG do c\u00f4njuge sobrevivente"
+    },
+    "conjuge_nacionalidade": {
+      "type": "string",
+      "description": "Nacionalidade do c\u00f4njuge"
+    },
+    "conjuge_profissao": {
+      "type": "string",
+      "description": "Profiss\u00e3o do c\u00f4njuge"
+    },
+    "conjuge_endereco": {
+      "type": "string",
+      "description": "Endere\u00e7o do c\u00f4njuge"
+    },
+    "conjuge_cep": {
+      "type": "string",
+      "description": "CEP do c\u00f4njuge"
+    },
+    "conjuge_telefone": {
+      "type": "string",
+      "description": "Telefone do c\u00f4njuge"
+    },
+    "conjuge_email": {
+      "type": "string",
+      "description": "Email do c\u00f4njuge"
+    },
+    "data_atendimento": {
+      "type": "string",
+      "format": "date",
+      "description": "Data do atendimento"
+    },
+    "data_casamento": {
+      "type": "string",
+      "format": "date",
+      "description": "Data do casamento"
+    },
+    "conjuge_e_ascendente_herdeiros": {
+      "type": "boolean",
+      "default": true,
+      "description": "Se o c\u00f4njuge sobrevivente \u00e9 pai/m\u00e3e de todos os herdeiros (regra dos 25%)"
+    },
+    "regime_bens": {
+      "type": "string",
+      "enum": [
+        "uniao_estavel",
+        "comunhao_universal",
+        "comunhao_parcial",
+        "separacao_total",
+        "separacao_obrigatoria",
+        "participacao_final"
+      ],
+      "description": "Regime de bens do casamento"
+    },
+    "cessao_direitos": {
+      "type": "string",
+      "enum": [
+        "nenhuma",
+        "onerosa",
+        "nao_onerosa"
+      ],
+      "default": "nenhuma",
+      "description": "Cess\u00e3o de direitos heredit\u00e1rios"
+    },
+    "renuncia_abdicativa": {
+      "type": "string",
+      "enum": [
+        "nenhuma",
+        "termo_judicial",
+        "escritura_publica"
+      ],
+      "default": "nenhuma",
+      "description": "Ren\u00fancia abdicativa em favor do monte mor"
+    },
+    "valor_patrimonio": {
+      "type": "number",
+      "description": "Valor total do patrim\u00f4nio (Monte Mor)"
+    },
+    "valor_dividas_espolio": {
+      "type": "number",
+      "description": "Valor total das d\u00edvidas do esp\u00f3lio"
+    },
+    "valor_meacao_conjuge": {
+      "type": "number",
+      "description": "Valor total da mea\u00e7\u00e3o do c\u00f4njuge"
+    },
+    "valor_heranca_conjuge": {
+      "type": "number",
+      "description": "Valor total da heran\u00e7a do c\u00f4njuge"
+    },
+    "valor_heranca_filhos": {
+      "type": "number",
+      "description": "Valor total destinado aos filhos"
+    },
+    "valor_itcmd": {
+      "type": "number",
+      "description": "Valor total do ITCMD calculado"
+    },
+    "aliquota": {
+      "type": "number",
+      "description": "Al\u00edquota aplic\u00e1vel (em percentual)"
+    },
+    "valor_atualizacao": {
+      "type": "number",
+      "description": "Valor de atualiza\u00e7\u00e3o monet\u00e1ria"
+    },
+    "valor_multa": {
+      "type": "number",
+      "description": "Valor da multa"
+    },
+    "valor_juros": {
+      "type": "number",
+      "description": "Valor dos juros"
+    },
+    "valor_desconto": {
+      "type": "number",
+      "description": "Valor de desconto"
+    },
+    "base_legal_isencao": {
+      "type": "string",
+      "description": "Base legal para isen\u00e7\u00e3o ou imunidade"
+    },
+    "documentos_urls": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "URLs de documentos gerais anexados ao caso (procura\u00e7\u00f5es, certid\u00f5es, etc)"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "coleta_dados",
+        "calculo_itcmd",
+        "geracao_dae",
+        "aguardando_pagamento",
+        "em_analise_sefaz",
+        "certidao_emitida",
+        "finalizado"
+      ],
+      "default": "coleta_dados",
+      "description": "Status atual do caso"
+    },
+    "prazo_dias": {
+      "type": "number",
+      "description": "Dias restantes para conclus\u00e3o"
+    },
+    "observacoes": {
+      "type": "string",
+      "description": "Observa\u00e7\u00f5es sobre o caso"
+    }
+  },
+  "required": [
+    "nome_falecido",
+    "data_obito"
+  ]
+}

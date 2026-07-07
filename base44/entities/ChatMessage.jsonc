@@ -1,0 +1,43 @@
+{
+  "name": "ChatMessage",
+  "type": "object",
+  "properties": {
+    "user_email": {
+      "type": "string",
+      "description": "Email do usu\u00e1rio"
+    },
+    "message": {
+      "type": "string",
+      "description": "Mensagem enviada pelo usu\u00e1rio"
+    },
+    "response": {
+      "type": "string",
+      "description": "Resposta do assistente virtual"
+    },
+    "context": {
+      "type": "string",
+      "description": "Contexto da conversa (caso_id, etc)"
+    },
+    "category": {
+      "type": "string",
+      "enum": [
+        "itcmd",
+        "procedimentos",
+        "legislacao",
+        "prazo",
+        "calculo",
+        "geral"
+      ],
+      "description": "Categoria da pergunta"
+    },
+    "helpful": {
+      "type": "boolean",
+      "description": "Se a resposta foi \u00fatil"
+    }
+  },
+  "required": [
+    "user_email",
+    "message",
+    "response"
+  ]
+}

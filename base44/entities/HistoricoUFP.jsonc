@@ -1,0 +1,28 @@
+{
+  "name": "HistoricoUFP",
+  "type": "object",
+  "properties": {
+    "ano": {
+      "type": "integer",
+      "description": "Ano de refer\u00eancia"
+    },
+    "valor": {
+      "type": "number",
+      "description": "Valor da UFP em reais"
+    },
+    "mes_inicio": {
+      "type": "integer",
+      "default": 1,
+      "description": "M\u00eas de in\u00edcio da vig\u00eancia (1-12)"
+    },
+    "mes_fim": {
+      "type": "integer",
+      "default": 12,
+      "description": "M\u00eas de fim da vig\u00eancia (1-12)"
+    }
+  },
+  "required": [
+    "ano",
+    "valor"
+  ]
+}

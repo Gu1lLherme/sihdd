@@ -1,0 +1,80 @@
+{
+  "name": "Office",
+  "type": "object",
+  "properties": {
+    "nome": {
+      "type": "string",
+      "description": "Nome do escrit\u00f3rio"
+    },
+    "cnpj": {
+      "type": "string",
+      "description": "CNPJ do escrit\u00f3rio"
+    },
+    "endereco": {
+      "type": "string",
+      "description": "Endere\u00e7o completo"
+    },
+    "telefone": {
+      "type": "string",
+      "description": "Telefone principal"
+    },
+    "email": {
+      "type": "string",
+      "description": "Email principal"
+    },
+    "logo_url": {
+      "type": "string",
+      "description": "URL do logotipo"
+    },
+    "branding": {
+      "type": "object",
+      "properties": {
+        "cor_primaria": {
+          "type": "string",
+          "default": "#4169E1",
+          "description": "Cor prim\u00e1ria (Azul Royal)"
+        },
+        "cor_secundaria": {
+          "type": "string",
+          "default": "#FFC107",
+          "description": "Cor secund\u00e1ria (Dourado)"
+        },
+        "cor_sucesso": {
+          "type": "string",
+          "default": "#28A745",
+          "description": "Cor de sucesso (Verde)"
+        }
+      },
+      "description": "Configura\u00e7\u00f5es de marca (white-label)"
+    },
+    "plano": {
+      "type": "string",
+      "enum": [
+        "basico",
+        "profissional",
+        "enterprise"
+      ],
+      "default": "profissional",
+      "description": "Plano contratado"
+    },
+    "ativo": {
+      "type": "boolean",
+      "default": true,
+      "description": "Escrit\u00f3rio ativo"
+    },
+    "limite_usuarios": {
+      "type": "number",
+      "default": 10,
+      "description": "Limite de usu\u00e1rios"
+    },
+    "limite_casos": {
+      "type": "number",
+      "default": 100,
+      "description": "Limite de casos por m\u00eas"
+    }
+  },
+  "required": [
+    "nome",
+    "email"
+  ]
+}

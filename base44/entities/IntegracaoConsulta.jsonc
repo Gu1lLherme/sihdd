@@ -1,0 +1,52 @@
+{
+  "name": "IntegracaoConsulta",
+  "type": "object",
+  "properties": {
+    "caso_id": {
+      "type": "string",
+      "description": "ID do caso relacionado"
+    },
+    "tipo_integracao": {
+      "type": "string",
+      "enum": [
+        "sefaz_imovel",
+        "sefaz_veiculo",
+        "cartorio_matricula",
+        "detran_veiculo",
+        "certidao_negativa"
+      ],
+      "description": "Tipo de integra\u00e7\u00e3o"
+    },
+    "parametros_consulta": {
+      "type": "object",
+      "description": "Par\u00e2metros enviados na consulta"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "pendente",
+        "processando",
+        "sucesso",
+        "erro"
+      ],
+      "default": "pendente",
+      "description": "Status da consulta"
+    },
+    "resultado": {
+      "type": "object",
+      "description": "Resultado retornado pela integra\u00e7\u00e3o"
+    },
+    "erro_mensagem": {
+      "type": "string",
+      "description": "Mensagem de erro, se houver"
+    },
+    "tempo_resposta_ms": {
+      "type": "number",
+      "description": "Tempo de resposta em milissegundos"
+    }
+  },
+  "required": [
+    "tipo_integracao",
+    "status"
+  ]
+}

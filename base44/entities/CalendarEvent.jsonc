@@ -1,0 +1,81 @@
+{
+  "name": "CalendarEvent",
+  "type": "object",
+  "properties": {
+    "caso_id": {
+      "type": "string",
+      "description": "ID do caso relacionado"
+    },
+    "office_id": {
+      "type": "string",
+      "description": "ID do escrit\u00f3rio (multi-tenant)"
+    },
+    "titulo": {
+      "type": "string",
+      "description": "T\u00edtulo do evento"
+    },
+    "descricao": {
+      "type": "string",
+      "description": "Descri\u00e7\u00e3o do evento"
+    },
+    "tipo": {
+      "type": "string",
+      "enum": [
+        "prazo_itcmd",
+        "audiencia",
+        "reuniao",
+        "vencimento",
+        "entrega_documento",
+        "outro"
+      ],
+      "description": "Tipo do evento"
+    },
+    "data_inicio": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Data e hora de in\u00edcio"
+    },
+    "data_fim": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Data e hora de t\u00e9rmino"
+    },
+    "local": {
+      "type": "string",
+      "description": "Local do evento"
+    },
+    "participantes": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Emails dos participantes"
+    },
+    "cor": {
+      "type": "string",
+      "enum": [
+        "royal",
+        "gold",
+        "green",
+        "red",
+        "gray"
+      ],
+      "default": "royal",
+      "description": "Cor do evento no calend\u00e1rio"
+    },
+    "notificar_antes": {
+      "type": "number",
+      "description": "Minutos antes para notificar"
+    },
+    "concluido": {
+      "type": "boolean",
+      "default": false,
+      "description": "Evento conclu\u00eddo"
+    }
+  },
+  "required": [
+    "titulo",
+    "data_inicio",
+    "tipo"
+  ]
+}

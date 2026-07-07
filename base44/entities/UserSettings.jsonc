@@ -1,0 +1,109 @@
+{
+  "name": "UserSettings",
+  "type": "object",
+  "properties": {
+    "user_email": {
+      "type": "string",
+      "description": "Email do usu\u00e1rio"
+    },
+    "sidebar_modules": {
+      "type": "object",
+      "description": "M\u00f3dulos vis\u00edveis na sidebar",
+      "properties": {
+        "dashboard": {
+          "type": "boolean",
+          "default": true
+        },
+        "inventarios": {
+          "type": "boolean",
+          "default": true
+        },
+        "doacoes": {
+          "type": "boolean",
+          "default": true
+        },
+        "divorcios": {
+          "type": "boolean",
+          "default": true
+        },
+        "chat": {
+          "type": "boolean",
+          "default": true
+        },
+        "portal": {
+          "type": "boolean",
+          "default": true
+        },
+        "modelagem_partilha": {
+          "type": "boolean",
+          "default": true
+        },
+        "simulador_planejamento": {
+          "type": "boolean",
+          "default": true
+        },
+        "arvore_genealogica": {
+          "type": "boolean",
+          "default": true
+        },
+        "integracoes": {
+          "type": "boolean",
+          "default": true
+        },
+        "administracao": {
+          "type": "boolean",
+          "default": true
+        },
+        "auditoria": {
+          "type": "boolean",
+          "default": true
+        },
+        "relatorios": {
+          "type": "boolean",
+          "default": true
+        }
+      }
+    },
+    "theme": {
+      "type": "string",
+      "enum": [
+        "light",
+        "dark"
+      ],
+      "default": "light",
+      "description": "Tema da interface"
+    },
+    "color_scheme": {
+      "type": "string",
+      "enum": [
+        "blue",
+        "gold",
+        "green",
+        "purple",
+        "slate"
+      ],
+      "default": "blue",
+      "description": "Esquema de cores"
+    },
+    "font_family": {
+      "type": "string",
+      "enum": [
+        "inter",
+        "roboto",
+        "lato",
+        "merriweather",
+        "system"
+      ],
+      "default": "inter",
+      "description": "Fonte principal"
+    },
+    "notifications_enabled": {
+      "type": "boolean",
+      "default": true,
+      "description": "Notifica\u00e7\u00f5es por email ativadas"
+    }
+  },
+  "required": [
+    "user_email"
+  ]
+}

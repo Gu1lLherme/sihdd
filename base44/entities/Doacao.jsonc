@@ -1,0 +1,58 @@
+{
+  "name": "Doacao",
+  "type": "object",
+  "properties": {
+    "office_id": {
+      "type": "string",
+      "description": "ID do escrit\u00f3rio (multi-tenant)"
+    },
+    "doador_nome": {
+      "type": "string",
+      "description": "Nome do doador"
+    },
+    "doador_cpf": {
+      "type": "string",
+      "description": "CPF do doador"
+    },
+    "donatario_nome": {
+      "type": "string",
+      "description": "Nome do donat\u00e1rio"
+    },
+    "donatario_cpf": {
+      "type": "string",
+      "description": "CPF do donat\u00e1rio"
+    },
+    "data_doacao": {
+      "type": "string",
+      "format": "date",
+      "description": "Data da doa\u00e7\u00e3o"
+    },
+    "valor_total_bens": {
+      "type": "number",
+      "description": "Valor total dos bens doados"
+    },
+    "valor_tributo": {
+      "type": "number",
+      "description": "Valor do ITCMD calculado"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "rascunho",
+        "aguardando_pagamento",
+        "concluido"
+      ],
+      "default": "rascunho",
+      "description": "Status do processo"
+    },
+    "guia_url": {
+      "type": "string",
+      "description": "URL da guia gerada (Simula\u00e7\u00e3o)"
+    }
+  },
+  "required": [
+    "doador_nome",
+    "donatario_nome",
+    "data_doacao"
+  ]
+}

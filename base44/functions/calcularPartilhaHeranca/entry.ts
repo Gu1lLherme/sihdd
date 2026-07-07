@@ -109,7 +109,7 @@ Deno.serve(async (req) => {
     const bensCalculados = bens.map(bem => {
       const valorLiquido = (bem.valor || 0) * fatorLiquido;
       const r = partilharBem({
-        valorBem: valorLiquido, regimeBens,
+        valorBem: valorLiquido, regimeBens: regime_bens,
         dataAquisicao: bem.data_aquisicao, dataCasamento: data_casamento, origemBem: bem.origem_bem,
         temFilhos, qtdFilhos, conjugeParticipa: !!conjugeHerdeiro,
       });

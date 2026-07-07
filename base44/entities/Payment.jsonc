@@ -1,0 +1,76 @@
+{
+  "name": "Payment",
+  "type": "object",
+  "properties": {
+    "guia_dae_id": {
+      "type": "string",
+      "description": "ID da guia DAE relacionada"
+    },
+    "caso_id": {
+      "type": "string",
+      "description": "ID do caso"
+    },
+    "office_id": {
+      "type": "string",
+      "description": "ID do escrit\u00f3rio (multi-tenant)"
+    },
+    "valor": {
+      "type": "number",
+      "description": "Valor do pagamento"
+    },
+    "metodo": {
+      "type": "string",
+      "enum": [
+        "cartao_credito",
+        "pix",
+        "boleto",
+        "transferencia"
+      ],
+      "description": "M\u00e9todo de pagamento"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "pendente",
+        "processando",
+        "aprovado",
+        "recusado",
+        "cancelado"
+      ],
+      "default": "pendente",
+      "description": "Status do pagamento"
+    },
+    "gateway": {
+      "type": "string",
+      "enum": [
+        "stripe",
+        "pagseguro",
+        "mercadopago",
+        "outro"
+      ],
+      "description": "Gateway utilizado"
+    },
+    "transaction_id": {
+      "type": "string",
+      "description": "ID da transa\u00e7\u00e3o no gateway"
+    },
+    "data_pagamento": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Data e hora do pagamento"
+    },
+    "comprovante_url": {
+      "type": "string",
+      "description": "URL do comprovante"
+    },
+    "erro_mensagem": {
+      "type": "string",
+      "description": "Mensagem de erro se houver"
+    }
+  },
+  "required": [
+    "valor",
+    "metodo",
+    "status"
+  ]
+}

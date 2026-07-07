@@ -1,0 +1,64 @@
+{
+  "name": "RegraITCMD",
+  "type": "object",
+  "properties": {
+    "legislacao_referencia": {
+      "type": "string",
+      "description": "Nome da legisla\u00e7\u00e3o de refer\u00eancia"
+    },
+    "tipo_transmissao": {
+      "type": "string",
+      "enum": [
+        "causa_mortis",
+        "doacao"
+      ],
+      "description": "Tipo de fato gerador"
+    },
+    "data_inicio_vigencia": {
+      "type": "string",
+      "format": "date",
+      "description": "In\u00edcio da validade desta regra"
+    },
+    "data_fim_vigencia": {
+      "type": "string",
+      "format": "date",
+      "description": "Fim da validade (pode ser nulo se atual)"
+    },
+    "tipo_bem": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Tipos de bens afetados (imovel, movel, etc)"
+    },
+    "faixas": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "min_ufp": {
+            "type": "number",
+            "description": "Valor m\u00ednimo em UFP"
+          },
+          "max_ufp": {
+            "type": "number",
+            "description": "Valor m\u00e1ximo em UFP (null para sem limite)"
+          },
+          "aliquota": {
+            "type": "number",
+            "description": "Percentual da al\u00edquota"
+          }
+        }
+      },
+      "description": "Faixas de tributa\u00e7\u00e3o"
+    },
+    "condicoes_especiais": {
+      "type": "string",
+      "description": "Descri\u00e7\u00e3o de condi\u00e7\u00f5es espec\u00edficas (ex: \u00fanico im\u00f3vel)"
+    }
+  },
+  "required": [
+    "tipo_transmissao",
+    "data_inicio_vigencia"
+  ]
+}

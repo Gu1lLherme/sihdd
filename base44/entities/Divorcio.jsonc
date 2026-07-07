@@ -1,0 +1,68 @@
+{
+  "name": "Divorcio",
+  "type": "object",
+  "properties": {
+    "office_id": {
+      "type": "string",
+      "description": "ID do escrit\u00f3rio (multi-tenant)"
+    },
+    "conjuge_doador_nome": {
+      "type": "string",
+      "description": "Nome do c\u00f4njuge doador (quem abriu m\u00e3o)"
+    },
+    "conjuge_doador_cpf": {
+      "type": "string",
+      "description": "CPF do c\u00f4njuge doador"
+    },
+    "conjuge_donatario_nome": {
+      "type": "string",
+      "description": "Nome do c\u00f4njuge donat\u00e1rio (quem recebeu)"
+    },
+    "conjuge_donatario_cpf": {
+      "type": "string",
+      "description": "CPF do c\u00f4njuge donat\u00e1rio"
+    },
+    "regime_bens": {
+      "type": "string",
+      "enum": [
+        "uniao_estavel",
+        "comunhao_universal",
+        "comunhao_parcial",
+        "separacao_total",
+        "participacao_final"
+      ],
+      "description": "Regime de bens do casamento"
+    },
+    "documento_regime_url": {
+      "type": "string",
+      "description": "URL do documento comprovando o regime"
+    },
+    "valor_excesso_meacao": {
+      "type": "number",
+      "description": "Valor do excesso de mea\u00e7\u00e3o"
+    },
+    "valor_tributo": {
+      "type": "number",
+      "description": "Valor do ITCMD calculado"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "rascunho",
+        "aguardando_pagamento",
+        "concluido"
+      ],
+      "default": "rascunho",
+      "description": "Status do processo"
+    },
+    "guia_url": {
+      "type": "string",
+      "description": "URL da guia gerada (Simula\u00e7\u00e3o)"
+    }
+  },
+  "required": [
+    "conjuge_doador_nome",
+    "conjuge_donatario_nome",
+    "regime_bens"
+  ]
+}
