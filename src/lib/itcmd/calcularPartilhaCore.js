@@ -16,6 +16,9 @@
 
 const PARENTESCOS_DESCENDENTES = ['filho', 'filha', 'neto', 'neta'];
 
+/** Arredondamento matemático para 2 casas decimais. */
+export const round2 = (v) => Math.round((Number(v) + Number.EPSILON) * 100) / 100;
+
 /** Faz a partilha de UM bem conforme regime de bens. Retorna {meacao, herancaConjuge, herancaFilhos, tipoPartilha}. */
 export function partilharBem({ valorBem, regimeBens, dataAquisicao, dataCasamento, origemBem, temFilhos, qtdFilhos, conjugeParticipa }) {
   const aquis = dataAquisicao ? new Date(dataAquisicao) : null;

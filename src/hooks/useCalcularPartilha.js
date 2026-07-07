@@ -5,6 +5,7 @@ import {
   partilharBem,
   aplicarRegra25Percent,
   DESCENDENTES,
+  round2,
 } from "@/lib/itcmd/calcularPartilhaCore";
 
 /**
@@ -71,11 +72,11 @@ export function useCalcularPartilha({ casoId, formData, setFormData, setResultad
 
     setFormData((prev) => ({
       ...prev,
-      valor_patrimonio: patrimonio,
-      valor_meacao_conjuge: totalMeacao,
-      valor_heranca_conjuge: r25.herancaConjuge,
-      valor_heranca_filhos: r25.herancaFilhos,
-      valor_itcmd: itcmdPreview,
+      valor_patrimonio: round2(patrimonio),
+      valor_meacao_conjuge: round2(totalMeacao),
+      valor_heranca_conjuge: round2(r25.herancaConjuge),
+      valor_heranca_filhos: round2(r25.herancaFilhos),
+      valor_itcmd: round2(itcmdPreview),
       aliquota: aliquotaPreview,
     }));
 

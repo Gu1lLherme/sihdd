@@ -6,6 +6,9 @@ import { createClientFromRequest } from 'npm:@base44/sdk@0.8.25';
  */
 const DESCENDENTES = ['filho', 'filha', 'neto', 'neta'];
 
+/** Arredondamento matemático para 2 casas decimais. */
+const round2 = (v) => Math.round((Number(v) + Number.EPSILON) * 100) / 100;
+
 function partilharBem({ valorBem, regimeBens, dataAquisicao, dataCasamento, origemBem, temFilhos, qtdFilhos, conjugeParticipa }) {
   const aquis = dataAquisicao ? new Date(dataAquisicao) : null;
   const casam = dataCasamento ? new Date(dataCasamento) : null;
@@ -116,7 +119,7 @@ Deno.serve(async (req) => {
       totalMeacaoConjuge += r.meacao;
       totalHerancaConjuge += r.herancaConjuge;
       totalHerancaFilhos += r.herancaFilhos;
-      return { ...bem, tipo_bem_partilha: r.tipoPartilha, valor_meacao_conjuge: r.meacao, valor_heranca_conjuge: r.herancaConjuge, valor_heranca_filhos: r.herancaFilhos };
+      return { ...bem, tipo_bem_partilha: r.tipoPartilha, valor_meacao_conjuge: round2(r.meacao), valor_heranca_conjuge: round2(r.herancaConjuge), valor_heranca_filhos: round2(r.herancaFilhos) };
     });
 
     // Regra dos 25%
@@ -178,12 +181,12 @@ Deno.serve(async (req) => {
         contribuinteItcmd = 'self';
       }
       const percentualPartilha = totalHeranca > 0 ? (valorParte / totalHeranca) * 100 : 0;
-      return { ...h, valor_parte: valorParte, valor_itcmd: valorItcmd, percentual_partilha: percentualPartilha, _contribuinte_itcmd: contribuinteItcmd };
+      return { ...h, valor_parte: round2(valorParte), valor_itcmd: round2(valorItcmd), percentual_partilha: round2(percentualPartilha), _contribuinte_itcmd: contribuinteItcmd };
     });
 
-    const itcmdTotal = herdeirosCalculados.reduce((s, h) => s + (h.valor_itcmd || 0), 0);
+    const itcmdTotal = round2(herdeirosCalculados.reduce((s, h) => s + (h.valor_itcmd || 0), 0));
     const baseTributavel = totalHerancaConjuge + totalHerancaFilhos;
-    const aliquotaEfetiva = baseTributavel > 0 ? Number(((itcmdTotal / baseTributavel) * 100).toFixed(4)) : 0;
+    const aliquotaEfetiva = baseTributavel > 0 ? round2((itcmdTotal / baseTributavel) * 100) : 0;
 
     // Persistir
     await Promise.all(bensCalculados.map(b =>
@@ -202,11 +205,11 @@ Deno.serve(async (req) => {
       })
     ));
     await base44.asServiceRole.entities.Caso.update(caso_id, {
-      valor_patrimonio: valorPatrimonioBruto,
-      valor_dividas_espolio: totalDividas,
-      valor_meacao_conjuge: totalMeacaoConjuge,
-      valor_heranca_conjuge: totalHerancaConjuge,
-      valor_heranca_filhos: totalHerancaFilhos,
+      valor_patrimonio: round2(valorPatrimonioBruto),
+      valor_dividas_espolio: round2(totalDividas),
+      valor_meacao_conjuge: round2(totalMeacaoConjuge),
+      valor_heranca_conjuge: round2(totalHerancaConjuge),
+      valor_heranca_filhos: round2(totalHerancaFilhos),
       valor_itcmd: itcmdTotal,
       aliquota: aliquotaEfetiva,
     });
@@ -215,13 +218,13 @@ Deno.serve(async (req) => {
       sucesso: true,
       resumo: {
         regime_bens,
-        valor_patrimonio: valorPatrimonioBruto,
-        total_dividas: totalDividas,
-        monte_mor_liquido: valorPatrimonioBruto - totalDividas,
+        valor_patrimonio: round2(valorPatrimonioBruto),
+        total_dividas: round2(totalDividas),
+        monte_mor_liquido: round2(valorPatrimonioBruto - totalDividas),
         fator_liquido: fatorLiquido,
-        meacao_conjuge: totalMeacaoConjuge,
-        heranca_conjuge: totalHerancaConjuge,
-        heranca_filhos: totalHerancaFilhos,
+        meacao_conjuge: round2(totalMeacaoConjuge),
+        heranca_conjuge: round2(totalHerancaConjuge),
+        heranca_filhos: round2(totalHerancaFilhos),
         itcmd_total: itcmdTotal,
         aliquota: aliquotaEfetiva,
         regra_25_aplicada: regra25Aplicada,
